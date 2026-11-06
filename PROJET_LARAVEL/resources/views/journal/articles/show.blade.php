@@ -72,7 +72,7 @@
         {{-- Main Feature Image --}}
         @if($article->image_principale)
             <figure style="margin: 0 0 36px; padding: 0;">
-                <img src="{{ $article->image_principale }}" alt="{{ $article->titre }}" style="width: 100%; height: auto; max-height: 520px; object-fit: cover; display: block; border: 1px solid #D5D8E0;">
+                <img src="{{ $article->url_image }}" alt="{{ $article->titre }}" style="width: 100%; height: auto; max-height: 520px; object-fit: cover; display: block; border: 1px solid #D5D8E0;">
                 @if($article->legende_image || $article->credit_photo)
                     <figcaption style="font-size: 12px; line-height: 1.4; color: var(--text-muted); padding: 10px 4px 0; display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--dashed-border); padding-bottom: 8px;">
                         <span>{{ $article->legende_image }}</span>

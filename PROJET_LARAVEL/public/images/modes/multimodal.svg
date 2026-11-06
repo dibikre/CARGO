@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <rect width="800" height="450" fill="#14151C"/>
+  <circle cx="400" cy="225" r="140" fill="none" stroke="#D4201A" stroke-width="4"/>
+  <line x1="260" y1="225" x2="540" y2="225" stroke="#4A4E5C" stroke-width="2"/>
+  <ellipse cx="400" cy="225" rx="70" ry="140" fill="none" stroke="#4A4E5C" stroke-width="2"/>
+  <circle cx="340" cy="180" r="8" fill="#FFC93C"/>
+  <circle cx="480" cy="270" r="8" fill="#FFC93C"/>
+  <circle cx="430" cy="160" r="8" fill="#FFC93C"/>
+  <circle cx="370" cy="290" r="8" fill="#FFC93C"/>
+  <path d="M 340 180 Q 380 140 430 160 T 480 270 T 370 290 Z" fill="none" stroke="#FFC93C" stroke-width="3" stroke-dasharray="6 4"/>
+  <text x="40" y="60" font-family="Archivo,sans-serif" font-weight="900" font-size="28" fill="#FFC93C" letter-spacing="2">CARGO INTELLIGENCE · GLOBAL MULTIMODAL</text>
+  <rect x="0" y="420" width="800" height="30" fill="#0D0E13"/>
+</svg>

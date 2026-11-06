@@ -11,7 +11,7 @@
 </div>
 
 <div class="wrap" style="max-width:920px; padding-top:36px; padding-bottom:64px;">
-    <form action="{{ route('redaction.articles.store') }}" method="POST" style="background:#fff; padding:36px; display:flex; flex-direction:column; gap:22px; border:1px solid #E2E5EB;">
+    <form action="{{ route('redaction.articles.store') }}" method="POST" enctype="multipart/form-data" style="background:#fff; padding:36px; display:flex; flex-direction:column; gap:22px; border:1px solid #E2E5EB;">
         @csrf
 
         <div>
@@ -58,19 +58,31 @@
             <textarea name="chapeau" rows="2" placeholder="Executive summary or opening hook..." class="form-input" style="height:auto; padding:12px; font-family:inherit;">{{ old('chapeau') }}</textarea>
         </div>
 
-        {{-- Lead Image Configuration --}}
-        <div style="background:#F9FAFB; padding:16px; border:1px solid #E5E7EB; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
-            <div>
-                <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Lead Image URL</label>
-                <input type="url" name="image_principale" value="{{ old('image_principale') }}" placeholder="https://..." class="form-input" style="height:42px;">
+        {{-- Lead Image Configuration : Téléversement local structuré ou URL rapatriée --}}
+        <div style="background:#F9FAFB; padding:18px; border:1px solid #E5E7EB; display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E5E7EB; padding-bottom:8px;">
+                <span class="kick" style="color:var(--dark); font-size:11px; font-weight:700;">Featured Editorial Image</span>
+                <span style="font-size:11px; color:var(--text-muted);">Stored locally in public/images/articles/</span>
             </div>
-            <div>
-                <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Image Caption</label>
-                <input type="text" name="legende_image" value="{{ old('legende_image') }}" placeholder="Brief photo description" class="form-input" style="height:42px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Upload Local Image File</label>
+                    <input type="file" name="fichier_image" accept="image/*" class="form-input" style="height:42px; padding:6px 10px;">
+                </div>
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Or Local Path / Remote URL</label>
+                    <input type="text" name="image_principale" value="{{ old('image_principale') }}" placeholder="images/articles/... or https://..." class="form-input" style="height:42px;">
+                </div>
             </div>
-            <div>
-                <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Photo Credit</label>
-                <input type="text" name="credit_photo" value="{{ old('credit_photo') }}" placeholder="e.g. CMA CGM Press" class="form-input" style="height:42px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Image Caption</label>
+                    <input type="text" name="legende_image" value="{{ old('legende_image') }}" placeholder="Brief photo description" class="form-input" style="height:42px;">
+                </div>
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Photo Credit</label>
+                    <input type="text" name="credit_photo" value="{{ old('credit_photo') }}" placeholder="e.g. CMA CGM Press" class="form-input" style="height:42px;">
+                </div>
             </div>
         </div>
 

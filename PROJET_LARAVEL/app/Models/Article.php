@@ -175,4 +175,13 @@ class Article extends Model implements HasMedia
     {
         $this->increment('vues_compteur');
     }
+
+    /**
+     * Accesseur pour l'URL de l'image principale avec repli sur les visuels sectoriels.
+     */
+    public function getUrlImageAttribute(): string
+    {
+        return app(\App\Services\ServiceGestionImage::class)
+            ->obtenirUrlImage($this->image_principale, $this->mode_transport_principal);
+    }
 }

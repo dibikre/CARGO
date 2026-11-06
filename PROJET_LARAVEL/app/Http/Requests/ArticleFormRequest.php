@@ -28,6 +28,7 @@ class ArticleFormRequest extends FormRequest
             'titre' => ['required', 'string', 'max:191'],
             'chapeau' => ['nullable', 'string', 'max:500'],
             'contenu' => ['required', 'string'],
+            'fichier_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg,avif', 'max:8192'],
             'image_principale' => ['nullable', 'string', 'max:191'],
             'legende_image' => ['nullable', 'string', 'max:191'],
             'credit_photo' => ['nullable', 'string', 'max:120'],

@@ -11,7 +11,7 @@
 </div>
 
 <div class="wrap" style="max-width:920px; padding-top:36px; padding-bottom:64px;">
-    <form action="{{ route('redaction.articles.update', $article->id) }}" method="POST" style="background:#fff; padding:36px; display:flex; flex-direction:column; gap:22px; border:1px solid #E2E5EB;">
+    <form action="{{ route('redaction.articles.update', $article->id) }}" method="POST" enctype="multipart/form-data" style="background:#fff; padding:36px; display:flex; flex-direction:column; gap:22px; border:1px solid #E2E5EB;">
         @csrf
         @method('PUT')
 
@@ -52,19 +52,42 @@
             <textarea name="chapeau" rows="2" class="form-input" style="height:auto; padding:12px; font-family:inherit;">{{ old('chapeau', $article->chapeau) }}</textarea>
         </div>
 
-        {{-- Lead Image Configuration --}}
-        <div style="background:#F9FAFB; padding:16px; border:1px solid #E5E7EB; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
-            <div>
-                <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Lead Image URL</label>
-                <input type="url" name="image_principale" value="{{ old('image_principale', $article->image_principale) }}" class="form-input" style="height:42px;">
+        {{-- Lead Image Configuration : Téléversement local structuré ou URL rapatriée --}}
+        <div style="background:#F9FAFB; padding:18px; border:1px solid #E5E7EB; display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E5E7EB; padding-bottom:8px;">
+                <span class="kick" style="color:var(--dark); font-size:11px; font-weight:700;">Featured Editorial Image</span>
+                <span style="font-size:11px; color:var(--text-muted);">Stored locally in public/images/articles/</span>
             </div>
-            <div>
-                <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Image Caption</label>
-                <input type="text" name="legende_image" value="{{ old('legende_image', $article->legende_image) }}" class="form-input" style="height:42px;">
+
+            @if($article->image_principale)
+                <div style="display:flex; align-items:center; gap:14px; background:#fff; padding:10px; border:1px solid #E2E5EB;">
+                    <img src="{{ $article->url_image }}" alt="Current image" style="width:80px; height:50px; object-fit:cover; border:1px solid #D5D8E0;">
+                    <div style="font-size:12px;">
+                        <span style="font-weight:700; color:var(--dark); display:block;">Current Active File:</span>
+                        <code style="color:var(--text-muted);">{{ $article->image_principale }}</code>
+                    </div>
+                </div>
+            @endif
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Upload New Local Image File</label>
+                    <input type="file" name="fichier_image" accept="image/*" class="form-input" style="height:42px; padding:6px 10px;">
+                </div>
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Or Local Path / Remote URL</label>
+                    <input type="text" name="image_principale" value="{{ old('image_principale', $article->image_principale) }}" placeholder="images/articles/... or https://..." class="form-input" style="height:42px;">
+                </div>
             </div>
-            <div>
-                <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Photo Credit</label>
-                <input type="text" name="credit_photo" value="{{ old('credit_photo', $article->credit_photo) }}" class="form-input" style="height:42px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Image Caption</label>
+                    <input type="text" name="legende_image" value="{{ old('legende_image', $article->legende_image) }}" class="form-input" style="height:42px;">
+                </div>
+                <div>
+                    <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Photo Credit</label>
+                    <input type="text" name="credit_photo" value="{{ old('credit_photo', $article->credit_photo) }}" class="form-input" style="height:42px;">
+                </div>
             </div>
         </div>
 

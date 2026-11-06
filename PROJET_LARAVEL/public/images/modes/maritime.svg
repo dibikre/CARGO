@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <rect width="800" height="450" fill="#14151C"/>
+  <rect x="0" y="320" width="800" height="130" fill="#0D0E13"/>
+  <path d="M0 320 Q 200 310, 400 320 T 800 320 L 800 450 L 0 450 Z" fill="#D4201A" opacity="0.2"/>
+  <path d="M120 280 L 680 280 L 630 360 L 170 360 Z" fill="#D4201A"/>
+  <rect x="180" y="200" width="100" height="70" fill="#FFC93C"/>
+  <rect x="290" y="200" width="100" height="70" fill="#E6E8EC"/>
+  <rect x="400" y="200" width="100" height="70" fill="#1F2128"/>
+  <rect x="510" y="200" width="90" height="70" fill="#FFC93C"/>
+  <rect x="235" y="140" width="95" height="55" fill="#E6E8EC"/>
+  <rect x="340" y="140" width="95" height="55" fill="#FFC93C"/>
+  <rect x="445" y="140" width="95" height="55" fill="#1F2128"/>
+  <rect x="610" y="160" width="30" height="110" fill="#fff"/>
+  <rect x="625" y="110" width="12" height="50" fill="#14151C"/>
+  <text x="40" y="60" font-family="Archivo,sans-serif" font-weight="900" font-size="28" fill="#FFC93C" letter-spacing="2">CARGO INTELLIGENCE · MARITIME &amp; PORTS</text>
+</svg>

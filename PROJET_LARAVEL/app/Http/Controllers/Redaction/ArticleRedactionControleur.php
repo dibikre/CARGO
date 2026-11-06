@@ -9,15 +9,18 @@ use App\Models\Categorie;
 use App\Models\CorridorTransport;
 use App\Models\Tag;
 use App\Models\ZoneLogistique;
+use App\Services\ServiceGestionImage;
 use App\Services\ServicePublicationArticle;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ArticleRedactionControleur extends Controller
 {
     public function __construct(
-        protected ServicePublicationArticle $servicePublication
+        protected ServicePublicationArticle $servicePublication,
+        protected ServiceGestionImage $serviceImage
     ) {}
 
     /**
@@ -59,6 +62,17 @@ class ArticleRedactionControleur extends Controller
         $slug = $this->servicePublication->genererSlugUnique($donnees['titre']);
         $tempsLecture = $this->servicePublication->calculerTempsLecture($donnees['contenu']);
 
+        // Structuration du stockage de l'image (téléversement direct ou rapatriement local d'URL)
+        $cheminImage = $donnees['image_principale'] ?? null;
+        if ($request->hasFile('fichier_image')) {
+            $cheminImage = $this->serviceImage->traiterImageTeleversee($request->file('fichier_image'), 'articles');
+        } elseif (! empty($cheminImage) && Str::startsWith($cheminImage, ['http://', 'https://'])) {
+            $imageLocale = $this->serviceImage->telechargerEtStockerImage($cheminImage, 'articles');
+            if ($imageLocale) {
+                $cheminImage = $imageLocale;
+            }
+        }
+
         $article = Article::create([
             'auteur_id' => $request->user()->id,
             'categorie_id' => $donnees['categorie_id'],
@@ -66,7 +80,7 @@ class ArticleRedactionControleur extends Controller
             'slug' => $slug,
             'chapeau' => $donnees['chapeau'] ?? null,
             'contenu' => $donnees['contenu'],
-            'image_principale' => $donnees['image_principale'] ?? null,
+            'image_principale' => $cheminImage,
             'legende_image' => $donnees['legende_image'] ?? null,
             'credit_photo' => $donnees['credit_photo'] ?? null,
             'statut' => $donnees['statut'],
@@ -118,12 +132,23 @@ class ArticleRedactionControleur extends Controller
         $donnees = $request->validated();
         $tempsLecture = $this->servicePublication->calculerTempsLecture($donnees['contenu']);
 
+        // Structuration du stockage de l'image
+        $cheminImage = $donnees['image_principale'] ?? $article->image_principale;
+        if ($request->hasFile('fichier_image')) {
+            $cheminImage = $this->serviceImage->traiterImageTeleversee($request->file('fichier_image'), 'articles');
+        } elseif (! empty($donnees['image_principale']) && Str::startsWith($donnees['image_principale'], ['http://', 'https://'])) {
+            $imageLocale = $this->serviceImage->telechargerEtStockerImage($donnees['image_principale'], 'articles');
+            if ($imageLocale) {
+                $cheminImage = $imageLocale;
+            }
+        }
+
         $article->update([
             'categorie_id' => $donnees['categorie_id'],
             'titre' => $donnees['titre'],
             'chapeau' => $donnees['chapeau'] ?? null,
             'contenu' => $donnees['contenu'],
-            'image_principale' => $donnees['image_principale'] ?? null,
+            'image_principale' => $cheminImage,
             'legende_image' => $donnees['legende_image'] ?? null,
             'credit_photo' => $donnees['credit_photo'] ?? null,
             'statut' => $donnees['statut'],

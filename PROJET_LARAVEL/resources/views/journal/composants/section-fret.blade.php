@@ -66,6 +66,12 @@
             {{-- Colonne Gauche : Article Majeur / Lead --}}
             <div style="flex:1 1 500px; display:flex; flex-direction:column; background:#fff; border-top:4px solid var(--accent); padding:32px; box-sizing:border-box;">
                 @if($centre)
+                    @if($centre->image_principale)
+                        <div style="margin: -32px -32px 20px -32px; overflow:hidden; max-height:220px; border-bottom:3px solid var(--accent);">
+                            <img src="{{ $centre->url_image }}" alt="{{ $centre->titre }}" style="width:100%; height:220px; object-fit:cover; display:block;">
+                        </div>
+                    @endif
+
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                         <span class="kick" style="color:var(--accent-dark);">
                             {{ $centre->categorie->nom ?? 'Analysis' }}
