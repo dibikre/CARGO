@@ -79,44 +79,53 @@ class ArticleControleur extends Controller
      */
     public function parCategorie(string $slug): View
     {
-        // 1. Recherche directe par slug
-        $categorie = Categorie::where('slug', $slug)->actif()->first();
+        try {
+            // 1. Recherche directe par slug
+            $categorie = Categorie::where('slug', $slug)->first();
 
-        // 2. Résolution des alias usuels (maritime, routier, ferroviaire, etc.)
-        if (! $categorie) {
-            $alias = [
-                'transport' => 'transport-routier',
-                'routier' => 'transport-routier',
-                'maritime' => 'fret-maritime-ports',
-                'fret-maritime' => 'fret-maritime-ports',
-                'ferroviaire' => 'ferroviaire-intermodal',
-                'rail' => 'ferroviaire-intermodal',
-                'supply-chain' => 'supply-chain-tech',
-                'aerien' => 'fret-aerien',
-                'fret-aerien' => 'fret-aerien',
-                'entreposage' => 'entreposage-logistique',
-                'douane' => 'douane-reglementation',
-                'e-commerce' => 'e-commerce-dernier-km',
-            ];
+            // 2. Résolution des alias usuels (maritime, routier, ferroviaire, etc.)
+            if (! $categorie) {
+                $alias = [
+                    'transport' => 'transport-routier',
+                    'routier' => 'transport-routier',
+                    'maritime' => 'fret-maritime-ports',
+                    'fret-maritime' => 'fret-maritime-ports',
+                    'ferroviaire' => 'ferroviaire-intermodal',
+                    'rail' => 'ferroviaire-intermodal',
+                    'supply-chain' => 'supply-chain-tech',
+                    'aerien' => 'fret-aerien',
+                    'fret-aerien' => 'fret-aerien',
+                    'entreposage' => 'entreposage-logistique',
+                    'douane' => 'douane-reglementation',
+                    'e-commerce' => 'e-commerce-dernier-km',
+                ];
 
-            if (isset($alias[$slug])) {
-                $categorie = Categorie::where('slug', $alias[$slug])->actif()->first();
+                if (isset($alias[$slug])) {
+                    $categorie = Categorie::where('slug', $alias[$slug])->first();
+                }
             }
-        }
 
-        // 3. Fallback immédiat : création transparente si la rubrique n'a pas encore été migrée
-        if (! $categorie) {
+            // 3. Fallback immédiat si inexistant
+            if (! $categorie) {
+                $nomFormate = ucwords(str_replace(['-', '_'], ' ', $slug));
+                $categorie = Categorie::where('nom', 'LIKE', "%{$nomFormate}%")->first()
+                    ?? new Categorie([
+                        'nom' => $nomFormate,
+                        'slug' => $slug,
+                        'description' => "Analyses sectorielles et veille opérationnelle pour {$nomFormate}.",
+                        'est_actif' => true,
+                        'afficher_dans_menu' => true,
+                        'ordre_affichage' => 10,
+                    ]);
+            }
+        } catch (\Throwable) {
             $nomFormate = ucwords(str_replace(['-', '_'], ' ', $slug));
-            $categorie = Categorie::firstOrCreate(
-                ['slug' => $slug],
-                [
-                    'nom' => $nomFormate,
-                    'description' => "Analyses sectorielles et veille opérationnelle pour {$nomFormate}.",
-                    'est_actif' => true,
-                    'afficher_dans_menu' => true,
-                    'ordre_affichage' => 10,
-                ]
-            );
+            $categorie = new Categorie([
+                'nom' => $nomFormate,
+                'slug' => $slug,
+                'description' => "Analyses sectorielles pour {$nomFormate}.",
+                'est_actif' => true,
+            ]);
         }
 
         $modeTransport = match ($slug) {
@@ -129,7 +138,9 @@ class ArticleControleur extends Controller
 
         $articles = Article::with(['auteur', 'categorie'])
             ->where(function ($query) use ($categorie, $modeTransport) {
-                $query->where('categorie_id', $categorie->id);
+                if (! empty($categorie->id)) {
+                    $query->where('categorie_id', $categorie->id);
+                }
                 if ($modeTransport) {
                     $query->orWhere('mode_transport_principal', $modeTransport);
                 }

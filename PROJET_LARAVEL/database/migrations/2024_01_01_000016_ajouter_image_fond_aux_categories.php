@@ -7,15 +7,23 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ajouter les champs d'image de fond et de protection de contraste aux rubriques.
+     * Ajouter les champs d'image de fond et de protection de contraste aux rubriques (idempotent).
      */
     public function up(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->string('image_fond', 191)->nullable()->after('couleur');
-            $table->unsignedTinyInteger('opacite_overlay')->default(65)->after('image_fond');
-            $table->string('couleur_overlay', 20)->default('#14151C')->after('opacite_overlay');
-        });
+        if (Schema::hasTable('categories')) {
+            Schema::table('categories', function (Blueprint $table) {
+                if (! Schema::hasColumn('categories', 'image_fond')) {
+                    $table->string('image_fond', 191)->nullable();
+                }
+                if (! Schema::hasColumn('categories', 'opacite_overlay')) {
+                    $table->unsignedTinyInteger('opacite_overlay')->default(65);
+                }
+                if (! Schema::hasColumn('categories', 'couleur_overlay')) {
+                    $table->string('couleur_overlay', 20)->default('#14151C');
+                }
+            });
+        }
     }
 
     /**
@@ -23,8 +31,22 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->dropColumn(['image_fond', 'opacite_overlay', 'couleur_overlay']);
-        });
+        if (Schema::hasTable('categories')) {
+            Schema::table('categories', function (Blueprint $table) {
+                $colonnesASupprimer = [];
+                if (Schema::hasColumn('categories', 'image_fond')) {
+                    $colonnesASupprimer[] = 'image_fond';
+                }
+                if (Schema::hasColumn('categories', 'opacite_overlay')) {
+                    $colonnesASupprimer[] = 'opacite_overlay';
+                }
+                if (Schema::hasColumn('categories', 'couleur_overlay')) {
+                    $colonnesASupprimer[] = 'couleur_overlay';
+                }
+                if (! empty($colonnesASupprimer)) {
+                    $table->dropColumn($colonnesASupprimer);
+                }
+            });
+        }
     }
 };

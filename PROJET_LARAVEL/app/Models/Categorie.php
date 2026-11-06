@@ -61,19 +61,25 @@ class Categorie extends Model
      */
     public function urlImageFond(): ?string
     {
-        if (empty($this->image_fond)) {
+        try {
+            $image = $this->getAttribute('image_fond');
+            if (empty($image)) {
+                return null;
+            }
+
+            if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                return $image;
+            }
+
+            $cheminNettoye = ltrim($image, '/\\');
+            if (function_exists('public_path') && file_exists(public_path($cheminNettoye))) {
+                return asset($cheminNettoye);
+            }
+
+            return asset('storage/' . $cheminNettoye);
+        } catch (\Throwable) {
             return null;
         }
-
-        if (str_starts_with($this->image_fond, 'http://') || str_starts_with($this->image_fond, 'https://')) {
-            return $this->image_fond;
-        }
-
-        if (file_exists(public_path($this->image_fond))) {
-            return asset($this->image_fond);
-        }
-
-        return asset('storage/' . $this->image_fond);
     }
 
     /**
@@ -81,15 +87,20 @@ class Categorie extends Model
      */
     public function styleBanniere(): string
     {
-        $opacite = ($this->opacite_overlay ?? 65) / 100;
-        $couleur = $this->couleur_overlay ?: '#14151C';
-        $url = $this->urlImageFond();
+        try {
+            $opacite = (int) ($this->getAttribute('opacite_overlay') ?: 65) / 100;
+            $couleur = $this->getAttribute('couleur_overlay') ?: '#14151C';
+            $url = $this->urlImageFond();
 
-        if ($url) {
-            return "background: linear-gradient(rgba(20,21,28,{$opacite}), rgba(20,21,28," . min(0.95, $opacite + 0.15) . ")), url('{$url}') center/cover no-repeat, {$couleur};";
+            if ($url) {
+                $opaciteFin = min(0.95, $opacite + 0.15);
+                return "background: linear-gradient(rgba(20,21,28,{$opacite}), rgba(20,21,28,{$opaciteFin})), url('{$url}') center/cover no-repeat, {$couleur};";
+            }
+
+            return "background: {$couleur};";
+        } catch (\Throwable) {
+            return "background: #14151C;";
         }
-
-        return "background: {$couleur};";
     }
 
     /**
