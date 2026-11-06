@@ -1,0 +1,6 @@
+{
+  "name": "Projet Laravel - Site Robuste Journal",
+  "description": "Plateforme robuste de journal et publication d'actualités.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

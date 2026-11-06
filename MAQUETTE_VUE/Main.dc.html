@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CARGO — Accueil</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800;900&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px;box-sizing:border-box}
+.dsp{font-family:'Archivo',sans-serif;font-weight:800}
+.kick{font:600 13px/1 'IBM Plex Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.card{flex:1 1 260px;background:#fff;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px}
+.tile{width:60px;height:60px;display:flex;align-items:center;justify-content:center}
+.rk{display:flex;gap:18px;align-items:baseline;padding:16px 0;border-bottom:2px dashed #4A4E5C}
+.rk b{font:900 34px/1 'Archivo',sans-serif;color:#FFC93C;min-width:40px}
+.lk{padding:18px 0;border-bottom:2px dashed rgba(255,255,255,.6);font:800 24px/1.2 'Archivo',sans-serif}
+.rub{display:flex;justify-content:space-between;align-items:center;min-height:56px;border-bottom:3px dashed #B8BDC8;font:800 24px/1.1 'Archivo',sans-serif}
+</style>
+</helmet>
+<div style="background:#EEF0F3;color:#14151C;font-family:'IBM Plex Sans',Arial,sans-serif">
+
+<section style="background:#14151C;color:#fff">
+<header style="border-bottom:1px solid #2B2E3A">
+<div class="wrap" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 32px;padding-top:16px;padding-bottom:16px">
+<a href="#" aria-label="CARGO, accueil" style="display:flex;align-items:center;gap:3px;font:900 38px/1 'Archivo',sans-serif;letter-spacing:.05em">CARG<svg aria-hidden="true" width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" style="fill:{{accent}}"></circle><circle cx="17" cy="17" r="6" fill="#14151C"></circle></svg></a>
+<nav style="display:flex;flex-wrap:wrap;gap:0 24px;font:600 14px 'IBM Plex Sans',sans-serif;text-transform:uppercase;letter-spacing:.08em"><a href="#" style="padding:14px 0">Transport</a><a href="#" style="padding:14px 0">Entreposage</a><a href="#" style="padding:14px 0">Douane</a><a href="#" style="padding:14px 0">Supply chain</a><a href="#" style="padding:14px 0">E-commerce</a><a href="#" style="padding:14px 0">Dossiers</a></nav>
+<span style="display:flex;gap:12px;align-items:center"><a href="#" aria-label="Rechercher" style="width:46px;height:46px;border:1px solid #4A4E5C;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></a><a href="#" style="background:#FFC93C;color:#14151C;font-weight:600;padding:13px 20px">S’abonner</a></span>
+</div>
+</header>
+<div class="wrap" style="display:flex;flex-wrap:wrap;gap:40px;padding-top:56px;padding-bottom:36px">
+<div style="flex:3 1 520px;display:flex;flex-direction:column;gap:20px">
+<span class="kick" style="color:#FFC93C">À la une · Supply chain · Mercredi 4 novembre 2026</span>
+<h1 class="dsp" style="margin:0;font-weight:900;font-size:68px;line-height:.98;letter-spacing:-.01em">Chaînes d’approvisionnement : la résilience prend la route</h1>
+<p style="margin:0;max-width:600px;font-size:19px;line-height:1.55;color:#C9CCD6">Diversification des fournisseurs, stocks tampons, visibilité de bout en bout : le point sur les pratiques des opérateurs.</p>
+<span style="display:flex;flex-wrap:wrap;gap:14px;margin-top:8px"><a href="#" style="background:#FFC93C;color:#14151C;font-weight:600;padding:15px 26px">Lire l’article →</a><a href="#" style="border:2px solid #fff;font-weight:600;padding:13px 24px">Toutes les rubriques</a></span>
+</div>
+<div style="flex:1 1 280px;display:flex;flex-direction:column;align-self:flex-end">
+<span class="kick" style="color:#AEB3C0;padding-bottom:12px;border-bottom:2px dashed #4A4E5C">Dans ce numéro</span>
+<a href="#" class="rk"><b>01</b><span class="dsp" style="font-size:20px;line-height:1.2">Corridors maritimes : les lignes se réorganisent</span></a>
+<a href="#" class="rk"><b>02</b><span class="dsp" style="font-size:20px;line-height:1.2">Dédouanement numérique : ce qui change</span></a>
+<a href="#" class="rk"><b>03</b><span class="dsp" style="font-size:20px;line-height:1.2">Entrepôts : l’automatisation par étapes</span></a>
+</div>
+</div>
+<div class="wrap" style="display:flex;justify-content:flex-end">
+<svg viewBox="0 0 600 150" aria-hidden="true" style="display:block;width:min(100%,780px)">
+<g style="fill:{{accent}}"><rect x="10" y="22" width="390" height="128"></rect><path d="M410 150V54Q410 46 420 46H492L546 96Q558 108 558 122V150Z"></path></g>
+<path d="M10 118h390" stroke="rgba(0,0,0,.2)" stroke-width="6"></path>
+<text x="38" y="100" font-family="Archivo,sans-serif" font-weight="900" font-size="52" letter-spacing="3" fill="#fff">CARGO</text>
+<rect x="412" y="12" width="9" height="40" fill="#14151C"></rect>
+<path d="M428 58h60l38 36H428z" fill="#14151C"></path>
+<rect x="548" y="114" width="10" height="10" fill="#FFC93C"></rect>
+<path d="M64 132h44M452 132h60" stroke="#14151C" stroke-width="36" stroke-linecap="round"></path>
+<path d="M64 132h44M452 132h60" stroke="#E6E8EC" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 44"></path>
+</svg>
+</div>
+</section>
+<div style="background:{{accent}};color:#fff">
+<div class="wrap" style="display:flex;flex-wrap:wrap;gap:12px 32px;align-items:center;min-height:76px;font:600 16px 'IBM Plex Sans',sans-serif">
+<span class="kick" style="background:#14151C;padding:9px 12px">En bref</span>
+<span>Nouveaux horaires de dédouanement</span><span>Appel d’offres : zone logistique</span><span>Fret ferroviaire : nouvelle liaison</span>
+</div>
+</div>
+
+<section style="padding-top:64px">
+<div class="wrap" style="display:flex;flex-wrap:wrap;gap:48px">
+<div style="flex:1 1 240px">
+<span class="kick" style="color:#B3140F">Sur la route</span>
+<h2 class="dsp" style="margin:12px 0 24px;font-weight:900;font-size:44px;line-height:1">Choisissez votre itinéraire</h2>
+<a href="#" class="rub" style="border-top:3px dashed #B8BDC8">Routier <span aria-hidden="true">→</span></a>
+<a href="#" class="rub">Maritime <span aria-hidden="true">→</span></a>
+<a href="#" class="rub">Ferroviaire <span aria-hidden="true">→</span></a>
+<a href="#" class="rub">Entreposage <span aria-hidden="true">→</span></a>
+<a href="#" class="rub">Douane <span aria-hidden="true">→</span></a>
+</div>
+<div style="flex:3 1 560px;display:flex;flex-wrap:wrap;gap:24px">
+<article class="card"><span class="tile" style="background:{{accent}}"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"><path d="M2 14h26v18H2zM28 20h10l6 7v5H28z"></path><circle cx="12" cy="35" r="4"></circle><circle cx="36" cy="35" r="4"></circle></svg></span><span class="kick" style="color:#B3140F">Transport routier</span><h3 class="dsp" style="margin:0;font-size:26px;line-height:1.15"><a href="#">Décarbonation du transport routier : où en sont les flottes ?</a></h3><span style="font-size:14px;color:#4B505C">Par [Auteur] · 6 min de lecture</span></article>
+<article class="card"><span class="tile" style="background:#14151C"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="#FFC93C" stroke-width="3" stroke-linejoin="round"><path d="M3 30h42l-6 10H9zM10 30V20h16v10M28 30V14h6v16"></path></svg></span><span class="kick" style="color:#B3140F">Transport maritime</span><h3 class="dsp" style="margin:0;font-size:26px;line-height:1.15"><a href="#">Corridors maritimes : comment les armateurs réorganisent leurs lignes</a></h3><span style="font-size:14px;color:#4B505C">Par [Auteur] · 8 min de lecture</span></article>
+<article class="card"><span class="tile" style="background:#14151C"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="#FFC93C" stroke-width="3" stroke-linejoin="round"><path d="M8 8h32v26H8zM8 24h32M16 40l-4 6M32 40l4 6"></path><circle cx="16" cy="30" r="2"></circle><circle cx="32" cy="30" r="2"></circle></svg></span><span class="kick" style="color:#B3140F">Ferroviaire</span><h3 class="dsp" style="margin:0;font-size:26px;line-height:1.15"><a href="#">Le fret ferroviaire peut-il gagner des parts de marché ?</a></h3><span style="font-size:14px;color:#4B505C">Par [Auteur] · 7 min de lecture</span></article>
+<article class="card"><span class="tile" style="background:{{accent}}"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"><path d="M6 14l18-8 18 8v20l-18 8-18-8zM6 14l18 8 18-8M24 22v20"></path></svg></span><span class="kick" style="color:#B3140F">E-commerce</span><h3 class="dsp" style="margin:0;font-size:26px;line-height:1.15"><a href="#">Livraison du dernier kilomètre : les modèles qui s’imposent</a></h3><span style="font-size:14px;color:#4B505C">Par [Auteur] · 5 min de lecture</span></article>
+</div>
+</div>
+<div class="wrap" style="display:flex;justify-content:flex-start;margin-top:56px">
+<svg viewBox="0 0 800 170" aria-hidden="true" style="display:block;width:min(100%,940px)">
+<g style="fill:{{accent}}"><path d="M20 112H736L784 82L704 170H72Z"></path><rect x="46" y="38" width="76" height="76"></rect><rect x="60" y="14" width="26" height="26"></rect></g>
+<path d="M60 14h26v8H60z" fill="#FFC93C"></path>
+<path d="M104 38V6" stroke="#14151C" stroke-width="3"></path>
+<path d="M56 54h56M56 76h58M56 94h58" stroke="#14151C" stroke-width="7" stroke-dasharray="9 6"></path>
+<path d="M44 130H730" stroke="rgba(0,0,0,.2)" stroke-width="5"></path>
+<path fill="#14151C" d="M136 90h54v22h-54zM316 90h54v22h-54zM496 90h54v22h-54zM196 68h54v22h-54zM376 68h54v22h-54zM256 46h54v22h-54zM436 46h54v22h-54z"></path>
+<path fill="#FFC93C" d="M196 90h54v22h-54zM436 90h54v22h-54zM256 68h54v22h-54zM496 68h54v22h-54zM316 46h54v22h-54z"></path>
+<path fill="#F2F2F2" d="M256 90h54v22h-54zM376 90h54v22h-54zM316 68h54v22h-54zM436 68h54v22h-54zM376 46h54v22h-54z"></path>
+<path fill="#7E100B" d="M556 90h54v22h-54z"></path>
+</svg>
+</div>
+</section>
+<section style="background:{{accent}};color:#fff">
+<div class="wrap" style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;padding-top:56px;padding-bottom:64px">
+<div style="flex:1 1 420px;display:flex;flex-direction:column;gap:18px">
+<span class="kick" style="align-self:flex-start;background:#14151C;padding:9px 12px">Dossier spécial</span>
+<h2 class="dsp" style="margin:0;font-weight:900;font-size:56px;line-height:1">Ports et corridors : la carte des flux</h2>
+<p style="margin:0;font-size:18px;line-height:1.55">Analyses, entretiens et cartes pour comprendre comment circulent les marchandises.</p>
+<a href="#" style="align-self:flex-start;background:#FFC93C;color:#14151C;font-weight:600;padding:15px 26px">Explorer le dossier →</a>
+</div>
+<div style="flex:1 1 340px;display:flex;flex-direction:column;border-top:2px dashed rgba(255,255,255,.6)">
+<a href="#" class="lk">1 · Les grands hubs portuaires en mutation</a><a href="#" class="lk">2 · Rail et fluvial : alternatives au tout-routier</a><a href="#" class="lk">3 · Zones logistiques : implanter, équiper, connecter</a>
+</div>
+</div>
+</section>
+
+<section style="background:#fff;padding-top:64px">
+<div class="wrap" style="display:flex;flex-wrap:wrap;gap:32px">
+<div style="flex:3 1 460px;background:#14151C;color:#fff;padding:36px 40px;box-sizing:border-box">
+<h2 class="dsp" style="margin:0 0 12px;font-weight:900;font-size:36px">Les plus lus</h2>
+<a href="#" class="rk"><b>1</b><span style="font:600 19px/1.35 'IBM Plex Sans',sans-serif">Incoterms : les erreurs fréquentes dans les contrats de vente</span></a>
+<a href="#" class="rk"><b>2</b><span style="font:600 19px/1.35 'IBM Plex Sans',sans-serif">Choisir son WMS : critères et pièges à éviter</span></a>
+<a href="#" class="rk"><b>3</b><span style="font:600 19px/1.35 'IBM Plex Sans',sans-serif">Transport multimodal : bâtir une chaîne fiable</span></a>
+<a href="#" class="rk"><b>4</b><span style="font:600 19px/1.35 'IBM Plex Sans',sans-serif">Retours e-commerce : l’autre moitié de la logistique</span></a>
+</div>
+<div style="flex:2 1 320px;background:#FFC93C;padding:36px 36px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;align-self:stretch">
+<h2 class="dsp" style="margin:0;font-weight:900;font-size:40px;line-height:1">Le courrier du lundi</h2>
+<p style="margin:0;font-size:17px;line-height:1.5">L’essentiel de la logistique, chaque semaine, dans votre boîte mail.</p>
+<label for="nl" style="font-weight:600;font-size:14px">Adresse e-mail</label>
+<input id="nl" type="email" placeholder="vous@entreprise.com" style="height:50px;border:2px solid #14151C;background:#fff;padding:0 14px;font:400 16px 'IBM Plex Sans',sans-serif;box-sizing:border-box;width:100%">
+<button style="height:50px;background:#14151C;color:#fff;border:0;font:600 16px 'IBM Plex Sans',sans-serif;cursor:pointer">Je m’abonne</button>
+</div>
+</div>
+<div class="wrap" style="display:flex;justify-content:center;margin-top:56px">
+<svg viewBox="0 0 760 150" aria-hidden="true" style="display:block;width:min(100%,860px)">
+<g style="fill:{{accent}}"><path d="M474 150V34H690Q730 34 742 78V150Z"></path><rect x="12" y="52" width="216" height="98"></rect><rect x="240" y="52" width="216" height="98"></rect></g>
+<path d="M12 128h216M240 128h216" stroke="rgba(0,0,0,.2)" stroke-width="6"></path>
+<text x="30" y="106" font-family="Archivo,sans-serif" font-weight="900" font-size="48" letter-spacing="3" fill="#fff">CARGO</text>
+<text x="258" y="106" font-family="Archivo,sans-serif" font-weight="900" font-size="48" letter-spacing="3" fill="#fff">CARGO</text>
+<path d="M228 118h12M456 118h18" stroke="#14151C" stroke-width="6"></path>
+<path d="M494 58h60v26h-60z" fill="#14151C"></path>
+<path d="M640 46h46q20 4 28 30h-74z" fill="#14151C"></path>
+<path d="M474 104h268v10H474z" fill="#FFC93C"></path>
+<rect x="732" y="120" width="10" height="10" fill="#FFE08A"></rect>
+<path d="M566 34L590 12H624M624 12L600 34" stroke="#14151C" stroke-width="3" fill="none"></path>
+<path d="M40 138h36M164 138h36M268 138h36M392 138h36M502 138h36M664 138h36" stroke="#14151C" stroke-width="24" stroke-linecap="round"></path>
+<path d="M40 138h36M164 138h36M268 138h36M392 138h36M502 138h36M664 138h36" stroke="#E6E8EC" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 36"></path>
+</svg>
+</div>
+</section>
+
+<footer style="background:{{accent}};color:#fff">
+<div class="wrap" style="display:flex;flex-wrap:wrap;gap:40px;padding-top:48px;padding-bottom:32px">
+<div style="flex:2 1 280px;display:flex;flex-direction:column;gap:12px"><span style="font:900 38px/1 'Archivo',sans-serif;letter-spacing:.05em">CARGO</span><span style="max-width:320px;line-height:1.5">L’actualité du transport, de l’entreposage et de la supply chain.</span></div>
+<div style="flex:1 1 160px;display:flex;flex-direction:column;gap:10px"><strong class="kick">Rubriques</strong><a href="#">Transport</a><a href="#">Entreposage</a><a href="#">Supply chain</a><a href="#">E-commerce</a></div>
+<div style="flex:1 1 160px;display:flex;flex-direction:column;gap:10px"><strong class="kick">Le journal</strong><a href="#">À propos</a><a href="#">La rédaction</a><a href="#">Publicité</a><a href="#">Contact</a></div>
+<div style="flex:1 1 160px;display:flex;flex-direction:column;gap:10px"><strong class="kick">Informations</strong><a href="#">Mentions légales</a><a href="#">Confidentialité</a><a href="#">Cookies</a></div>
+</div>
+<div class="wrap" style="border-top:2px dashed rgba(255,255,255,.6);padding-top:20px;padding-bottom:24px;font-size:14px">© 2026 [Nom du journal]. Tous droits réservés.</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#D4201A"},"$preview":{"width":1360,"height":3300}}'>
+class Component extends DCLogic {
+renderVals() {
+return { accent: this.props.accent ?? '#D4201A' };
+}
+}
+</script>
+</body>
+</html>
