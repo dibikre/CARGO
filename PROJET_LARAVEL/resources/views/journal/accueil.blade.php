@@ -65,43 +65,31 @@
 {{-- Bandeau En Bref --}}
 @include('journal.composants.bandeau-urgent', ['alertes' => $alertesUrgentes])
 
-{{-- Section Sur la route / Grille d'articles --}}
-<section style="padding-top:64px;">
-    <div class="wrap" style="display:flex; flex-wrap:wrap; gap:48px;">
-        <div style="flex:1 1 240px;">
-            <span class="kick" style="color:var(--accent-dark);">Sur la route</span>
-            <h2 class="dsp" style="margin:12px 0 24px; font-weight:900; font-size:44px; line-height:1;">Choisissez votre itinéraire</h2>
-            <a href="{{ route('categories.articles', 'transport-routier') }}" class="rub" style="border-top:3px dashed var(--dashed-border)">Routier <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
-            <a href="{{ route('categories.articles', 'fret-maritime-ports') }}" class="rub">Maritime <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
-            <a href="{{ route('categories.articles', 'ferroviaire-intermodal') }}" class="rub">Ferroviaire <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
-            <a href="{{ route('categories.articles', 'entreposage-logistique') }}" class="rub">Entreposage <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
-            <a href="{{ route('categories.articles', 'douane-reglementation') }}" class="rub">Douane <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></a>
-        </div>
+{{-- 5 Pôles Sectoriels de Fret : Maritime, Routier, Ferroviaire, Aérien, Mondial --}}
+{{-- Chacun avec son SVG vectoriel dédié, son article majeur centré à gauche, et les 4 suivants récents à droite --}}
+@foreach($sectionsFret as $modeCle => $sectionData)
+    @include('journal.composants.section-fret', [
+        'modeCle' => $modeCle,
+        'config' => $sectionData['config'],
+        'centre' => $sectionData['centre'],
+        'suivants' => $sectionData['suivants']
+    ])
+@endforeach
 
-        <div style="flex:3 1 560px; display:flex; flex-wrap:wrap; gap:24px;">
-            @forelse($articlesRecents->take(4) as $article)
-                @include('journal.composants.carte-article', ['article' => $article, 'theme' => $loop->iteration % 2 === 0 ? 'sombre' : 'clair'])
-            @empty
-                <p>Aucun article disponible pour le moment.</p>
-            @endforelse
-        </div>
-    </div>
-
-    {{-- Illustration train de fret conteneurs de la maquette --}}
-    <div class="wrap" style="display:flex; justify-content:flex-start; margin-top:56px;">
-        <svg viewBox="0 0 800 170" aria-hidden="true" style="display:block; width:min(100%,940px);">
-            <g fill="var(--accent)"><path d="M20 112H736L784 82L704 170H72Z"></path><rect x="46" y="38" width="76" height="76"></rect><rect x="60" y="14" width="26" height="26"></rect></g>
-            <path d="M60 14h26v8H60z" fill="#FFC93C"></path>
-            <path d="M104 38V6" stroke="#14151C" stroke-width="3"></path>
-            <path d="M56 54h56M56 76h58M56 94h58" stroke="#14151C" stroke-width="7" stroke-dasharray="9 6"></path>
-            <path d="M44 130H730" stroke="rgba(0,0,0,.2)" stroke-width="5"></path>
-            <path fill="#14151C" d="M136 90h54v22h-54zM316 90h54v22h-54zM496 90h54v22h-54zM196 68h54v22h-54zM376 68h54v22h-54zM256 46h54v22h-54zM436 46h54v22h-54z"></path>
-            <path fill="#FFC93C" d="M196 90h54v22h-54zM436 90h54v22h-54zM256 68h54v22h-54zM496 68h54v22h-54zM316 46h54v22h-54z"></path>
-            <path fill="#F2F2F2" d="M256 90h54v22h-54zM376 90h54v22h-54zM316 68h54v22h-54zM436 68h54v22h-54zM376 46h54v22h-54z"></path>
-            <path fill="#7E100B" d="M556 90h54v22h-54z"></path>
-        </svg>
-    </div>
-</section>
+{{-- Illustration train de fret conteneurs intermodal --}}
+<div class="wrap" style="display:flex; justify-content:flex-start; margin-top:40px; margin-bottom:40px;">
+    <svg viewBox="0 0 800 170" aria-hidden="true" style="display:block; width:min(100%,940px);">
+        <g fill="var(--accent)"><path d="M20 112H736L784 82L704 170H72Z"></path><rect x="46" y="38" width="76" height="76"></rect><rect x="60" y="14" width="26" height="26"></rect></g>
+        <path d="M60 14h26v8H60z" fill="#FFC93C"></path>
+        <path d="M104 38V6" stroke="#14151C" stroke-width="3"></path>
+        <path d="M56 54h56M56 76h58M56 94h58" stroke="#14151C" stroke-width="7" stroke-dasharray="9 6"></path>
+        <path d="M44 130H730" stroke="rgba(0,0,0,.2)" stroke-width="5"></path>
+        <path fill="#14151C" d="M136 90h54v22h-54zM316 90h54v22h-54zM496 90h54v22h-54zM196 68h54v22h-54zM376 68h54v22h-54zM256 46h54v22h-54zM436 46h54v22h-54z"></path>
+        <path fill="#FFC93C" d="M196 90h54v22h-54zM436 90h54v22h-54zM256 68h54v22h-54zM496 68h54v22h-54zM316 46h54v22h-54z"></path>
+        <path fill="#F2F2F2" d="M256 90h54v22h-54zM376 90h54v22h-54zM316 68h54v22h-54zM436 68h54v22h-54zM376 46h54v22h-54z"></path>
+        <path fill="#7E100B" d="M556 90h54v22h-54z"></path>
+    </svg>
+</div>
 
 {{-- Section Dossier Spécial (Fond Rouge CARGO) --}}
 @php $dossierVedette = $dossiersVedettes->first(); @endphp

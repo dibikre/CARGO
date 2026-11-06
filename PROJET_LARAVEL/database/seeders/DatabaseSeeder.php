@@ -169,5 +169,8 @@ class DatabaseSeeder extends Seeder
                 'date_publication' => now(),
             ]
         );
+
+        // 6. Articles complémentaires pour tous les modes de transport
+        $this->call(ArticlesFretSeeder::class);
     }
 }
