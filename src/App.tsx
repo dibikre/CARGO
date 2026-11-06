@@ -3,7 +3,8 @@ import {
   Ship, Truck, Train, Box, ShieldCheck, FileText, Image as ImageIcon, 
   Eye, Code, CheckCircle, AlertTriangle, Sliders, Sparkles, Clipboard,
   Heading1, Heading2, Heading3, Bold, Italic, Underline, List, ListOrdered,
-  PlusCircle, RefreshCw, ExternalLink, Settings, Layout, Lock, Unlock, Globe
+  PlusCircle, RefreshCw, ExternalLink, Settings, Layout, Lock, Unlock, Globe,
+  Play, Pause, ChevronLeft, ChevronRight, Clock
 } from 'lucide-react';
 
 interface CategorieLogistique {
@@ -88,50 +89,119 @@ const CATEGORIES_INITIALES: CategorieLogistique[] = [
   },
 ];
 
-const ARTICLES_EXEMPLES = [
+interface ArticleHero {
+  id: number;
+  titre: string;
+  chapeau: string;
+  categorie: string;
+  tempsLecture: number;
+  auteur: string;
+  date: string;
+  mode: string;
+  image: string;
+  isPro: boolean;
+  badgeCouleur?: string;
+}
+
+const ARTICLES_A_LA_UNE_HERO: ArticleHero[] = [
   {
-    id: 101,
+    id: 1,
     titre: 'Global Carrier Capacity: Winter Schedule Overhaul on Asia-North Europe Routes',
-    chapeau: 'Shipping alliances reroute tonnage via the Cape of Good Hope while blank sailings surge past 18% of deployed vessel slots.',
+    chapeau: 'Shipping alliances reroute tonnage via the Cape of Good Hope while blank sailings surge past 18% of deployed vessel slots, reshaping ocean freight tariffs.',
+    categorie: 'Fret Maritime & Ports',
     tempsLecture: 6,
     auteur: 'Claire Delamare',
     date: 'Today · 10:45 AM',
     mode: 'Maritime',
-    badgeCouleur: 'bg-red-700',
-    image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1600&q=80',
     isPro: true,
   },
   {
-    id: 102,
+    id: 2,
     titre: 'Bordeaux-Rotterdam Rail Shuttle Adds 400 Weekly Trailing TEU Capacity',
-    chapeau: 'Combined transport operator expands electrified shuttle service, offsetting an estimated 14,000 truck journeys annually.',
+    chapeau: 'Combined rail-route operator expands electrified shuttle services along the Atlantic corridor, eliminating 14,000 diesel truck journeys per year.',
+    categorie: 'Ferroviaire & Intermodal',
     tempsLecture: 4,
     auteur: 'Marc Lemaître',
-    date: 'Yesterday',
+    date: 'Today · 08:30 AM',
     mode: 'Rail',
-    badgeCouleur: 'bg-amber-600',
-    image: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=1600&q=80',
     isPro: false,
   },
   {
-    id: 103,
+    id: 3,
+    titre: 'European Fleet Decarbonization: Megawatt Charging Corridors Take Shape',
+    chapeau: 'Heavy-duty transport operators and grid operators ink multi-country agreements to establish high-power electric truck charging hubs across TEN-T highways.',
+    categorie: 'Transport Routier',
+    tempsLecture: 5,
+    auteur: 'Jean-Baptiste Vian',
+    date: 'Yesterday · 04:15 PM',
+    mode: 'Road',
+    image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1600&q=80',
+    isPro: true,
+  },
+  {
+    id: 4,
+    titre: 'Air Cargo Express: Cross-Border Hub Expansion Fast-Tracks Cold-Chain Logistics',
+    chapeau: 'Airport logistics operators deploy temperature-controlled pharma transit centers and automated ULD sorting systems to mitigate belly-hold volatility.',
+    categorie: 'Fret Aérien & Express',
+    tempsLecture: 7,
+    auteur: 'Amélie Dupont',
+    date: 'Yesterday · 11:20 AM',
+    mode: 'Air',
+    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1600&q=80',
+    isPro: false,
+  },
+  {
+    id: 5,
     titre: 'Warehouse Automation: High-Density AS/RS Deployment Cuts Handling Lead Times by 35%',
-    chapeau: 'Third-party logistics providers deploy autonomous mobile robots and multi-shuttle automated storage to manage seasonal surge volumes.',
+    chapeau: 'Third-party logistics providers deploy autonomous mobile robots and multi-shuttle automated storage systems to handle seasonal surge volumes.',
+    categorie: 'Supply Chain Tech',
     tempsLecture: 8,
     auteur: 'Sophie Renard',
     date: 'Nov 4, 2026',
     mode: 'Warehousing',
-    badgeCouleur: 'bg-emerald-700',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80',
     isPro: true,
   },
 ];
 
+const ARTICLES_EXEMPLES = ARTICLES_A_LA_UNE_HERO;
+
 export default function App() {
-  const [vueActive, setVueActive] = useState<'rubrique' | 'editeur' | 'admin' | 'architecture'>('rubrique');
+  const [vueActive, setVueActive] = useState<'accueil' | 'rubrique' | 'editeur' | 'admin' | 'architecture'>('accueil');
   const [categories, setCategories] = useState<CategorieLogistique[]>(CATEGORIES_INITIALES);
   const [categorieSelectionneeId, setCategorieSelectionneeId] = useState<number>(1);
   const [abonnementsActifs, setAbonnementsActifs] = useState<boolean>(true);
+
+  // Hero Diaporama 7s Animation State
+  const [heroIndexActif, setHeroIndexActif] = useState<number>(0);
+  const [heroEnPause, setHeroEnPause] = useState<boolean>(false);
+  const [heroProgression, setHeroProgression] = useState<number>(0);
+  const dureeCycleHeroMs = 7000;
+
+  useEffect(() => {
+    if (heroEnPause) return;
+
+    const intervalleMs = 50;
+    const timer = setInterval(() => {
+      setHeroProgression((prev) => {
+        const next = prev + (intervalleMs / dureeCycleHeroMs) * 100;
+        if (next >= 100) {
+          setHeroIndexActif((curr) => (curr + 1) % ARTICLES_A_LA_UNE_HERO.length);
+          return 0;
+        }
+        return next;
+      });
+    }, intervalleMs);
+
+    return () => clearInterval(timer);
+  }, [heroEnPause]);
+
+  const changerSlideHero = (nouveauIndex: number) => {
+    setHeroIndexActif(nouveauIndex);
+    setHeroProgression(0);
+  };
 
   const basculerAbonnements = () => {
     const nouvelEtat = !abonnementsActifs;
@@ -297,6 +367,16 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
           {/* Navigation Tab Switcher */}
           <nav className="flex items-center gap-1 sm:gap-2">
             <button
+              onClick={() => setVueActive('accueil')}
+              className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5 ${
+                vueActive === 'accueil' ? 'bg-[#D4201A] text-white shadow' : 'text-gray-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Home Hero Slider (7s Fade)
+            </button>
+
+            <button
               onClick={() => setVueActive('rubrique')}
               className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5 ${
                 vueActive === 'rubrique' ? 'bg-[#D4201A] text-white shadow' : 'text-gray-300 hover:text-white hover:bg-white/10'
@@ -364,6 +444,235 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
 
       {/* Main View Container */}
       <main className="flex-1">
+        {/* ======================================================== */}
+        {/* VIEW 0: HOME HERO SLIDER WITH 7-SECOND FADE TRANSITION */}
+        {/* ======================================================== */}
+        {vueActive === 'accueil' && (
+          <div className="space-y-6">
+            {/* Live Slider Controller & Debug Bar */}
+            <div className="bg-white border-b border-gray-200 shadow-sm">
+              <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-3">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold uppercase text-[#D4201A] tracking-wider flex items-center gap-1.5 font-heading">
+                      <Clock className="w-4 h-4" />
+                      Hero Passation 7s Engine:
+                    </span>
+                    <span className="text-xs bg-gray-100 text-gray-800 font-bold px-2 py-1 rounded font-mono">
+                      Article {heroIndexActif + 1} of 5: {ARTICLES_A_LA_UNE_HERO[heroIndexActif].mode}
+                    </span>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
+                      heroEnPause ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
+                    }`}>
+                      {heroEnPause ? 'Paused (Hover or Manual)' : 'Running (7s Auto-Fade)'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setHeroEnPause(!heroEnPause)}
+                      className="px-2.5 py-1 text-xs font-bold rounded border border-gray-300 hover:bg-gray-100 flex items-center gap-1 transition"
+                    >
+                      {heroEnPause ? <Play className="w-3.5 h-3.5 text-emerald-600" /> : <Pause className="w-3.5 h-3.5 text-amber-600" />}
+                      {heroEnPause ? 'Resume Timer' : 'Pause'}
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                      {ARTICLES_A_LA_UNE_HERO.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => changerSlideHero(i)}
+                          className={`w-6 h-6 rounded text-xs font-bold transition ${
+                            heroIndexActif === i ? 'bg-[#D4201A] text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* THE HERO DIAPORAMA COMPONENT (Mirrors resources/views/journal/composants/hero-diaporama.blade.php) */}
+            <section
+              onMouseEnter={() => setHeroEnPause(true)}
+              onMouseLeave={() => setHeroEnPause(false)}
+              className="relative bg-[#14151C] text-white overflow-hidden min-h-[580px] border-b-4 border-[#D4201A]"
+            >
+              {/* 5 Background Image Layers with Smooth 7s Fade */}
+              <div className="absolute inset-0 pointer-events-none z-0">
+                {ARTICLES_A_LA_UNE_HERO.map((art, idx) => (
+                  <div
+                    key={art.id}
+                    className="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out"
+                    style={{
+                      backgroundImage: `url('${art.image}')`,
+                      opacity: heroIndexActif === idx ? 1 : 0,
+                      transform: heroIndexActif === idx ? 'scale(1)' : 'scale(1.04)',
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Dual Dark Scrim Contrast Overlay to Guarantee 100% Readability */}
+              <div
+                className="absolute inset-0 pointer-events-none z-10"
+                style={{
+                  background: 'linear-gradient(90deg, rgba(20,21,28,0.96) 0%, rgba(20,21,28,0.88) 55%, rgba(20,21,28,0.60) 100%), linear-gradient(180deg, rgba(20,21,28,0.35) 0%, rgba(20,21,28,0.95) 100%)',
+                }}
+              />
+
+              <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-12 relative z-20 flex flex-col lg:flex-row gap-10 items-stretch min-h-[500px]">
+                {/* Left Column: Active Article Content */}
+                <div className="flex-1 flex flex-col justify-between gap-6">
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <span className="font-heading font-black text-xs uppercase tracking-widest text-[#FFC93C] bg-black/60 px-2.5 py-1 rounded border-l-4 border-[#D4201A]">
+                        Featured Intelligence · {ARTICLES_A_LA_UNE_HERO[heroIndexActif].categorie} · {ARTICLES_A_LA_UNE_HERO[heroIndexActif].mode}
+                      </span>
+                      {ARTICLES_A_LA_UNE_HERO[heroIndexActif].isPro && (
+                        abonnementsActifs ? (
+                          <span className="bg-[#FFC93C] text-[#14151C] text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
+                            PRO Member Exclusive
+                          </span>
+                        ) : (
+                          <span className="bg-emerald-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded shadow">
+                            Open Access (Free)
+                          </span>
+                        )
+                      )}
+                      <span className="text-xs text-gray-400">
+                        {ARTICLES_A_LA_UNE_HERO[heroIndexActif].date}
+                      </span>
+                    </div>
+
+                    <h1 
+                      key={`titre-${heroIndexActif}`}
+                      className="font-heading font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-none transition-opacity duration-500"
+                      style={{
+                        textShadow: '0 2px 14px rgba(0,0,0,0.9)',
+                      }}
+                    >
+                      {ARTICLES_A_LA_UNE_HERO[heroIndexActif].titre}
+                    </h1>
+
+                    <p 
+                      key={`chapeau-${heroIndexActif}`}
+                      className="text-gray-200 text-base sm:text-lg max-w-2xl leading-relaxed transition-opacity duration-500"
+                      style={{
+                        textShadow: '0 1px 6px rgba(0,0,0,0.8)',
+                      }}
+                    >
+                      {ARTICLES_A_LA_UNE_HERO[heroIndexActif].chapeau}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                      <button className="bg-[#FFC93C] hover:bg-yellow-400 text-[#14151C] font-heading font-black px-6 py-3.5 uppercase tracking-wider text-xs transition flex items-center gap-2 shadow-lg">
+                        <span>Read Full Briefing</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => setVueActive('rubrique')}
+                        className="border-2 border-white hover:bg-white/10 text-white font-heading font-bold px-5 py-3 uppercase tracking-wider text-xs transition"
+                      >
+                        All Logistics Sections
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Playback Controls & Countdown Bar */}
+                  <div className="flex items-center gap-4 pt-4 border-t border-white/15">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => changerSlideHero((heroIndexActif - 1 + ARTICLES_A_LA_UNE_HERO.length) % ARTICLES_A_LA_UNE_HERO.length)}
+                        className="w-9 h-9 rounded bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition"
+                        title="Previous briefing"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => changerSlideHero((heroIndexActif + 1) % ARTICLES_A_LA_UNE_HERO.length)}
+                        className="w-9 h-9 rounded bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition"
+                        title="Next briefing"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setHeroEnPause(!heroEnPause)}
+                        className="w-9 h-9 rounded bg-black/50 hover:bg-black/80 border border-white/20 text-white flex items-center justify-center transition ml-1"
+                        title={heroEnPause ? 'Play rotation' : 'Pause rotation'}
+                      >
+                        {heroEnPause ? <Play className="w-3.5 h-3.5 text-[#FFC93C]" /> : <Pause className="w-3.5 h-3.5 text-white" />}
+                      </button>
+                    </div>
+
+                    <div className="text-xs uppercase font-bold tracking-wider text-gray-300">
+                      <span className="text-[#FFC93C] text-sm font-mono font-black">0{heroIndexActif + 1}</span> / 05 · Auto 7s Fade {heroEnPause ? '(Paused)' : ''}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: 5 Numbered Edition Tracks with Live Progress Fill */}
+                <div className="w-full lg:w-96 flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-white/15 pt-6 lg:pt-0 lg:pl-8">
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-dashed border-gray-600 mb-3">
+                    <span className="text-xs uppercase tracking-widest text-gray-400 font-heading font-bold">
+                      In This Edition (01-05)
+                    </span>
+                    <span className="text-[11px] font-bold text-[#FFC93C]">
+                      Click to Select
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    {ARTICLES_A_LA_UNE_HERO.map((art, idx) => {
+                      const estActif = heroIndexActif === idx;
+                      return (
+                        <div
+                          key={art.id}
+                          onClick={() => changerSlideHero(idx)}
+                          className={`cursor-pointer p-3 rounded transition-all relative overflow-hidden group ${
+                            estActif ? 'bg-white/10 shadow-inner' : 'hover:bg-white/5 opacity-70 hover:opacity-100'
+                          }`}
+                        >
+                          {/* 7-Second Animated Progress Bar for the Active Tab */}
+                          {estActif && (
+                            <div
+                              className="absolute bottom-0 left-0 h-1 bg-[#FFC93C] transition-all duration-75 ease-linear"
+                              style={{ width: `${heroProgression}%` }}
+                            />
+                          )}
+
+                          <div className="flex items-baseline gap-3">
+                            <span className={`font-heading font-black text-2xl min-w-[28px] ${
+                              estActif ? 'text-[#FFC93C]' : 'text-gray-500 group-hover:text-gray-300'
+                            }`}>
+                              0{idx + 1}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <h4 className={`text-sm font-heading line-clamp-1 leading-snug ${
+                                estActif ? 'text-white font-black' : 'text-gray-300 font-semibold'
+                              }`}>
+                                {art.titre}
+                              </h4>
+                              <span className="text-[11px] text-gray-400 flex items-center gap-1.5 mt-0.5">
+                                <span>{art.categorie}</span>
+                                <span>·</span>
+                                <span>{art.tempsLecture}m read</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+
         {/* ======================================================== */}
         {/* VIEW 1: RUBRIQUE PAGE WITH BACKGROUND & CONTRAST PROTECTION */}
         {/* ======================================================== */}
@@ -549,7 +858,7 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
                     <div>
                       <div className="relative mb-4 overflow-hidden rounded">
                         <img src={art.image} alt={art.titre} className="w-full h-44 object-cover" />
-                        <span className={`absolute top-2 left-2 ${art.badgeCouleur} text-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow`}>
+                        <span className={`absolute top-2 left-2 ${art.badgeCouleur || 'bg-[#D4201A]'} text-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow`}>
                           {art.mode}
                         </span>
                         {art.isPro && (
@@ -1082,73 +1391,99 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Feature 1 Summary */}
               <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
-                <div className="flex items-center gap-2 text-[#D4201A] font-heading font-bold text-lg">
-                  <ImageIcon className="w-5 h-5" />
+                <div className="flex items-center gap-2 text-[#D4201A] font-heading font-bold text-base">
+                  <ImageIcon className="w-5 h-5 shrink-0" />
                   1. Rubric Header Background
                 </div>
                 <ul className="text-xs space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Migration:</strong> <code>2024_01_01_000016_ajouter_image_fond_aux_categories.php</code> adds <code>image_fond</code>, <code>opacite_overlay</code>, <code>couleur_overlay</code>.</span>
+                    <span><strong>Migration:</strong> <code>2024_01_01_000016_ajouter_image_fond_aux_categories.php</code> adds background config.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Model Categorie:</strong> <code>App\Models\Categorie.php</code> with <code>urlImageFond()</code> and <code>styleBanniere()</code>.</span>
+                    <span><strong>Model Categorie:</strong> <code>App\Models\Categorie.php</code> with <code>styleBanniere()</code>.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Blade View:</strong> <code>resources/views/journal/articles/categorie.blade.php</code> with dual linear & radial scrim overlays to guarantee zero white-on-white text.</span>
+                    <span><strong>Blade View:</strong> <code>categorie.blade.php</code> with dual linear & radial scrim overlays.</span>
                   </li>
                 </ul>
               </div>
 
               {/* Feature 2 Summary */}
               <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
-                <div className="flex items-center gap-2 text-[#D4201A] font-heading font-bold text-lg">
-                  <FileText className="w-5 h-5" />
+                <div className="flex items-center gap-2 text-[#D4201A] font-heading font-bold text-base">
+                  <FileText className="w-5 h-5 shrink-0" />
                   2. Beginner WYSIWYG & Headings
                 </div>
                 <ul className="text-xs space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Component:</strong> <code>resources/views/redaction/composants/editeur-html.blade.php</code> with WYSIWYG & HTML tabs.</span>
+                    <span><strong>Component:</strong> <code>editeur-html.blade.php</code> with WYSIWYG & HTML tabs.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Heading Retention:</strong> Automatically preserves <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code> and transforms Markdown headers.</span>
+                    <span><strong>Heading Retention:</strong> Automatically preserves <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Sanitizer:</strong> Strips poisonous inline styles (e.g. <code>color: #ffffff</code>) from copied Word/Docs fragments.</span>
+                    <span><strong>Sanitizer:</strong> Strips poisonous white-on-white inline styles from copied Word/Docs fragments.</span>
                   </li>
                 </ul>
               </div>
 
-              {/* Feature 3 Summary (NEW) */}
+              {/* Feature 3 Summary */}
               <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
-                <div className="flex items-center gap-2 text-emerald-700 font-heading font-bold text-lg">
-                  <Unlock className="w-5 h-5" />
+                <div className="flex items-center gap-2 text-emerald-700 font-heading font-bold text-base">
+                  <Unlock className="w-5 h-5 shrink-0" />
                   3. Global Free Access & Paywall Switch
                 </div>
                 <ul className="text-xs space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Migration:</strong> <code>2024_01_01_000017_creer_table_configurations_systeme.php</code> with key-value table.</span>
+                    <span><strong>Migration:</strong> <code>2024_01_01_000017_creer_table_configurations_systeme.php</code> key-value table.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Model & Cache:</strong> <code>ConfigurationSysteme::abonnementsSontActifs()</code> with high-performance cached check.</span>
+                    <span><strong>Model & Cache:</strong> <code>ConfigurationSysteme::abonnementsSontActifs()</code>.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Service Bypass:</strong> <code>ServiceAbonnementLecteur::peutConsulterArticle()</code> unlocks all PRO content instantaneously.</span>
+                    <span><strong>Service Bypass:</strong> <code>ServiceAbonnementLecteur::peutConsulterArticle()</code> unlocks all content.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Admin Controller & Blade:</strong> <code>AbonnementAdminControleur::basculerPaywallGlobal()</code> with audit logging and open access announcements.</span>
+                    <span><strong>Admin Controller:</strong> <code>AbonnementAdminControleur::basculerPaywallGlobal()</code> with audit trail.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Feature 4 Summary (NEW) */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
+                <div className="flex items-center gap-2 text-[#FFC93C] font-heading font-bold text-base bg-[#14151C] p-2 rounded">
+                  <Clock className="w-5 h-5 shrink-0 text-[#FFC93C]" />
+                  <span>4. Hero 7s Fade Slider</span>
+                </div>
+                <ul className="text-xs space-y-2 text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Controller:</strong> <code>AccueilControleur.php</code> provides 5 featured articles with graceful fallback.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Blade Component:</strong> <code>resources/views/journal/composants/hero-diaporama.blade.php</code>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Transitions:</strong> CSS <code>opacity 1.2s ease-in-out</code> cross-fade between background images every 7 seconds.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Controls:</strong> 5 numbered tracks (01-05), animated 7s progress bar, Next/Prev/Pause buttons, and hover-to-pause.</span>
                   </li>
                 </ul>
               </div>

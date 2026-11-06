@@ -16,11 +16,22 @@ class AccueilControleur extends Controller
      */
     public function index(): View
     {
-        // Articles à la une (hero principal et secondaires)
+        // Articles à la une (hero principal avec diaporama animé de 5 articles)
         $articlesALaUne = Article::with(['auteur', 'categorie'])
             ->aLaUne()
-            ->limit(4)
+            ->limit(5)
             ->get();
+
+        // Garantir exactement 5 articles pour le diaporama du hero
+        if ($articlesALaUne->count() < 5) {
+            $idsExistants = $articlesALaUne->pluck('id');
+            $complements = Article::with(['auteur', 'categorie'])
+                ->publie()
+                ->whereNotIn('id', $idsExistants)
+                ->limit(5 - $articlesALaUne->count())
+                ->get();
+            $articlesALaUne = $articlesALaUne->concat($complements);
+        }
 
         // Flash infos et alertes transport urgentes
         $alertesUrgentes = Article::urgent()
