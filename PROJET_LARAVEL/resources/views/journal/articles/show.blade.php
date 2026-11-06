@@ -87,7 +87,7 @@
         {{-- Article Body Content with Full HTML, CSS & Scripting Support --}}
         @if($aAccesComplet)
             <div class="article-html-body" style="font-size: 18px; line-height: 1.8; color: #1F2128; background: #fff; padding: 36px; border: 1px solid #E2E5EB;">
-                @if(Str::contains($article->contenu, ['<p>', '<div', '<table', '<figure', '<style', '<script', '<h2', '<h3', '<ul', '<ol', '<blockquote']))
+                @if(Str::contains($article->contenu, ['<p>', '<div', '<table', '<figure', '<style', '<script', '<h1', '<h2', '<h3', '<ul', '<ol', '<blockquote']))
                     {!! $article->contenu !!}
                 @else
                     {!! nl2br(e($article->contenu)) !!}
@@ -96,8 +96,8 @@
         @else
             <div style="position: relative; background: #fff; padding: 36px 36px 80px; border: 1px solid #E2E5EB;">
                 <div class="article-html-body" style="font-size: 18px; line-height: 1.8; color: #1F2128; mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);">
-                    @if(Str::contains($article->contenu, ['<p>', '<div', '<table', '<figure', '<style', '<script', '<h2', '<h3', '<ul', '<ol', '<blockquote']))
-                        {!! Str::limit(strip_tags($article->contenu, '<p><div><h2><h3><h4><br><strong><em><b><i>'), 450) !!}
+                    @if(Str::contains($article->contenu, ['<p>', '<div', '<table', '<figure', '<style', '<script', '<h1', '<h2', '<h3', '<ul', '<ol', '<blockquote']))
+                        {!! Str::limit(strip_tags($article->contenu, '<p><div><h1><h2><h3><h4><br><strong><em><b><i>'), 450) !!}
                     @else
                         {!! nl2br(e(Str::limit($article->contenu, 450))) !!}
                     @endif

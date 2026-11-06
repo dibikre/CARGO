@@ -54,30 +54,72 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Création des rubriques éditoriales
+        // 2. Création des rubriques éditoriales avec images de fond haute résolution et protection de contraste
         $catMaritime = Categorie::firstOrCreate(
             ['slug' => 'fret-maritime-ports'],
-            ['nom' => 'Fret Maritime & Ports', 'description' => 'Armateurs, terminaux à conteneurs, taux de fret spot et alliances mondiales.', 'ordre_affichage' => 1]
+            [
+                'nom' => 'Fret Maritime & Ports',
+                'description' => 'Armateurs, terminaux à conteneurs, taux de fret spot et alliances mondiales.',
+                'image_fond' => 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1600&q=80',
+                'opacite_overlay' => 65,
+                'couleur_overlay' => '#14151C',
+                'ordre_affichage' => 1,
+            ]
         );
         $catRoutier = Categorie::firstOrCreate(
             ['slug' => 'transport-routier'],
-            ['nom' => 'Transport Routier', 'description' => 'Flottes de poids lourds, décarbonation, pénurie de chauffeurs et cabotage.', 'ordre_affichage' => 2]
+            [
+                'nom' => 'Transport Routier',
+                'description' => 'Flottes de poids lourds, décarbonation, pénurie de chauffeurs et cabotage.',
+                'image_fond' => 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1600&q=80',
+                'opacite_overlay' => 65,
+                'couleur_overlay' => '#14151C',
+                'ordre_affichage' => 2,
+            ]
         );
         $catFerroviaire = Categorie::firstOrCreate(
             ['slug' => 'ferroviaire-intermodal'],
-            ['nom' => 'Ferroviaire & Intermodal', 'description' => 'Autoroutes ferroviaires, corridors TEN-T et combiné rail-route.', 'ordre_affichage' => 3]
+            [
+                'nom' => 'Ferroviaire & Intermodal',
+                'description' => 'Autoroutes ferroviaires, corridors TEN-T et combiné rail-route.',
+                'image_fond' => 'https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=1600&q=80',
+                'opacite_overlay' => 65,
+                'couleur_overlay' => '#14151C',
+                'ordre_affichage' => 3,
+            ]
         );
         $catSupply = Categorie::firstOrCreate(
             ['slug' => 'supply-chain-tech'],
-            ['nom' => 'Supply Chain Tech', 'description' => 'WMS, TMS, automatisation d\'entrepôts et visibilité temps réel.', 'ordre_affichage' => 4]
+            [
+                'nom' => 'Supply Chain Tech',
+                'description' => 'WMS, TMS, automatisation d\'entrepôts et visibilité temps réel.',
+                'image_fond' => 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80',
+                'opacite_overlay' => 65,
+                'couleur_overlay' => '#14151C',
+                'ordre_affichage' => 4,
+            ]
         );
         $catEntreposage = Categorie::firstOrCreate(
             ['slug' => 'entreposage-logistique'],
-            ['nom' => 'Entreposage & Hubs', 'description' => 'Immobilier logistique, plateformes multimodales et entrepôts automatisés.', 'ordre_affichage' => 5]
+            [
+                'nom' => 'Entreposage & Hubs',
+                'description' => 'Immobilier logistique, plateformes multimodales et entrepôts automatisés.',
+                'image_fond' => 'https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=1600&q=80',
+                'opacite_overlay' => 65,
+                'couleur_overlay' => '#14151C',
+                'ordre_affichage' => 5,
+            ]
         );
         $catDouane = Categorie::firstOrCreate(
             ['slug' => 'douane-reglementation'],
-            ['nom' => 'Douane & Réglementation', 'description' => 'Procédures douanières, TVA à l\'importation, conformité et sanctions internationales.', 'ordre_affichage' => 6]
+            [
+                'nom' => 'Douane & Réglementation',
+                'description' => 'Procédures douanières, TVA à l\'importation, conformité et sanctions internationales.',
+                'image_fond' => 'https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1600&q=80',
+                'opacite_overlay' => 65,
+                'couleur_overlay' => '#14151C',
+                'ordre_affichage' => 6,
+            ]
         );
 
         // 3. Corridors logistiques

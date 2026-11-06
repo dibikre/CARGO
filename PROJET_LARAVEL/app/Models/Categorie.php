@@ -31,6 +31,9 @@ class Categorie extends Model
         'description',
         'icone',
         'couleur',
+        'image_fond',
+        'opacite_overlay',
+        'couleur_overlay',
         'ordre_affichage',
         'est_actif',
         'afficher_dans_menu',
@@ -49,7 +52,44 @@ class Categorie extends Model
             'est_actif' => 'boolean',
             'afficher_dans_menu' => 'boolean',
             'ordre_affichage' => 'integer',
+            'opacite_overlay' => 'integer',
         ];
+    }
+
+    /**
+     * Obtenir l'URL de l'image de fond ou repli par défaut.
+     */
+    public function urlImageFond(): ?string
+    {
+        if (empty($this->image_fond)) {
+            return null;
+        }
+
+        if (str_starts_with($this->image_fond, 'http://') || str_starts_with($this->image_fond, 'https://')) {
+            return $this->image_fond;
+        }
+
+        if (file_exists(public_path($this->image_fond))) {
+            return asset($this->image_fond);
+        }
+
+        return asset('storage/' . $this->image_fond);
+    }
+
+    /**
+     * Générer le style CSS de la bannière avec scrim anti-blanc sur blanc.
+     */
+    public function styleBanniere(): string
+    {
+        $opacite = ($this->opacite_overlay ?? 65) / 100;
+        $couleur = $this->couleur_overlay ?: '#14151C';
+        $url = $this->urlImageFond();
+
+        if ($url) {
+            return "background: linear-gradient(rgba(20,21,28,{$opacite}), rgba(20,21,28," . min(0.95, $opacite + 0.15) . ")), url('{$url}') center/cover no-repeat, {$couleur};";
+        }
+
+        return "background: {$couleur};";
     }
 
     /**

@@ -41,6 +41,14 @@
         .alert-box { padding: 14px 20px; margin-bottom: 20px; font-weight: 600; font-size: 15px; }
         .alert-success { background: #DCFCE7; color: #166534; border-left: 4px solid #16A34A; }
         .alert-error { background: #FEE2E2; color: #991B1B; border-left: 4px solid #DC2626; }
+        .article-html-body h1 { font-family: 'Archivo', sans-serif; font-size: 32px; font-weight: 900; margin: 32px 0 16px; color: var(--dark); line-height: 1.15; border-bottom: 2px solid var(--accent); padding-bottom: 8px; }
+        .article-html-body h2 { font-family: 'Archivo', sans-serif; font-size: 26px; font-weight: 800; margin: 28px 0 14px; color: var(--dark); line-height: 1.2; }
+        .article-html-body h3 { font-family: 'Archivo', sans-serif; font-size: 20px; font-weight: 700; margin: 22px 0 10px; color: var(--dark); line-height: 1.3; }
+        .article-html-body p { margin: 0 0 18px; line-height: 1.8; color: #1F2128; }
+        .article-html-body blockquote { border-left: 4px solid var(--accent); padding: 12px 20px; margin: 24px 0; background: #F4F1EA; font-style: italic; font-size: 19px; color: var(--dark); }
+        .article-html-body table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+        .article-html-body th { background: var(--dark); color: #fff; padding: 10px 14px; text-align: left; }
+        .article-html-body td { padding: 10px 14px; border-bottom: 1px solid #E5E7EB; }
         @media (max-width: 768px) {
             .wrap { padding: 0 16px; }
             .dsp-hero { font-size: 40px !important; }

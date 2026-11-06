@@ -4,23 +4,45 @@
 @section('meta_description', $categorie->meta_description ?? 'Toutes les actualités sur la rubrique ' . $categorie->nom)
 
 @section('contenu')
-<div style="background:var(--dark); color:#fff; padding:48px 0 36px;">
-    <div class="wrap">
-        <span class="kick" style="color:var(--yellow);">Industry Section</span>
-        <h1 class="dsp" style="margin:12px 0 0; font-size:48px; font-weight:900;">{{ $categorie->nom }}</h1>
+{{-- En-tête de Rubrique avec Image de Fond et Protection Totale Anti-Blanc sur Blanc --}}
+@php
+    $urlFond = $categorie->urlImageFond();
+    $opacite = ($categorie->opacite_overlay ?? 65) / 100;
+@endphp
+
+<div class="rubrique-hero-banner" style="position:relative; overflow:hidden; background-color:#14151C; @if($urlFond) background-image:linear-gradient(to bottom, rgba(14,15,20,{{ $opacite }}) 0%, rgba(20,21,28,{{ min(0.96, $opacite + 0.15) }}) 100%), url('{{ $urlFond }}'); background-position:center; background-size:cover; background-repeat:no-repeat; @endif color:#FFFFFF; padding:56px 0 44px; border-bottom:4px solid var(--accent);">
+    {{-- Protective Contrast Scrim: guarantees text legibility on any background image (even pure white) --}}
+    <div style="position:absolute; inset:0; background:radial-gradient(circle at 20% 50%, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.85) 100%); pointer-events:none;"></div>
+
+    <div class="wrap" style="position:relative; z-index:2;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <span class="kick" style="background:#14151C; color:#FFC93C; padding:6px 12px; font-weight:800; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; border-left:3px solid var(--accent); box-shadow:0 2px 4px rgba(0,0,0,0.4);">
+                Logistics Sector Intelligence
+            </span>
+            <span style="font-size:12px; font-weight:600; color:#E2E5EB; background:rgba(20,21,28,0.7); padding:4px 10px; border-radius:2px; text-shadow:0 1px 2px rgba(0,0,0,0.8);">
+                {{ $articles->total() }} Briefings
+            </span>
+        </div>
+
+        <h1 class="dsp" style="margin:0; font-size:52px; font-weight:900; line-height:1.05; color:#FFFFFF; text-shadow:0 2px 10px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95); letter-spacing:-0.01em;">
+            {{ $categorie->nom }}
+        </h1>
+
         @if($categorie->description)
-            <p style="color:#C9CCD6; font-size:18px; margin-top:8px; max-width:700px;">{{ $categorie->description }}</p>
+            <p style="color:#F3F4F6; font-size:19px; line-height:1.6; margin:14px 0 0; max-width:760px; font-weight:400; text-shadow:0 1px 6px rgba(0,0,0,0.85);">
+                {{ $categorie->description }}
+            </p>
         @endif
     </div>
 </div>
 
-<div class="wrap" style="padding-top:40px;">
+<div class="wrap" style="padding-top:40px; padding-bottom:64px;">
     <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:28px;">
         @forelse($articles as $article)
             @include('journal.composants.carte-article', ['article' => $article, 'theme' => $loop->iteration % 2 === 0 ? 'sombre' : 'clair'])
         @empty
             <div style="grid-column: 1 / -1; background:#fff; padding:48px; text-align:center; border:1px solid #E2E5EB;">
-                <h3 class="dsp" style="margin:0; font-size:24px;">No briefings published in this section yet</h3>
+                <h3 class="dsp" style="margin:0; font-size:24px; color:var(--dark);">No briefings published in this section yet</h3>
                 <p style="color:var(--text-muted); margin:8px 0 20px;">Check back soon or explore our comprehensive archive of logistics intelligence.</p>
                 <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:'Archivo',sans-serif; text-transform:uppercase; font-size:13px; letter-spacing:0.05em; text-decoration:none;">Browse All Intelligence</a>
             </div>
