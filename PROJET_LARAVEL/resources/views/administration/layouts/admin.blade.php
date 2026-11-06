@@ -42,12 +42,18 @@
                     <span class="text-xs uppercase tracking-widest text-cargo-yellow font-semibold border-l border-gray-700 pl-3">Security Console</span>
                 </a>
 
-                <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
-                    <a href="{{ route('admin.tableau-bord') }}" class="px-3 py-2 rounded-md transition {{ request()->routeIs('admin.tableau-bord') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Dashboard</a>
-                    <a href="{{ route('admin.articles.index') }}" class="px-3 py-2 rounded-md transition {{ request()->routeIs('admin.articles.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Articles & Alerts</a>
-                    <a href="{{ route('admin.corridors.index') }}" class="px-3 py-2 rounded-md transition {{ request()->routeIs('admin.corridors.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Corridors</a>
-                    <a href="{{ route('admin.utilisateurs.index') }}" class="px-3 py-2 rounded-md transition {{ request()->routeIs('admin.utilisateurs.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Users & RBAC</a>
-                    <a href="{{ route('admin.securite.index') }}" class="px-3 py-2 rounded-md transition {{ request()->routeIs('admin.securite.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Audit Logs</a>
+                <nav class="hidden lg:flex items-center gap-1 text-xs font-semibold">
+                    <a href="{{ route('admin.tableau-bord') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.tableau-bord') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Dashboard</a>
+                    <a href="{{ route('admin.articles.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.articles.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Articles</a>
+                    <a href="{{ route('admin.categories.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.categories.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Sections</a>
+                    <a href="{{ route('admin.corridors.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.corridors.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Corridors</a>
+                    <a href="{{ route('admin.abonnements.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.abonnements.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">PRO Plans</a>
+                    <a href="{{ route('admin.newsletter.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.newsletter.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Newsletter</a>
+                    <a href="{{ route('admin.evenements.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.evenements.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Agenda</a>
+                    <a href="{{ route('admin.documents.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.documents.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Documents</a>
+                    <a href="{{ route('admin.commentaires.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.commentaires.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Moderation</a>
+                    <a href="{{ route('admin.utilisateurs.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.utilisateurs.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">RBAC</a>
+                    <a href="{{ route('admin.securite.index') }}" class="px-2.5 py-1.5 rounded transition {{ request()->routeIs('admin.securite.*') ? 'bg-cargo-surface text-white' : 'text-gray-300 hover:text-white' }}">Audit</a>
                 </nav>
             </div>
 

@@ -84,15 +84,23 @@
             </figure>
         @endif
 
-        {{-- Article Body Content or Paywall Excerpt --}}
+        {{-- Article Body Content with Full HTML, CSS & Scripting Support --}}
         @if($aAccesComplet)
-            <div style="font-size: 18px; line-height: 1.8; color: #1F2128; background: #fff; padding: 36px; border: 1px solid #E2E5EB;">
-                {!! nl2br(e($article->contenu)) !!}
+            <div class="article-html-body" style="font-size: 18px; line-height: 1.8; color: #1F2128; background: #fff; padding: 36px; border: 1px solid #E2E5EB;">
+                @if(Str::contains($article->contenu, ['<p>', '<div', '<table', '<figure', '<style', '<script', '<h2', '<h3', '<ul', '<ol', '<blockquote']))
+                    {!! $article->contenu !!}
+                @else
+                    {!! nl2br(e($article->contenu)) !!}
+                @endif
             </div>
         @else
             <div style="position: relative; background: #fff; padding: 36px 36px 80px; border: 1px solid #E2E5EB;">
-                <div style="font-size: 18px; line-height: 1.8; color: #1F2128; mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);">
-                    {!! nl2br(e(Str::limit($article->contenu, 450))) !!}
+                <div class="article-html-body" style="font-size: 18px; line-height: 1.8; color: #1F2128; mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);">
+                    @if(Str::contains($article->contenu, ['<p>', '<div', '<table', '<figure', '<style', '<script', '<h2', '<h3', '<ul', '<ol', '<blockquote']))
+                        {!! Str::limit(strip_tags($article->contenu, '<p><div><h2><h3><h4><br><strong><em><b><i>'), 450) !!}
+                    @else
+                        {!! nl2br(e(Str::limit($article->contenu, 450))) !!}
+                    @endif
                 </div>
 
                 {{-- Editorial Paywall Gate --}}
@@ -111,7 +119,7 @@
                         <a href="{{ route('abonnements.index') }}" style="background: var(--accent); color: #fff; font-weight: 700; padding: 14px 32px; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Archivo', sans-serif;">
                             Subscribe to CARGO PRO
                         </a>
-                        <a href="{{ route('filament.admin.auth.login') }}" style="color: #fff; font-weight: 600; font-size: 14px; text-decoration: underline; padding: 8px 12px;">
+                        <a href="{{ route('login') }}" style="color: #fff; font-weight: 600; font-size: 14px; text-decoration: underline; padding: 8px 12px;">
                             Subscriber Sign In
                         </a>
                     </div>

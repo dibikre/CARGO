@@ -62,12 +62,46 @@
                 <div class="text-3xl font-heading font-black {{ $commentairesEnAttente > 0 ? 'text-amber-600' : 'text-gray-900' }}">{{ $commentairesEnAttente }}</div>
                 <div class="text-xs mt-2">
                     @if ($commentairesEnAttente > 0)
-                        <a href="{{ route('redaction.commentaires.index') }}" class="text-cargo-red hover:underline font-semibold">Review Queue &rarr;</a>
+                        <a href="{{ route('admin.commentaires.index') }}" class="text-cargo-red hover:underline font-semibold">Review Queue &rarr;</a>
                     @else
                         <span class="text-gray-500">Moderation queue clean</span>
                     @endif
                 </div>
             </div>
+        </div>
+
+        {{-- Operations & Management Hub --}}
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <a href="{{ route('admin.categories.index') }}" class="bg-white p-3.5 rounded-lg border border-gray-200 hover:border-cargo-dark transition block">
+                <span class="text-[11px] font-bold uppercase text-gray-500 block">Sections</span>
+                <span class="text-xl font-heading font-black text-cargo-dark mt-1 block">{{ $totalCategories }}</span>
+                <span class="text-[11px] text-cargo-red font-semibold hover:underline mt-1 block">Taxonomy &rarr;</span>
+            </a>
+            <a href="{{ route('admin.abonnements.index') }}" class="bg-white p-3.5 rounded-lg border border-gray-200 hover:border-cargo-dark transition block">
+                <span class="text-[11px] font-bold uppercase text-gray-500 block">PRO Plans</span>
+                <span class="text-xl font-heading font-black text-cargo-dark mt-1 block">{{ $totalAbonnesActifs }}</span>
+                <span class="text-[11px] text-cargo-red font-semibold hover:underline mt-1 block">Subscribers &rarr;</span>
+            </a>
+            <a href="{{ route('admin.newsletter.index') }}" class="bg-white p-3.5 rounded-lg border border-gray-200 hover:border-cargo-dark transition block">
+                <span class="text-[11px] font-bold uppercase text-gray-500 block">Newsletter</span>
+                <span class="text-xl font-heading font-black text-cargo-dark mt-1 block">{{ $totalNewsletter }}</span>
+                <span class="text-[11px] text-cargo-red font-semibold hover:underline mt-1 block">Audience &rarr;</span>
+            </a>
+            <a href="{{ route('admin.evenements.index') }}" class="bg-white p-3.5 rounded-lg border border-gray-200 hover:border-cargo-dark transition block">
+                <span class="text-[11px] font-bold uppercase text-gray-500 block">Agenda</span>
+                <span class="text-xl font-heading font-black text-cargo-dark mt-1 block">{{ $totalEvenements }}</span>
+                <span class="text-[11px] text-cargo-red font-semibold hover:underline mt-1 block">Events &rarr;</span>
+            </a>
+            <a href="{{ route('admin.documents.index') }}" class="bg-white p-3.5 rounded-lg border border-gray-200 hover:border-cargo-dark transition block">
+                <span class="text-[11px] font-bold uppercase text-gray-500 block">Whitepapers</span>
+                <span class="text-xl font-heading font-black text-cargo-dark mt-1 block">{{ $totalDocuments }}</span>
+                <span class="text-[11px] text-cargo-red font-semibold hover:underline mt-1 block">Resources &rarr;</span>
+            </a>
+            <a href="{{ route('admin.commentaires.index') }}" class="bg-white p-3.5 rounded-lg border border-gray-200 hover:border-cargo-dark transition block">
+                <span class="text-[11px] font-bold uppercase text-gray-500 block">Moderation</span>
+                <span class="text-xl font-heading font-black text-cargo-dark mt-1 block">{{ $commentairesEnAttente }}</span>
+                <span class="text-[11px] text-cargo-red font-semibold hover:underline mt-1 block">Queue &rarr;</span>
+            </a>
         </div>
 
         {{-- Two Columns: Freight Corridors Monitoring & Recent Articles --}}

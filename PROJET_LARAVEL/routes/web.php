@@ -9,10 +9,16 @@ use App\Http\Controllers\DossierThematiqueControleur;
 use App\Http\Controllers\EvenementLogistiqueControleur;
 use App\Http\Controllers\NewsletterControleur;
 use App\Http\Controllers\RechercheControleur;
+use App\Http\Controllers\Administration\AbonnementAdminControleur;
 use App\Http\Controllers\Administration\ArticleAdminControleur;
+use App\Http\Controllers\Administration\CategorieAdminControleur;
+use App\Http\Controllers\Administration\CommentaireAdminControleur;
 use App\Http\Controllers\Administration\ConnexionAdminControleur;
 use App\Http\Controllers\Administration\CorridorAdminControleur;
+use App\Http\Controllers\Administration\DocumentAdminControleur;
+use App\Http\Controllers\Administration\EvenementAdminControleur;
 use App\Http\Controllers\Administration\JournalSecuriteAdminControleur;
+use App\Http\Controllers\Administration\NewsletterAdminControleur;
 use App\Http\Controllers\Administration\TableauBordAdminControleur;
 use App\Http\Controllers\Administration\UtilisateurAdminControleur;
 use App\Http\Controllers\Redaction\ArticleRedactionControleur;
@@ -135,6 +141,54 @@ Route::prefix('admin')->group(function () {
         Route::prefix('securite')->name('securite.')->group(function () {
             Route::get('/', [JournalSecuriteAdminControleur::class, 'index'])->name('index');
             Route::post('/purger', [JournalSecuriteAdminControleur::class, 'purger'])->name('purger');
+        });
+
+        // Gestion des rubriques éditoriales
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('/', [CategorieAdminControleur::class, 'index'])->name('index');
+            Route::post('/', [CategorieAdminControleur::class, 'store'])->name('store');
+            Route::put('/{id}', [CategorieAdminControleur::class, 'update'])->name('update');
+            Route::post('/{id}/menu', [CategorieAdminControleur::class, 'basculerMenu'])->name('menu');
+            Route::delete('/{id}', [CategorieAdminControleur::class, 'destroy'])->name('destroy');
+        });
+
+        // Formules et abonnés PRO
+        Route::prefix('abonnements')->name('abonnements.')->group(function () {
+            Route::get('/', [AbonnementAdminControleur::class, 'index'])->name('index');
+            Route::post('/formules', [AbonnementAdminControleur::class, 'storeFormule'])->name('formules.store');
+            Route::post('/formules/{id}/basculer', [AbonnementAdminControleur::class, 'basculerFormule'])->name('formules.basculer');
+            Route::post('/{id}/statut', [AbonnementAdminControleur::class, 'updateStatutAbonnement'])->name('update-statut');
+        });
+
+        // Audience Newsletter
+        Route::prefix('newsletter')->name('newsletter.')->group(function () {
+            Route::get('/', [NewsletterAdminControleur::class, 'index'])->name('index');
+            Route::post('/{id}/basculer', [NewsletterAdminControleur::class, 'basculerEtat'])->name('basculer');
+            Route::delete('/{id}', [NewsletterAdminControleur::class, 'destroy'])->name('destroy');
+        });
+
+        // Salons et événements logistiques
+        Route::prefix('evenements')->name('evenements.')->group(function () {
+            Route::get('/', [EvenementAdminControleur::class, 'index'])->name('index');
+            Route::post('/', [EvenementAdminControleur::class, 'store'])->name('store');
+            Route::post('/{id}/vedette', [EvenementAdminControleur::class, 'basculerVedette'])->name('vedette');
+            Route::delete('/{id}', [EvenementAdminControleur::class, 'destroy'])->name('destroy');
+        });
+
+        // Livres blancs et documents techniques
+        Route::prefix('documents')->name('documents.')->group(function () {
+            Route::get('/', [DocumentAdminControleur::class, 'index'])->name('index');
+            Route::post('/', [DocumentAdminControleur::class, 'store'])->name('store');
+            Route::post('/{id}/pro', [DocumentAdminControleur::class, 'basculerPro'])->name('pro');
+            Route::delete('/{id}', [DocumentAdminControleur::class, 'destroy'])->name('destroy');
+        });
+
+        // Modération centralisée des commentaires
+        Route::prefix('commentaires')->name('commentaires.')->group(function () {
+            Route::get('/', [CommentaireAdminControleur::class, 'index'])->name('index');
+            Route::post('/{id}/approuver', [CommentaireAdminControleur::class, 'approuver'])->name('approuver');
+            Route::post('/{id}/spam', [CommentaireAdminControleur::class, 'marquerSpam'])->name('spam');
+            Route::delete('/{id}', [CommentaireAdminControleur::class, 'destroy'])->name('destroy');
         });
     });
 });

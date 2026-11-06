@@ -98,6 +98,56 @@ class ArticleRedactionControleur extends Controller
     }
 
     /**
+     * Formulaire d'édition d'un article existant avec éditeur HTML.
+     */
+    public function edit(Article $article): View
+    {
+        $categories = Categorie::actif()->get();
+        $tags = Tag::all();
+        $zones = ZoneLogistique::actif()->get();
+        $corridors = CorridorTransport::actif()->get();
+
+        return view('redaction.articles.edit', compact('article', 'categories', 'tags', 'zones', 'corridors'));
+    }
+
+    /**
+     * Mettre à jour un article rédigé.
+     */
+    public function update(ArticleFormRequest $request, Article $article): RedirectResponse
+    {
+        $donnees = $request->validated();
+        $tempsLecture = $this->servicePublication->calculerTempsLecture($donnees['contenu']);
+
+        $article->update([
+            'categorie_id' => $donnees['categorie_id'],
+            'titre' => $donnees['titre'],
+            'chapeau' => $donnees['chapeau'] ?? null,
+            'contenu' => $donnees['contenu'],
+            'image_principale' => $donnees['image_principale'] ?? null,
+            'legende_image' => $donnees['legende_image'] ?? null,
+            'credit_photo' => $donnees['credit_photo'] ?? null,
+            'statut' => $donnees['statut'],
+            'format_article' => $donnees['format_article'],
+            'mode_transport_principal' => $donnees['mode_transport_principal'],
+            'est_a_la_une' => $request->boolean('est_a_la_une'),
+            'est_urgent' => $request->boolean('est_urgent'),
+            'est_reserve_abonnes' => $request->boolean('est_reserve_abonnes'),
+            'est_sponsorise' => $request->boolean('est_sponsorise'),
+            'nom_partenaire' => $donnees['nom_partenaire'] ?? null,
+            'temps_lecture_minutes' => $tempsLecture,
+            'date_publication' => $donnees['date_publication'] ?? $article->date_publication,
+            'meta_titre' => $donnees['meta_titre'] ?? null,
+            'meta_description' => $donnees['meta_description'] ?? null,
+        ]);
+
+        $article->tags()->sync($donnees['tags'] ?? []);
+        $article->zonesLogistiques()->sync($donnees['zones'] ?? []);
+        $article->corridors()->sync($donnees['corridors'] ?? []);
+
+        return redirect()->route('redaction.articles.index')->with('succes', 'Article mis à jour avec succès.');
+    }
+
+    /**
      * Publier directement un article.
      */
     public function publier(int $id): RedirectResponse
