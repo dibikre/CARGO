@@ -39,7 +39,11 @@
     <span class="kick" style="color: var(--accent-dark);">
         {{ $article->categorie->nom ?? 'Logistique' }}
         @if($article->est_reserve_abonnes)
-            · <span style="background:var(--yellow); color:#14151C; padding:2px 6px; font-weight:700;">PRO</span>
+            @if(isset($abonnementsActifs) && !$abonnementsActifs)
+                · <span style="background:#0F766E; color:#fff; padding:2px 6px; font-weight:700;">OPEN ACCESS</span>
+            @else
+                · <span style="background:var(--yellow); color:#14151C; padding:2px 6px; font-weight:700;">PRO</span>
+            @endif
         @endif
     </span>
 

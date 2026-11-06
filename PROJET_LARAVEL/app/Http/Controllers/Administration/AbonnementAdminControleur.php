@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
 use App\Models\AbonnementUtilisateur;
+use App\Models\ConfigurationSysteme;
 use App\Models\FormuleAbonnement;
 use App\Models\JournalActivite;
 use Illuminate\Http\RedirectResponse;
@@ -30,10 +31,36 @@ class AbonnementAdminControleur extends Controller
         $metriques = [
             'total_abonnes_actifs' => AbonnementUtilisateur::actif()->count(),
             'total_commandes' => AbonnementUtilisateur::count(),
-            'revenu_total' => AbonnementUtilisateur::sum('montant_ttc'),
+            'revenu_total' => AbonnementUtilisateur::sum('montant_paye_ttc') ?: 0,
         ];
 
-        return view('administration.abonnements.index', compact('formules', 'abonnements', 'metriques'));
+        $abonnementsActifs = ConfigurationSysteme::abonnementsSontActifs();
+
+        return view('administration.abonnements.index', compact('formules', 'abonnements', 'metriques', 'abonnementsActifs'));
+    }
+
+    /**
+     * Basculer globalement le système d'abonnements (Monétisé <-> 100% Gratuit).
+     */
+    public function basculerPaywallGlobal(): RedirectResponse
+    {
+        $nouvelEtat = ConfigurationSysteme::basculerAbonnements();
+
+        JournalActivite::enregistrer(
+            description: $nouvelEtat
+                ? "Reactivated paid subscriptions & PRO paywall monetization"
+                : "Disabled subscriptions: CARGO is now 100% Free Open Access for all readers",
+            nomLog: 'administration',
+            evenement: 'bascule_paywall_global',
+            auteur: Auth::user(),
+            donnees: ['abonnements_actifs' => $nouvelEtat]
+        );
+
+        $message = $nouvelEtat
+            ? 'Subscriptions and PRO Paywall are now ACTIVE. Premium content is monetized.'
+            : 'Subscriptions DEACTIVATED: The site is now 100% FREE for all readers (Open Access)!';
+
+        return back()->with('succes', $message);
     }
 
     /**

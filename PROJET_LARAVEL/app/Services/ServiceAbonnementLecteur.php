@@ -6,31 +6,45 @@ use App\Models\AbonnementUtilisateur;
 use App\Models\Article;
 use App\Models\FormuleAbonnement;
 use App\Models\User;
+use App\Models\ConfigurationSysteme;
 use Illuminate\Support\Str;
 
 class ServiceAbonnementLecteur
 {
     /**
+     * Vérifier si les abonnements et le paywall sont globalement activés.
+     */
+    public function sontAbonnementsActifs(): bool
+    {
+        return ConfigurationSysteme::abonnementsSontActifs();
+    }
+
+    /**
      * Vérifier si un utilisateur peut consulter un article (gestion du paywall).
      */
     public function peutConsulterArticle(?User $utilisateur, Article $article): bool
     {
-        // Si l'article n'est pas réservé aux abonnés, tout le monde peut le lire
+        // 1. Si les abonnements sont désactivés par l'admin, le site est totalement gratuit pour tous !
+        if (! $this->sontAbonnementsActifs()) {
+            return true;
+        }
+
+        // 2. Si l'article n'est pas réservé aux abonnés, tout le monde peut le lire
         if (! $article->est_reserve_abonnes) {
             return true;
         }
 
-        // Si l'utilisateur n'est pas connecté
+        // 3. Si l'utilisateur n'est pas connecté
         if (! $utilisateur) {
             return false;
         }
 
-        // Les membres de la rédaction ont accès complet
+        // 4. Les membres de la rédaction ont accès complet
         if ($utilisateur->estMembreRedaction()) {
             return true;
         }
 
-        // Vérifier l'abonnement actif
+        // 5. Vérifier l'abonnement actif
         return $utilisateur->estAbonne();
     }
 

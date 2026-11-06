@@ -39,5 +39,15 @@ class AppServiceProvider extends ServiceProvider
                 $vue->with('categoriesMenu', collect());
             }
         });
+
+        // Partager le statut des abonnements (mode 100% gratuit si inactif)
+        \Illuminate\Support\Facades\View::composer(['layouts.*', 'journal.*', 'administration.*'], function ($vue) {
+            try {
+                $abonnementsActifs = \App\Models\ConfigurationSysteme::abonnementsSontActifs();
+            } catch (\Throwable) {
+                $abonnementsActifs = true;
+            }
+            $vue->with('abonnementsActifs', $abonnementsActifs);
+        });
     }
 }

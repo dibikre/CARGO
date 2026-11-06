@@ -155,6 +155,7 @@ Route::prefix('admin')->group(function () {
         // Formules et abonnés PRO
         Route::prefix('abonnements')->name('abonnements.')->group(function () {
             Route::get('/', [AbonnementAdminControleur::class, 'index'])->name('index');
+            Route::post('/basculer-paywall', [AbonnementAdminControleur::class, 'basculerPaywallGlobal'])->name('basculer-paywall');
             Route::post('/formules', [AbonnementAdminControleur::class, 'storeFormule'])->name('formules.store');
             Route::post('/formules/{id}/basculer', [AbonnementAdminControleur::class, 'basculerFormule'])->name('formules.basculer');
             Route::post('/{id}/statut', [AbonnementAdminControleur::class, 'updateStatutAbonnement'])->name('update-statut');

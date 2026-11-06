@@ -29,6 +29,10 @@
             <div style="display: inline-flex; align-items: center; gap: 8px; background: #2B2E3A; color: var(--yellow); padding: 5px 12px; font-weight: 700; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
                 Sponsored Industry Intel {{ $article->nom_partenaire ? '· ' . $article->nom_partenaire : '' }}
             </div>
+        @elseif($article->est_reserve_abonnes && isset($abonnementsActifs) && !$abonnementsActifs)
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: #0F766E; color: #fff; padding: 5px 12px; font-weight: 700; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
+                Open Access · Free Briefing (Subscriptions Deactivated)
+            </div>
         @endif
 
         {{-- Headline --}}

@@ -3,7 +3,7 @@ import {
   Ship, Truck, Train, Box, ShieldCheck, FileText, Image as ImageIcon, 
   Eye, Code, CheckCircle, AlertTriangle, Sliders, Sparkles, Clipboard,
   Heading1, Heading2, Heading3, Bold, Italic, Underline, List, ListOrdered,
-  PlusCircle, RefreshCw, ExternalLink, Settings, Layout
+  PlusCircle, RefreshCw, ExternalLink, Settings, Layout, Lock, Unlock, Globe
 } from 'lucide-react';
 
 interface CategorieLogistique {
@@ -131,6 +131,17 @@ export default function App() {
   const [vueActive, setVueActive] = useState<'rubrique' | 'editeur' | 'admin' | 'architecture'>('rubrique');
   const [categories, setCategories] = useState<CategorieLogistique[]>(CATEGORIES_INITIALES);
   const [categorieSelectionneeId, setCategorieSelectionneeId] = useState<number>(1);
+  const [abonnementsActifs, setAbonnementsActifs] = useState<boolean>(true);
+
+  const basculerAbonnements = () => {
+    const nouvelEtat = !abonnementsActifs;
+    setAbonnementsActifs(nouvelEtat);
+    declencherToast(
+      nouvelEtat
+        ? "Monetized Subscriptions Activated: PRO articles require an active paid subscription."
+        : "CARGO Open Access Activated: All subscriptions deactivated! The entire site is 100% free."
+    );
+  };
 
   // Éditeur d'article state
   const [modeEditeur, setModeEditeur] = useState<'visuel' | 'code'>('visuel');
@@ -312,7 +323,7 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               }`}
             >
               <Settings className="w-3.5 h-3.5" />
-              Admin Taxonomy
+              Admin Taxonomy & Paywall
             </button>
 
             <button
@@ -323,6 +334,29 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
             >
               <Code className="w-3.5 h-3.5" />
               Laravel Codebase Map
+            </button>
+
+            {/* Paywall Mode Switcher */}
+            <button
+              onClick={basculerAbonnements}
+              className={`ml-1 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5 border shadow-sm ${
+                abonnementsActifs
+                  ? 'bg-amber-950/70 border-amber-500/60 text-amber-300 hover:bg-amber-900/80'
+                  : 'bg-emerald-950/80 border-emerald-400 text-emerald-300 hover:bg-emerald-900/90'
+              }`}
+              title="Click to toggle between Paid Subscriptions and 100% Free Open Access"
+            >
+              {abonnementsActifs ? (
+                <>
+                  <Lock className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Paywall: <strong className="text-white">Active</strong></span>
+                </>
+              ) : (
+                <>
+                  <Unlock className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Site: <strong className="text-white">100% Free</strong></span>
+                </>
+              )}
             </button>
           </nav>
         </div>
@@ -468,8 +502,38 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               </div>
             </div>
 
+            {/* Open Access Announcement Bar when Subscriptions Disabled */}
+            {!abonnementsActifs && (
+              <div className="max-w-[1240px] mx-auto px-4 sm:px-8 mt-6">
+                <div className="bg-emerald-50 border-2 border-emerald-500 rounded-lg p-4 flex flex-wrap items-center justify-between gap-3 text-emerald-950 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow">
+                      <Unlock className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-heading font-black text-sm uppercase tracking-wide text-emerald-900 flex items-center gap-2">
+                        CARGO Open Access Mode Active
+                        <span className="text-[10px] bg-emerald-200 text-emerald-900 font-bold px-2 py-0.5 rounded">
+                          Site 100% Free
+                        </span>
+                      </div>
+                      <div className="text-xs text-emerald-800 mt-0.5">
+                        Administrator has deactivated subscriptions. Every reader enjoys full, unrestricted access to all proprietary briefings and logistics data.
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setVueActive('admin')}
+                    className="text-xs font-bold bg-emerald-700 text-white px-3.5 py-1.5 rounded hover:bg-emerald-800 transition uppercase tracking-wider"
+                  >
+                    View in Admin Settings
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Articles Grid */}
-            <div className="max-w-[1240px] mx-auto px-4 sm:px-8 pb-16">
+            <div className="max-w-[1240px] mx-auto px-4 sm:px-8 pb-16 pt-6">
               <div className="flex items-center justify-between mb-6 pb-2 border-b-2 border-dashed border-[#B8BDC8]">
                 <h2 className="font-heading font-black text-2xl text-[#14151C]">
                   Latest Intelligence Briefings in {categorieCourante.nom}
@@ -489,9 +553,15 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
                           {art.mode}
                         </span>
                         {art.isPro && (
-                          <span className="absolute top-2 right-2 bg-[#FFC93C] text-[#14151C] text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow">
-                            PRO Member Exclusive
-                          </span>
+                          abonnementsActifs ? (
+                            <span className="absolute top-2 right-2 bg-[#FFC93C] text-[#14151C] text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow">
+                              PRO Member Exclusive
+                            </span>
+                          ) : (
+                            <span className="absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow">
+                              Open Access (100% Free)
+                            </span>
+                          )
                         )}
                       </div>
 
@@ -800,10 +870,101 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
         )}
 
         {/* ======================================================== */}
-        {/* VIEW 3: ADMIN CATEGORIES TAXONOMY MANAGEMENT */}
+        {/* VIEW 3: ADMIN CATEGORIES TAXONOMY & PAYWALL MANAGEMENT */}
         {/* ======================================================== */}
         {vueActive === 'admin' && (
           <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-8 space-y-6">
+            {/* Global Subscription / Paywall Master Control Card */}
+            <div className={`p-6 rounded-lg border-2 shadow-sm transition-all ${
+              abonnementsActifs 
+                ? 'bg-white border-amber-300' 
+                : 'bg-emerald-50/90 border-emerald-500 shadow-emerald-100'
+            }`}>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 shadow-sm ${
+                    abonnementsActifs ? 'bg-amber-100 text-amber-800' : 'bg-emerald-600 text-white'
+                  }`}>
+                    {abonnementsActifs ? <Lock className="w-6 h-6" /> : <Unlock className="w-6 h-6" />}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-black uppercase tracking-wider font-heading text-gray-500">
+                        Global Paywall Controller · Laravel Key: configurations_systeme.abonnements_actifs
+                      </span>
+                      <span className={`text-[11px] font-black uppercase px-2.5 py-0.5 rounded ${
+                        abonnementsActifs 
+                          ? 'bg-amber-100 text-amber-900 border border-amber-200' 
+                          : 'bg-emerald-600 text-white'
+                      }`}>
+                        {abonnementsActifs ? 'Monetized Paywall Active' : 'Site 100% Free Active'}
+                      </span>
+                    </div>
+                    <h2 className="text-xl font-heading font-black text-[#14151C] mt-1.5">
+                      {abonnementsActifs 
+                        ? 'Paid Subscriptions & Paywall Are Currently Enabled' 
+                        : 'Subscriptions Are Disabled: Entire Site Is 100% Free for Everyone'}
+                    </h2>
+                    <p className="text-xs text-gray-600 mt-1 max-w-2xl leading-relaxed">
+                      {abonnementsActifs
+                        ? 'Exclusive logistics intelligence is gated behind CARGO PRO plans. Non-subscribers encounter the editorial paywall when reading in-depth briefings.'
+                        : 'All paywalls and subscription restrictions are bypassed platform-wide. Any reader, guest, or logistics professional can read every PRO article and download sector reports without signing up or paying.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+                  <button
+                    onClick={basculerAbonnements}
+                    className={`px-5 py-2.5 rounded font-heading font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-2 ${
+                      abonnementsActifs
+                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                        : 'bg-[#D4201A] hover:bg-red-700 text-white'
+                    }`}
+                  >
+                    {abonnementsActifs ? (
+                      <>
+                        <Unlock className="w-4 h-4" />
+                        Deactivate Subscriptions (Make Site 100% Free)
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-4 h-4" />
+                        Re-Activate Paid Subscriptions
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Status details */}
+              <div className="mt-4 pt-4 border-t border-gray-200/70 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="bg-white/90 p-3 rounded border border-gray-200">
+                  <span className="text-gray-400 font-medium block">Service Layer:</span>
+                  <strong className="text-gray-800 font-mono">ServiceAbonnementLecteur</strong>
+                  <span className="block text-[11px] text-gray-500 mt-0.5">
+                    {abonnementsActifs ? 'Enforcing subscriber access gates' : 'Bypassed: returns true for all articles'}
+                  </span>
+                </div>
+                <div className="bg-white/90 p-3 rounded border border-gray-200">
+                  <span className="text-gray-400 font-medium block">Reader Paywall:</span>
+                  <strong className={abonnementsActifs ? 'text-amber-700' : 'text-emerald-700'}>
+                    {abonnementsActifs ? 'Gated on PRO Briefings' : 'Completely Deactivated'}
+                  </strong>
+                  <span className="block text-[11px] text-gray-500 mt-0.5">
+                    {abonnementsActifs ? 'Paywall box shown to guests' : 'Full briefing content visible'}
+                  </span>
+                </div>
+                <div className="bg-white/90 p-3 rounded border border-gray-200">
+                  <span className="text-gray-400 font-medium block">Audit Trail:</span>
+                  <strong className="text-gray-800 font-mono">JournalActivite</strong>
+                  <span className="block text-[11px] text-gray-500 mt-0.5">
+                    Action <code className="text-[#D4201A]">bascule_paywall_global</code> tracked
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-white p-6 rounded-lg border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <span className="text-xs font-black uppercase text-[#D4201A] tracking-wider font-heading">
@@ -921,17 +1082,17 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Feature 1 Summary */}
               <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
                 <div className="flex items-center gap-2 text-[#D4201A] font-heading font-bold text-lg">
                   <ImageIcon className="w-5 h-5" />
-                  1. Rubric Header Background & Anti-Glitch Contrast
+                  1. Rubric Header Background
                 </div>
                 <ul className="text-xs space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Migration:</strong> <code>database/migrations/2024_01_01_000016_ajouter_image_fond_aux_categories.php</code> adds <code>image_fond</code>, <code>opacite_overlay</code>, <code>couleur_overlay</code>.</span>
+                    <span><strong>Migration:</strong> <code>2024_01_01_000016_ajouter_image_fond_aux_categories.php</code> adds <code>image_fond</code>, <code>opacite_overlay</code>, <code>couleur_overlay</code>.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -939,11 +1100,7 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Admin Controller:</strong> <code>CategorieAdminControleur.php</code> processes image uploads and URLs via <code>ServiceGestionImage</code>.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Blade View:</strong> <code>resources/views/journal/articles/categorie.blade.php</code> renders dual linear & radial scrim overlays to guarantee zero white-on-white text even on pure white images.</span>
+                    <span><strong>Blade View:</strong> <code>resources/views/journal/articles/categorie.blade.php</code> with dual linear & radial scrim overlays to guarantee zero white-on-white text.</span>
                   </li>
                 </ul>
               </div>
@@ -952,24 +1109,46 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
                 <div className="flex items-center gap-2 text-[#D4201A] font-heading font-bold text-lg">
                   <FileText className="w-5 h-5" />
-                  2. Beginner WYSIWYG & Clipboard Heading (H1/H2) Sanitizer
+                  2. Beginner WYSIWYG & Headings
                 </div>
                 <ul className="text-xs space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Component:</strong> <code>resources/views/redaction/composants/editeur-html.blade.php</code> provides dual visual WYSIWYG + HTML source modes.</span>
+                    <span><strong>Component:</strong> <code>resources/views/redaction/composants/editeur-html.blade.php</code> with WYSIWYG & HTML tabs.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Heading Retention:</strong> Automatically preserves <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>, and converts Markdown <code>#</code> / <code>##</code> headings.</span>
+                    <span><strong>Heading Retention:</strong> Automatically preserves <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code> and transforms Markdown headers.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Anti-White Style Stripping:</strong> Strips poisonous inline font colors (e.g. <code>color: #ffffff</code>) from dirty Office/Docs clipboards.</span>
+                    <span><strong>Sanitizer:</strong> Strips poisonous inline styles (e.g. <code>color: #ffffff</code>) from copied Word/Docs fragments.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Feature 3 Summary (NEW) */}
+              <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
+                <div className="flex items-center gap-2 text-emerald-700 font-heading font-bold text-lg">
+                  <Unlock className="w-5 h-5" />
+                  3. Global Free Access & Paywall Switch
+                </div>
+                <ul className="text-xs space-y-2 text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Migration:</strong> <code>2024_01_01_000017_creer_table_configurations_systeme.php</code> with key-value table.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong>Public Article View:</strong> <code>show.blade.php</code> upgraded to support and style H1 headings cleanly with red accent underlines.</span>
+                    <span><strong>Model & Cache:</strong> <code>ConfigurationSysteme::abonnementsSontActifs()</code> with high-performance cached check.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Service Bypass:</strong> <code>ServiceAbonnementLecteur::peutConsulterArticle()</code> unlocks all PRO content instantaneously.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Admin Controller & Blade:</strong> <code>AbonnementAdminControleur::basculerPaywallGlobal()</code> with audit logging and open access announcements.</span>
                   </li>
                 </ul>
               </div>

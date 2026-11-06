@@ -57,6 +57,11 @@
     @stack('styles')
 </head>
 <body>
+    @if(isset($abonnementsActifs) && !$abonnementsActifs)
+        <aside aria-label="Open access banner" style="background:#0F766E; color:#fff; font-size:13px; font-weight:700; text-align:center; padding:10px 16px; letter-spacing:0.04em;">
+            CARGO OPEN ACCESS — Subscriptions are currently disabled by administration. All premium intelligence briefings, data dossiers, and analyses are 100% free for all readers.
+        </aside>
+    @endif
     <header style="background: var(--dark); color: #fff; border-bottom: 1px solid var(--dark-border);">
         <div class="wrap" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 32px; padding-top:16px; padding-bottom:16px;">
             <a href="{{ route('accueil') }}" aria-label="CARGO, accueil" style="display:flex; align-items:center; gap:3px; font:900 38px/1 'Archivo',sans-serif; letter-spacing:.05em;">
@@ -81,7 +86,11 @@
                 <a href="{{ route('recherche') }}" aria-label="Search" style="width:46px; height:46px; border:1px solid #4A4E5C; display:flex; align-items:center; justify-content:center;">
                     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
                 </a>
-                <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 20px; display:inline-block; font-family:'Archivo',sans-serif; text-transform:uppercase; font-size:13px; letter-spacing:0.05em; border:none;">Subscribe</a>
+                @if(isset($abonnementsActifs) && !$abonnementsActifs)
+                    <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:12px 18px; display:inline-block; font-family:'Archivo',sans-serif; text-transform:uppercase; font-size:12px; letter-spacing:0.05em; border:none;">100% Free Access</a>
+                @else
+                    <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 20px; display:inline-block; font-family:'Archivo',sans-serif; text-transform:uppercase; font-size:13px; letter-spacing:0.05em; border:none;">Subscribe</a>
+                @endif
                 @auth
                     @if(auth()->user()->estMembreRedaction())
                         <a href="{{ route('redaction.articles.index') }}" style="background:#fff; color:var(--dark); font-weight:600; padding:12px 16px; font-size:13px;">Staff Desk</a>

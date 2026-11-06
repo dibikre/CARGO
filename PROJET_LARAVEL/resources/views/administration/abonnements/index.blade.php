@@ -4,6 +4,37 @@
 
 @section('contenu')
 <div class="space-y-6">
+    {{-- Master Subscription & Paywall Switch (Make Site 100% Free) --}}
+    <div class="p-6 rounded-lg border {{ $abonnementsActifs ? 'bg-white border-gray-200' : 'bg-amber-50/70 border-amber-300' }} shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded {{ $abonnementsActifs ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900 border border-amber-300' }}">
+                        <span class="w-2 h-2 rounded-full {{ $abonnementsActifs ? 'bg-emerald-500' : 'bg-amber-500' }}"></span>
+                        {{ $abonnementsActifs ? 'Monetized Mode Active (Paywall Enabled)' : 'Free Open Access Mode (Site 100% Free)' }}
+                    </span>
+                    <span class="text-xs font-bold text-gray-400">· Master Control</span>
+                </div>
+                <h2 class="text-xl font-heading font-black text-cargo-dark">
+                    {{ $abonnementsActifs ? 'Global Subscriptions & Paywall Control' : 'CARGO Platform is Currently 100% FREE for Everyone' }}
+                </h2>
+                <p class="text-xs text-gray-600 max-w-2xl leading-relaxed">
+                    {{ $abonnementsActifs 
+                        ? 'Subscribers and PRO accounts currently have exclusive access to paywalled articles and reports. You can disable subscriptions at any time to make the entire site completely free for all readers.'
+                        : 'Subscriptions are currently deactivated. All restricted articles, logistics analyses, and research papers are immediately accessible to all readers and visitors without payment or registration.' }}
+                </p>
+            </div>
+
+            <form action="{{ route('admin.abonnements.basculer-paywall') }}" method="POST" onsubmit="return confirm('{{ $abonnementsActifs ? 'Are you sure you want to deactivate subscriptions? This will make the entire site 100% FREE for everyone!' : 'Reactivate paid subscriptions and restore the PRO paywall?' }}');" class="shrink-0">
+                @csrf
+                <button type="submit" class="px-5 py-3 rounded font-heading font-bold uppercase text-xs tracking-wider transition shadow flex items-center gap-2 {{ $abonnementsActifs ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-cargo-red hover:bg-cargo-redDark text-white' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                    {{ $abonnementsActifs ? 'Deactivate Subscriptions (Make Site 100% Free)' : 'Reactivate Subscriptions & Paywall' }}
+                </button>
+            </form>
+        </div>
+    </div>
+
     {{-- Header & Metrics --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-lg border border-gray-200">
