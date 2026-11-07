@@ -10,13 +10,19 @@ use InvalidArgumentException;
 /**
  * Service metier gerant les matieres premieres brutes pour le bandeau defilant.
  * Responsabilites : validation des 5 a 10 noeuds JSON, calcul d'ecart entree-sortie,
- * stockage securise des images PNG transparentes et enforcement du quota (max 20).
+ * redimensionnement haute precision des images PNG avec preservation de la transparence
+ * alpha, stockage securise et enforcement du quota (max 20).
  */
 class ServiceMatierePremiere
 {
     /**
+     * Dimensions cibles standard pour les icones du bandeau (format carre adapte).
+     */
+    public const LARGEUR_MAX_PNG = 96;
+    public const HAUTEUR_MAX_PNG = 96;
+
+    /**
      * Valider et normaliser une chaine ou un tableau de noeuds de courbe.
-     * Doit contenir entre 5 et 10 noeuds [[timestamp, valeur], ...].
      *
      * @param string|array|null $donnees
      * @return array{points: array, prixActuel: float, variation: float, jsonNormalise: string}
@@ -27,13 +33,10 @@ class ServiceMatierePremiere
             throw new InvalidArgumentException('Curve data JSON cannot be empty.');
         }
 
-        if (is_string($donnees)) {
-            $noeuds = json_decode(trim($donnees), true);
-            if (! is_array($noeuds)) {
-                throw new InvalidArgumentException('Invalid JSON format. Expected an array of [timestamp, value] points.');
-            }
-        } else {
-            $noeuds = $donnees;
+        $noeuds = is_string($donnees) ? json_decode(trim($donnees), true) : $donnees;
+
+        if (! is_array($noeuds)) {
+            throw new InvalidArgumentException('Invalid JSON format. Expected an array of [timestamp, value] points.');
         }
 
         $nbPoints = count($noeuds);
@@ -51,7 +54,6 @@ class ServiceMatierePremiere
             $pointsValides[] = [$timestamp, $valeur];
         }
 
-        // Calcul de l'ecart entre entree (1er point) et sortie (dernier point)
         $premier = $pointsValides[0][1];
         $dernier = $pointsValides[$nbPoints - 1][1];
         $variation = ($premier != 0) ? round((($dernier - $premier) / $premier) * 100, 2) : 0.0;
@@ -64,17 +66,11 @@ class ServiceMatierePremiere
         ];
     }
 
-    /**
-     * Alias de validation pour retro-compatibilite des tests.
-     */
     public function validerEtParserNoeudsCourbe(string|array|null $donnees): array
     {
         return $this->validerEtTraiterPointsCourbe($donnees)['points'];
     }
 
-    /**
-     * Calculer l'ecart entre le premier noeud et le dernier noeud.
-     */
     public function calculerEcartEntreeSortie(array $points): float
     {
         if (count($points) < 2) {
@@ -87,7 +83,8 @@ class ServiceMatierePremiere
     }
 
     /**
-     * Traiter et stocker une image PNG transparente televersee.
+     * Traiter, redimensionner en taille optimale (96x96 max) tout en conservant
+     * la transparence alpha complète du PNG, puis stocker le fichier.
      */
     public function traiterImagePng(UploadedFile $fichier, ?string $codeSymbole = null): string
     {
@@ -97,14 +94,85 @@ class ServiceMatierePremiere
         }
 
         $nomFichier = ($codeSymbole ? Str::slug($codeSymbole) : 'matiere_' . time()) . '_' . uniqid() . '.png';
+        $cheminComplet = $dossier . '/' . $nomFichier;
+
+        // Tenter le redimensionnement avec GD si disponible
+        if (extension_loaded('gd') && function_exists('imagecreatefrompng')) {
+            $redimensionne = $this->redimensionnerPngAvecTransparence(
+                $fichier->getRealPath(),
+                $cheminComplet,
+                self::LARGEUR_MAX_PNG,
+                self::HAUTEUR_MAX_PNG
+            );
+
+            if ($redimensionne) {
+                return 'images/matieres/' . $nomFichier;
+            }
+        }
+
+        // Repli fiable si GD n'est pas actif
         $fichier->move($dossier, $nomFichier);
 
         return 'images/matieres/' . $nomFichier;
     }
 
     /**
-     * Creer une matiere premiere a partir des donnees valides.
+     * Redimensionne un PNG en préservant le canal alpha de transparence et le ratio d'aspect.
      */
+    protected function redimensionnerPngAvecTransparence(string $sourcePath, string $destPath, int $maxLargeur, int $maxHauteur): bool
+    {
+        try {
+            $info = @getimagesize($sourcePath);
+            if (! $info) {
+                return false;
+            }
+
+            [$largeurSource, $hauteurSource] = $info;
+            if ($largeurSource <= 0 || $hauteurSource <= 0) {
+                return false;
+            }
+
+            // Calcul du ratio pour ne pas déformer l'icône
+            $ratio = min($maxLargeur / $largeurSource, $maxHauteur / $hauteurSource, 1.0);
+            $nouvelleLargeur = (int) round($largeurSource * $ratio);
+            $nouvelleHauteur = (int) round($hauteurSource * $ratio);
+
+            $imageSource = @imagecreatefrompng($sourcePath);
+            if (! $imageSource) {
+                return false;
+            }
+
+            // Création d'une image TrueColor avec canal alpha complet
+            $imageCible = imagecreatetruecolor($nouvelleLargeur, $nouvelleHauteur);
+            imagealphablending($imageCible, false);
+            imagesavealpha($imageCible, true);
+
+            $transparent = imagecolorallocatealpha($imageCible, 0, 0, 0, 127);
+            imagefilledrectangle($imageCible, 0, 0, $nouvelleLargeur, $nouvelleHauteur, $transparent);
+
+            // Échantillonnage avec anti-aliasing haute qualité
+            imagecopyresampled(
+                $imageCible,
+                $imageSource,
+                0, 0, 0, 0,
+                $nouvelleLargeur,
+                $nouvelleHauteur,
+                $largeurSource,
+                $hauteurSource
+            );
+
+            // Enregistrement PNG compressé
+            $succes = imagepng($imageCible, $destPath, 8);
+
+            imagedestroy($imageSource);
+            imagedestroy($imageCible);
+
+            return $succes;
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
     public function creerMatierePremiere(array $donnees, UploadedFile $fichierImage): MatierePremiere
     {
         if (! $this->peutAjouterProduit()) {
@@ -128,9 +196,6 @@ class ServiceMatierePremiere
         ]);
     }
 
-    /**
-     * Mettre a jour une matiere premiere existante.
-     */
     public function mettreAJourMatierePremiere(MatierePremiere $matiere, array $donnees, ?UploadedFile $nouveauFichier = null): MatierePremiere
     {
         $analyse = $this->validerEtTraiterPointsCourbe($donnees['donnees_courbe_json'] ?? $matiere->donnees_courbe_json);
@@ -156,9 +221,6 @@ class ServiceMatierePremiere
         return $matiere;
     }
 
-    /**
-     * Actualiser uniquement les donnees de courbe.
-     */
     public function actualiserDonneesCourbe(MatierePremiere $matiere, string|array $donneesJson): MatierePremiere
     {
         $analyse = $this->validerEtTraiterPointsCourbe($donneesJson);
@@ -172,17 +234,11 @@ class ServiceMatierePremiere
         return $matiere;
     }
 
-    /**
-     * Supprimer une matiere premiere.
-     */
     public function supprimerMatierePremiere(MatierePremiere $matiere): bool
     {
         return (bool) $matiere->delete();
     }
 
-    /**
-     * Verifier si la limite maximale de 20 produits est atteinte.
-     */
     public function peutAjouterProduit(): bool
     {
         return MatierePremiere::count() < MatierePremiere::NOMBRE_MAX_PRODUITS;
