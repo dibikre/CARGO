@@ -143,6 +143,33 @@
             @error('contenu') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
         </div>
 
+        {{-- Tags Selection (Max 4) --}}
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-2">
+            <div class="flex items-center justify-between">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-800">
+                        Article Topics &amp; Brand Tags <span class="text-xs text-cargo-red font-bold">(Max 4)</span>
+                    </label>
+                    <p class="text-[11px] text-gray-500">Select up to 4 tags (e.g. DHL, Lufthansa, FedEx, CARGO, Air France...)</p>
+                </div>
+                <span id="tags-counter" class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-white border border-gray-200 text-gray-700">
+                    0 / 4 Selected
+                </span>
+            </div>
+            @error('tags') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+            @php $tagsSelectionnes = old('tags', $article->tags->pluck('id')->toArray()); @endphp
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 max-h-48 overflow-y-auto">
+                @foreach($tags as $tag)
+                    @php $estCoche = in_array($tag->id, $tagsSelectionnes); @endphp
+                    <label class="tag-checkbox-label flex items-center gap-2 p-2 rounded border text-xs cursor-pointer transition {{ $estCoche ? 'bg-red-50 border-cargo-red text-cargo-red font-semibold' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100' }}">
+                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}" {{ $estCoche ? 'checked' : '' }}
+                               class="tag-checkbox rounded border-gray-300 text-cargo-red focus:ring-cargo-red">
+                        <span class="truncate">{{ $tag->nom }}</span>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+
         {{-- Control Badges / Flags --}}
         <div class="bg-gray-50 p-4 rounded border border-gray-200 flex flex-wrap gap-6 items-center">
             <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-bold uppercase tracking-wider text-gray-800">
@@ -186,4 +213,42 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.tag-checkbox');
+        const counter = document.getElementById('tags-counter');
+        const maxTags = 4;
+
+        function updateTags() {
+            const checked = document.querySelectorAll('.tag-checkbox:checked');
+            if (counter) {
+                counter.textContent = `${checked.length} / ${maxTags} Selected`;
+                counter.className = checked.length >= maxTags
+                    ? 'text-xs font-mono font-bold px-2 py-0.5 rounded bg-red-100 border border-red-200 text-cargo-red'
+                    : 'text-xs font-mono font-bold px-2 py-0.5 rounded bg-white border border-gray-200 text-gray-700';
+            }
+            checkboxes.forEach(cb => {
+                const label = cb.closest('.tag-checkbox-label');
+                if (cb.checked) {
+                    label?.classList.add('bg-red-50', 'border-cargo-red', 'text-cargo-red', 'font-semibold');
+                    label?.classList.remove('bg-white', 'border-gray-200', 'text-gray-700');
+                    cb.disabled = false;
+                } else {
+                    label?.classList.remove('bg-red-50', 'border-cargo-red', 'text-cargo-red', 'font-semibold');
+                    label?.classList.add('bg-white', 'border-gray-200', 'text-gray-700');
+                    cb.disabled = checked.length >= maxTags;
+                    if (cb.disabled) {
+                        label?.classList.add('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        label?.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                }
+            });
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateTags));
+        updateTags();
+    });
+</script>
 @endsection

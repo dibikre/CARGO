@@ -94,6 +94,31 @@
             @include('redaction.composants.editeur-html', ['contenu' => old('contenu')])
         </div>
 
+        {{-- Tags Selection (Max 4) --}}
+        <div style="background:#F9FAFB; padding:18px; border:1px solid #E5E7EB;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div>
+                    <label style="font-weight:700; font-size:13px; text-transform:uppercase; display:block;">
+                        Article Topics &amp; Brand Tags <span style="color:var(--accent); font-weight:800;">(Max 4)</span>
+                    </label>
+                    <span style="font-size:11px; color:var(--text-muted);">Select up to 4 tags (e.g. DHL, Lufthansa, FedEx, CARGO, Air France...)</span>
+                </div>
+                <span id="tags-counter" style="font-size:12px; font-weight:700; font-family:monospace; padding:3px 8px; border-radius:3px; background:#fff; border:1px solid #D5D8E0;">
+                    0 / 4 Selected
+                </span>
+            </div>
+            @error('tags') <p style="color:#DC2626; font-size:12px; margin:4px 0;">{{ $message }}</p> @enderror
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:8px; max-height:180px; overflow-y:auto; padding:6px; background:#fff; border:1px solid #E5E7EB;">
+                @foreach($tags as $tag)
+                    @php $estCoche = in_array($tag->id, old('tags', [])); @endphp
+                    <label class="tag-checkbox-label" style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; padding:6px 10px; border:1px solid {{ $estCoche ? 'var(--accent)' : '#E5E7EB' }}; background:{{ $estCoche ? '#FEF2F2' : '#FAFAFA' }}; color:{{ $estCoche ? 'var(--accent)' : 'var(--dark)' }}; cursor:pointer; border-radius:3px;">
+                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}" {{ $estCoche ? 'checked' : '' }} class="tag-checkbox">
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ $tag->nom }}</span>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+
         {{-- Flags --}}
         <div style="display:flex; gap:20px; flex-wrap:wrap; background:var(--bg-light); padding:16px; border:1px solid #E2E5EB;">
             <label style="font-weight:600; font-size:13px; display:flex; align-items:center; gap:8px; cursor:pointer;">
@@ -126,4 +151,46 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.tag-checkbox');
+        const counter = document.getElementById('tags-counter');
+        const maxTags = 4;
+
+        function updateTags() {
+            const checked = document.querySelectorAll('.tag-checkbox:checked');
+            if (counter) {
+                counter.textContent = `${checked.length} / ${maxTags} Selected`;
+                counter.style.borderColor = checked.length >= maxTags ? '#DC2626' : '#D5D8E0';
+                counter.style.color = checked.length >= maxTags ? '#DC2626' : 'var(--dark)';
+            }
+            checkboxes.forEach(cb => {
+                const label = cb.closest('.tag-checkbox-label');
+                if (cb.checked) {
+                    if (label) {
+                        label.style.borderColor = 'var(--accent)';
+                        label.style.background = '#FEF2F2';
+                        label.style.color = 'var(--accent)';
+                    }
+                    cb.disabled = false;
+                } else {
+                    if (label) {
+                        label.style.borderColor = '#E5E7EB';
+                        label.style.background = '#FAFAFA';
+                        label.style.color = 'var(--dark)';
+                    }
+                    cb.disabled = checked.length >= maxTags;
+                    if (label) {
+                        label.style.opacity = cb.disabled ? '0.5' : '1';
+                        label.style.cursor = cb.disabled ? 'not-allowed' : 'pointer';
+                    }
+                }
+            });
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateTags));
+        updateTags();
+    });
+</script>
 @endsection

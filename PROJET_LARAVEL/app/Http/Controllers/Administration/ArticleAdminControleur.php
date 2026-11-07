@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Categorie;
 use App\Models\JournalActivite;
+use App\Models\Tag;
 use App\Services\ServiceGestionImage;
 use App\Services\ServicePublicationArticle;
 use Illuminate\Http\RedirectResponse;
@@ -62,8 +63,9 @@ class ArticleAdminControleur extends Controller
     public function create(): View
     {
         $categories = Categorie::actif()->orderBy('nom')->get();
+        $tags = Tag::orderBy('nom')->get();
 
-        return view('administration.articles.create', compact('categories'));
+        return view('administration.articles.create', compact('categories', 'tags'));
     }
 
     /**
@@ -83,6 +85,10 @@ class ArticleAdminControleur extends Controller
             'credit_photo' => 'nullable|string|max:120',
             'statut' => 'required|string|in:brouillon,en_relecture,publie,archive',
             'fichier_image' => 'nullable|image|max:10240',
+            'tags' => 'nullable|array|max:4',
+            'tags.*' => 'exists:tags,id',
+        ], [
+            'tags.max' => 'An article can have at most 4 tags (maximum 4 tags allowed).',
         ]);
 
         $cheminImage = $donnees['image_principale'] ?? null;
@@ -118,6 +124,10 @@ class ArticleAdminControleur extends Controller
             'date_publication' => $donnees['statut'] === 'publie' ? now() : null,
         ]);
 
+        if ($requete->has('tags')) {
+            $article->tags()->sync($requete->input('tags', []));
+        }
+
         JournalActivite::enregistrer("Admin created article #{$article->id} ({$article->titre})", 'administration', 'creation_article_admin', Auth::user(), ['article_id' => $article->id]);
 
         return redirect()->route('admin.articles.index')->with('succes', 'Article created successfully with administrator privileges.');
@@ -128,10 +138,11 @@ class ArticleAdminControleur extends Controller
      */
     public function edit(int $id): View
     {
-        $article = Article::findOrFail($id);
+        $article = Article::with('tags')->findOrFail($id);
         $categories = Categorie::actif()->orderBy('nom')->get();
+        $tags = Tag::orderBy('nom')->get();
 
-        return view('administration.articles.edit', compact('article', 'categories'));
+        return view('administration.articles.edit', compact('article', 'categories', 'tags'));
     }
 
     /**
@@ -153,6 +164,10 @@ class ArticleAdminControleur extends Controller
             'credit_photo' => 'nullable|string|max:120',
             'statut' => 'required|string|in:brouillon,en_relecture,publie,archive',
             'fichier_image' => 'nullable|image|max:10240',
+            'tags' => 'nullable|array|max:4',
+            'tags.*' => 'exists:tags,id',
+        ], [
+            'tags.max' => 'An article can have at most 4 tags (maximum 4 tags allowed).',
         ]);
 
         $cheminImage = $donnees['image_principale'] ?? $article->image_principale;
@@ -184,6 +199,10 @@ class ArticleAdminControleur extends Controller
             'temps_lecture_minutes' => $tempsLecture,
             'date_publication' => ($article->date_publication === null && $donnees['statut'] === 'publie') ? now() : $article->date_publication,
         ]);
+
+        if ($requete->has('tags')) {
+            $article->tags()->sync($requete->input('tags', []));
+        }
 
         JournalActivite::enregistrer("Admin updated article #{$article->id} ({$article->titre})", 'administration', 'modification_article_admin', Auth::user(), ['article_id' => $article->id]);
 

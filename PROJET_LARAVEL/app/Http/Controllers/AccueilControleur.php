@@ -7,6 +7,7 @@ use App\Models\CorridorTransport;
 use App\Models\DocumentRessource;
 use App\Models\DossierThematique;
 use App\Models\EvenementLogistique;
+use App\Models\Tag;
 use App\Models\VideoLogistique;
 use Illuminate\View\View;
 
@@ -144,6 +145,24 @@ class AccueilControleur extends Controller
         // Livre blanc
         $dernierDocument = DocumentRessource::actif()->latest()->first();
 
+        // Les 10 meilleurs tags (mots-clés avec le plus grand nombre d'articles associés)
+        $meilleursTags = Tag::withCount('articles')
+            ->having('articles_count', '>', 0)
+            ->orderByDesc('articles_count')
+            ->orderBy('nom')
+            ->limit(10)
+            ->get();
+
+        if ($meilleursTags->count() < 10) {
+            $idsExclus = $meilleursTags->pluck('id');
+            $complementsTags = Tag::withCount('articles')
+                ->whereNotIn('id', $idsExclus)
+                ->orderBy('nom')
+                ->limit(10 - $meilleursTags->count())
+                ->get();
+            $meilleursTags = $meilleursTags->concat($complementsTags);
+        }
+
         return view('journal.accueil', compact(
             'articlesALaUne',
             'alertesUrgentes',
@@ -151,6 +170,7 @@ class AccueilControleur extends Controller
             'sectionsFret',
             'articlesTopSemaine',
             'videosLogistiques',
+            'meilleursTags',
             'corridorsSousSurveillance',
             'dossiersVedettes',
             'evenementsProchains',

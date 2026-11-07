@@ -122,6 +122,9 @@
         </div>
     </header>
 
+    {{-- Bandeau defilant des matieres premieres brutes (non clicable, 20 produits max) --}}
+    @include('journal.composants.bandeau-cours-matieres')
+
     @if(session('succes'))
         <div class="wrap" style="padding-top: 16px;">
             <div class="alert-box alert-success">{{ session('succes') }}</div>

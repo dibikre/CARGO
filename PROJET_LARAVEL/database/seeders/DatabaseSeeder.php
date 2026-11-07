@@ -216,6 +216,9 @@ class DatabaseSeeder extends Seeder
         // 6. Articles complémentaires pour tous les modes de transport
         $this->call(ArticlesFretSeeder::class);
 
+        // 7. Mots-clés / Tags logistiques et liaisons aux articles (max 4 tags par article)
+        $this->call(TagsLogistiquesSeeder::class);
+
         // 7. Vidéos logistiques de démonstration pour la barre latérale
         VideoLogistique::firstOrCreate(
             ['slug' => 'automated-container-terminals-maasvlakte-ii'],
@@ -244,5 +247,8 @@ class DatabaseSeeder extends Seeder
                 'ordre_affichage' => 2,
             ]
         );
+
+        // 8. Bandeau defilant des matieres premieres brutes (max 20 produits)
+        $this->call(MatieresPremieresSeeder::class);
     }
 }

@@ -32,6 +32,9 @@
 
             {{-- Bloc Bas : Vidéos logistiques embarquées (embeds modifiables par les publicateurs) --}}
             @include('journal.composants.bloc-videos-embed', ['videosLogistiques' => $videosLogistiques])
+
+            {{-- Bloc 10 Meilleurs Tags : Mots-clés ayant le plus d'articles associés --}}
+            @include('journal.composants.bloc-meilleurs-tags', ['meilleursTags' => $meilleursTags])
         </aside>
 
     </div>

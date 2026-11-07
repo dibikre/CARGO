@@ -43,12 +43,24 @@ class ArticleFormRequest extends FormRequest
             'date_publication' => ['nullable', 'date'],
             'meta_titre' => ['nullable', 'string', 'max:191'],
             'meta_description' => ['nullable', 'string', 'max:300'],
-            'tags' => ['nullable', 'array'],
+            'tags' => ['nullable', 'array', 'max:4'],
             'tags.*' => ['exists:tags,id'],
             'zones' => ['nullable', 'array'],
             'zones.*' => ['exists:zones_logistiques,id'],
             'corridors' => ['nullable', 'array'],
             'corridors.*' => ['exists:corridors_transport,id'],
+        ];
+    }
+
+    /**
+     * Messages de validation personnalisés.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'tags.max' => 'An article can have at most 4 tags (maximum 4 tags allowed).',
         ];
     }
 }

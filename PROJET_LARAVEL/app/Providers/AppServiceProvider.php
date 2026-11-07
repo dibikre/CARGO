@@ -35,8 +35,19 @@ class AppServiceProvider extends ServiceProvider
                 } else {
                     $vue->with('categoriesMenu', collect());
                 }
+
+                // Partager les matieres premieres brutes pour le bandeau defilant (max 20)
+                if (Schema::hasTable('matieres_premieres')) {
+                    $matieresPremieres = \App\Models\MatierePremiere::actif()
+                        ->limit(\App\Models\MatierePremiere::NOMBRE_MAX_PRODUITS)
+                        ->get();
+                    $vue->with('matieresPremieres', $matieresPremieres);
+                } else {
+                    $vue->with('matieresPremieres', collect());
+                }
             } catch (\Throwable) {
                 $vue->with('categoriesMenu', collect());
+                $vue->with('matieresPremieres', collect());
             }
         });
 

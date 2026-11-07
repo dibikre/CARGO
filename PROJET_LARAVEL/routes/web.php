@@ -18,6 +18,7 @@ use App\Http\Controllers\Administration\CorridorAdminControleur;
 use App\Http\Controllers\Administration\DocumentAdminControleur;
 use App\Http\Controllers\Administration\EvenementAdminControleur;
 use App\Http\Controllers\Administration\JournalSecuriteAdminControleur;
+use App\Http\Controllers\Administration\MatierePremiereAdminControleur;
 use App\Http\Controllers\Administration\NewsletterAdminControleur;
 use App\Http\Controllers\Administration\TableauBordAdminControleur;
 use App\Http\Controllers\Administration\UtilisateurAdminControleur;
@@ -202,6 +203,17 @@ Route::prefix('admin')->group(function () {
             Route::post('/{id}/approuver', [CommentaireAdminControleur::class, 'approuver'])->name('approuver');
             Route::post('/{id}/spam', [CommentaireAdminControleur::class, 'marquerSpam'])->name('spam');
             Route::delete('/{id}', [CommentaireAdminControleur::class, 'destroy'])->name('destroy');
+        });
+
+        // Bandeau défilant des matières premières brutes (max 20)
+        Route::prefix('matieres-premieres')->name('matieres-premieres.')->group(function () {
+            Route::get('/', [MatierePremiereAdminControleur::class, 'index'])->name('index');
+            Route::get('/creer', [MatierePremiereAdminControleur::class, 'create'])->name('create');
+            Route::post('/', [MatierePremiereAdminControleur::class, 'store'])->name('store');
+            Route::get('/{id}/modifier', [MatierePremiereAdminControleur::class, 'edit'])->name('edit');
+            Route::put('/{id}', [MatierePremiereAdminControleur::class, 'update'])->name('update');
+            Route::post('/{id}/actualiser', [MatierePremiereAdminControleur::class, 'actualiserDonnees'])->name('actualiser');
+            Route::delete('/{id}', [MatierePremiereAdminControleur::class, 'destroy'])->name('destroy');
         });
     });
 });
