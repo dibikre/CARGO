@@ -9,10 +9,16 @@
             <span class="kick" style="color:var(--yellow);">Editorial Desk & HTML Content Management</span>
             <h1 class="dsp" style="margin:8px 0 0; font-size:38px; font-weight:900;">Articles Management</h1>
         </div>
-        <a href="{{ route('redaction.articles.create') }}" style="background:var(--accent); color:#fff; font-weight:700; font-size:14px; padding:12px 24px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; font-family:'Archivo',sans-serif; display:inline-flex; align-items:center; gap:6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-            Write New Article
-        </a>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <a href="{{ route('redaction.videos.index') }}" style="background:#2B2E3A; color:#fff; font-weight:700; font-size:13px; padding:12px 18px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; font-family:var(--police-titre); display:inline-flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="6" rx="2"/><polygon points="10 9 15 12 10 15 10 9"/></svg>
+                Manage Videos
+            </a>
+            <a href="{{ route('redaction.articles.create') }}" style="background:var(--accent); color:#fff; font-weight:700; font-size:13px; padding:12px 20px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; font-family:var(--police-titre); display:inline-flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
+                Write New Article
+            </a>
+        </div>
     </div>
 </div>
 

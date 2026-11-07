@@ -7,6 +7,7 @@ use App\Models\CorridorTransport;
 use App\Models\DocumentRessource;
 use App\Models\DossierThematique;
 use App\Models\EvenementLogistique;
+use App\Models\VideoLogistique;
 use Illuminate\View\View;
 
 class AccueilControleur extends Controller
@@ -111,6 +112,29 @@ class AccueilControleur extends Controller
         // Corridors sous surveillance
         $corridorsSousSurveillance = CorridorTransport::actif()->limit(6)->get();
 
+        // Les 6 meilleurs articles de la semaine (les plus vus sur les 7 derniers jours)
+        $articlesTopSemaine = Article::with(['auteur', 'categorie'])
+            ->publie()
+            ->where('date_publication', '>=', now()->subDays(7))
+            ->orderByDesc('vues_compteur')
+            ->limit(6)
+            ->get();
+
+        // Si moins de 6 articles sur 7 jours (développement/démo), compléter avec les plus vus globaux
+        if ($articlesTopSemaine->count() < 6) {
+            $idsTop = $articlesTopSemaine->pluck('id');
+            $complementsTop = Article::with(['auteur', 'categorie'])
+                ->publie()
+                ->whereNotIn('id', $idsTop)
+                ->orderByDesc('vues_compteur')
+                ->limit(6 - $articlesTopSemaine->count())
+                ->get();
+            $articlesTopSemaine = $articlesTopSemaine->concat($complementsTop);
+        }
+
+        // Vidéos logistiques embarquées (embeds) ajoutées par les publicateurs
+        $videosLogistiques = VideoLogistique::actif()->limit(3)->get();
+
         // Grands dossiers
         $dossiersVedettes = DossierThematique::enVedette()->limit(2)->get();
 
@@ -125,6 +149,8 @@ class AccueilControleur extends Controller
             'alertesUrgentes',
             'articlesRecents',
             'sectionsFret',
+            'articlesTopSemaine',
+            'videosLogistiques',
             'corridorsSousSurveillance',
             'dossiersVedettes',
             'evenementsProchains',

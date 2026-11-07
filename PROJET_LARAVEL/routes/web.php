@@ -23,6 +23,7 @@ use App\Http\Controllers\Administration\TableauBordAdminControleur;
 use App\Http\Controllers\Administration\UtilisateurAdminControleur;
 use App\Http\Controllers\Redaction\ArticleRedactionControleur;
 use App\Http\Controllers\Redaction\ModerationCommentaireControleur;
+use App\Http\Controllers\Redaction\VideoRedactionControleur;
 use App\Http\Middleware\VerifierAccesAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -99,6 +100,13 @@ Route::middleware(['auth'])->prefix('redaction')->name('redaction.')->group(func
         Route::post('/{id}/rejeter', [ModerationCommentaireControleur::class, 'rejeter'])->name('rejeter');
         Route::post('/{id}/spam', [ModerationCommentaireControleur::class, 'marquerSpam'])->name('spam');
         Route::delete('/{id}', [ModerationCommentaireControleur::class, 'destroy'])->name('destroy');
+    });
+
+    // Gestion des vidéos logistiques embarquées (embeds)
+    Route::prefix('videos')->name('videos.')->group(function () {
+        Route::get('/', [VideoRedactionControleur::class, 'index'])->name('index');
+        Route::post('/', [VideoRedactionControleur::class, 'store'])->name('store');
+        Route::delete('/{id}', [VideoRedactionControleur::class, 'destroy'])->name('destroy');
     });
 });
 

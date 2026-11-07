@@ -9,42 +9,44 @@
 {{-- Bandeau En Bref --}}
 @include('journal.composants.bandeau-urgent', ['alertes' => $alertesUrgentes])
 
-{{-- 5 Pôles Sectoriels de Fret : Maritime, Routier, Ferroviaire, Aérien, Mondial --}}
-{{-- Chacun avec son SVG vectoriel dédié, son article majeur centré à gauche, et les 4 suivants récents à droite --}}
-@foreach($sectionsFret as $modeCle => $sectionData)
-    @include('journal.composants.section-fret', [
-        'modeCle' => $modeCle,
-        'config' => $sectionData['config'],
-        'centre' => $sectionData['centre'],
-        'suivants' => $sectionData['suivants']
-    ])
-@endforeach
+{{-- Disposition Principale avec Colonne Gauche et Aside à Droite --}}
+<div class="wrap" style="padding-top:36px; padding-bottom:56px;">
+    <div style="display:flex; flex-wrap:wrap; gap:36px; align-items:flex-start;">
+        
+        {{-- Colonne Principale Gauche : Pôles Sectoriels de Fret --}}
+        <div style="flex:1 1 740px; min-width:0; display:flex; flex-direction:column; gap:36px;">
+            @foreach($sectionsFret as $modeCle => $sectionData)
+                @include('journal.composants.section-fret', [
+                    'modeCle' => $modeCle,
+                    'config' => $sectionData['config'],
+                    'centre' => $sectionData['centre'],
+                    'suivants' => $sectionData['suivants']
+                ])
+            @endforeach
+        </div>
 
-{{-- Illustration train de fret conteneurs intermodal --}}
-<div class="wrap" style="display:flex; justify-content:flex-start; margin-top:40px; margin-bottom:40px;">
-    <svg viewBox="0 0 800 170" aria-hidden="true" style="display:block; width:min(100%,940px);">
-        <g fill="var(--accent)"><path d="M20 112H736L784 82L704 170H72Z"></path><rect x="46" y="38" width="76" height="76"></rect><rect x="60" y="14" width="26" height="26"></rect></g>
-        <path d="M60 14h26v8H60z" fill="#FFC93C"></path>
-        <path d="M104 38V6" stroke="#14151C" stroke-width="3"></path>
-        <path d="M56 54h56M56 76h58M56 94h58" stroke="#14151C" stroke-width="7" stroke-dasharray="9 6"></path>
-        <path d="M44 130H730" stroke="rgba(0,0,0,.2)" stroke-width="5"></path>
-        <path fill="#14151C" d="M136 90h54v22h-54zM316 90h54v22h-54zM496 90h54v22h-54zM196 68h54v22h-54zM376 68h54v22h-54zM256 46h54v22h-54zM436 46h54v22h-54z"></path>
-        <path fill="#FFC93C" d="M196 90h54v22h-54zM436 90h54v22h-54zM256 68h54v22h-54zM496 68h54v22h-54zM316 46h54v22h-54z"></path>
-        <path fill="#F2F2F2" d="M256 90h54v22h-54zM376 90h54v22h-54zM316 68h54v22h-54zM436 68h54v22h-54zM376 46h54v22h-54z"></path>
-        <path fill="#7E100B" d="M556 90h54v22h-54z"></path>
-    </svg>
+        {{-- Aside Droite : Top 6 Meilleurs Articles de la Semaine + Vidéos Logistiques Embarquées --}}
+        <aside style="flex:0 0 350px; max-width:100%; display:flex; flex-direction:column; gap:32px; position:sticky; top:20px;">
+            {{-- Bloc Haut : Les 6 meilleurs articles de la semaine (les plus vus) --}}
+            @include('journal.composants.bloc-top-semaine', ['articlesTopSemaine' => $articlesTopSemaine])
+
+            {{-- Bloc Bas : Vidéos logistiques embarquées (embeds modifiables par les publicateurs) --}}
+            @include('journal.composants.bloc-videos-embed', ['videosLogistiques' => $videosLogistiques])
+        </aside>
+
+    </div>
 </div>
 
 {{-- Section Dossier Spécial (Fond Rouge CARGO) --}}
 @php $dossierVedette = $dossiersVedettes->first(); @endphp
 <section style="background:var(--accent); color:#fff;">
-    <div class="wrap" style="display:flex; flex-wrap:wrap; gap:40px; align-items:center; padding-top:56px; padding-bottom:64px;">
-        <div style="flex:1 1 420px; display:flex; flex-direction:column; gap:18px;">
+    <div class="wrap" style="display:flex; flex-wrap:wrap; gap:40px; align-items:center; padding-top:52px; padding-bottom:56px;">
+        <div style="flex:1 1 420px; display:flex; flex-direction:column; gap:16px;">
             <span class="kick badge-alert" style="align-self:flex-start;">Dossier spécial</span>
-            <h2 class="dsp" style="margin:0; font-weight:900; font-size:52px; line-height:1;">
+            <h2 class="dsp" style="margin:0; font-weight:900; font-size:calc(46px * var(--echelle-texte)); line-height:1;">
                 {{ $dossierVedette?->titre ?? 'Ports et corridors : la carte des flux' }}
             </h2>
-            <p style="margin:0; font-size:18px; line-height:1.55;">
+            <p style="margin:0; font-size:calc(17px * var(--echelle-texte)); line-height:1.55;">
                 {{ $dossierVedette?->chapeau ?? 'Analyses exclusives, entretiens avec les armateurs et cartes pour comprendre comment circulent les marchandises mondiales.' }}
             </p>
             <a href="{{ $dossierVedette ? route('dossiers.show', $dossierVedette->slug) : route('dossiers.index') }}" class="btn-yellow" style="align-self:flex-start;">
@@ -60,33 +62,29 @@
     </div>
 </section>
 
-{{-- Section Les plus lus + Le courrier du lundi --}}
-<section style="background:#fff; padding-top:64px;">
-    <div class="wrap" style="display:flex; flex-wrap:wrap; gap:32px;">
-        <div style="flex:3 1 460px;">
-            @include('journal.composants.classement-plus-lus', ['articlesPlusLus' => $articlesRecents->sortByDesc('vues_compteur')->take(4)])
-        </div>
-        <div style="flex:2 1 320px;">
+{{-- Section Newsletter & Documentation Technique Téléchargeable --}}
+<section style="background:#fff; padding-top:56px; padding-bottom:56px;">
+    <div class="wrap" style="display:flex; flex-wrap:wrap; gap:36px; align-items:stretch;">
+        <div style="flex:1 1 460px;">
             @include('journal.composants.bloc-newsletter')
         </div>
-    </div>
-
-    {{-- Illustration semi-remorques à quai de la maquette --}}
-    <div class="wrap" style="display:flex; justify-content:center; margin-top:56px;">
-        <svg viewBox="0 0 760 150" aria-hidden="true" style="display:block; width:min(100%,860px);">
-            <g fill="var(--accent)"><path d="M474 150V34H690Q730 34 742 78V150Z"></path><rect x="12" y="52" width="216" height="98"></rect><rect x="240" y="52" width="216" height="98"></rect></g>
-            <path d="M12 128h216M240 128h216" stroke="rgba(0,0,0,.2)" stroke-width="6"></path>
-            <text x="30" y="106" font-family="Archivo,sans-serif" font-weight="900" font-size="48" letter-spacing="3" fill="#fff">CARGO</text>
-            <text x="258" y="106" font-family="Archivo,sans-serif" font-weight="900" font-size="48" letter-spacing="3" fill="#fff">CARGO</text>
-            <path d="M228 118h12M456 118h18" stroke="#14151C" stroke-width="6"></path>
-            <path d="M494 58h60v26h-60z" fill="#14151C"></path>
-            <path d="M640 46h46q20 4 28 30h-74z" fill="#14151C"></path>
-            <path d="M474 104h268v10H474z" fill="#FFC93C"></path>
-            <rect x="732" y="120" width="10" height="10" fill="#FFE08A"></rect>
-            <path d="M566 34L590 12H624M624 12L600 34" stroke="#14151C" stroke-width="3" fill="none"></path>
-            <path d="M40 138h36M164 138h36M268 138h36M392 138h36M502 138h36M664 138h36" stroke="#14151C" stroke-width="24" stroke-linecap="round"></path>
-            <path d="M40 138h36M164 138h36M268 138h36M392 138h36M502 138h36M664 138h36" stroke="#E6E8EC" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 36"></path>
-        </svg>
+        <div style="flex:1 1 460px; background:#F8FAFC; border:1px solid #E2E5EB; padding:36px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between; gap:16px;">
+            <div>
+                <span class="kick" style="color:var(--accent);">Global Logistics Documentation</span>
+                <h3 class="dsp" style="margin:6px 0 10px; font-size:calc(28px * var(--echelle-texte)); line-height:1.2;">Exclusive Supply Chain Whitepapers & Indices</h3>
+                <p style="margin:0; color:var(--text-muted); font-size:calc(14.5px * var(--echelle-texte)); line-height:1.55;">
+                    Download technical logistics dossiers, customs tariff guides, and freight corridor benchmark datasets compiled quarterly by CARGO correspondents.
+                </p>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+                <a href="{{ route('ressources.index') }}" style="background:var(--dark); color:#fff; font-family:var(--police-titre); font-weight:700; font-size:calc(13px * var(--echelle-texte)); padding:12px 20px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em;">
+                    Access Whitepaper Library
+                </a>
+                <a href="{{ route('dossiers.index') }}" style="border:2px solid var(--dark); color:var(--dark); font-family:var(--police-titre); font-weight:700; font-size:calc(13px * var(--echelle-texte)); padding:10px 18px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em;">
+                    View Special Dossiers
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 @endsection
