@@ -1,17 +1,19 @@
-{{-- Bandeau defilant des matieres premieres brutes (non clicable, 20 produits max) --}}
+{{-- Bandeau defilant des matieres premieres brutes (non clicable, 20 produits max, arriere-plan tout blanc) --}}
 @if(isset($matieresPremieres) && $matieresPremieres->isNotEmpty())
     <section class="bandeau-matieres-conteneur" aria-label="Raw Commodities Market Ticker">
         <style>
             .bandeau-matieres-conteneur {
-                background: #0D0E13;
-                border-bottom: 1px solid #232632;
-                color: #FFFFFF;
+                background: #FFFFFF;
+                border-bottom: 1px solid #E5E7EB;
+                border-top: 1px solid #E5E7EB;
+                color: #111827;
                 overflow: hidden;
                 position: relative;
                 width: 100%;
                 user-select: none;
                 -webkit-user-select: none;
                 font-family: var(--police-texte, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
             }
             .bandeau-matieres-etiquette {
                 position: absolute;
@@ -30,7 +32,7 @@
                 align-items: center;
                 gap: 6px;
                 padding: 0 14px;
-                box-shadow: 4px 0 12px rgba(0,0,0,0.4);
+                box-shadow: 3px 0 10px rgba(0,0,0,0.12);
                 white-space: nowrap;
             }
             .bandeau-matieres-defilement {
@@ -38,6 +40,7 @@
                 width: max-content;
                 animation: defilementTicker 48s linear infinite;
                 padding-left: 150px;
+                background: #FFFFFF;
             }
             .bandeau-matieres-defilement:hover {
                 animation-play-state: paused;
@@ -50,18 +53,19 @@
                 display: inline-flex;
                 align-items: center;
                 gap: 10px;
-                padding: 7px 18px;
-                border-right: 1px solid #1E212B;
+                padding: 8px 20px;
+                border-right: 1px solid #F1F3F5;
                 pointer-events: none; /* Rendre explicitement non clicable */
                 cursor: default;
                 white-space: nowrap;
+                background: #FFFFFF;
             }
             .matiere-icone {
-                width: 24px;
-                height: 24px;
+                width: 26px;
+                height: 26px;
                 object-fit: contain;
                 display: block;
-                filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+                filter: drop-shadow(0 1px 2px rgba(0,0,0,0.12));
             }
             .matiere-infos {
                 display: flex;
@@ -71,7 +75,7 @@
             .matiere-nom {
                 font-size: 11px;
                 font-weight: 700;
-                color: #C9CCD6;
+                color: #374151;
                 text-transform: uppercase;
                 letter-spacing: 0.04em;
             }
@@ -79,11 +83,11 @@
                 font-size: 12px;
                 font-weight: 800;
                 font-family: monospace;
-                color: #FFFFFF;
+                color: #111827;
             }
             .matiere-devise {
                 font-size: 9px;
-                color: #8C91A0;
+                color: #6B7280;
                 font-weight: 600;
             }
             .matiere-courbe {
@@ -97,17 +101,19 @@
                 font-weight: 800;
                 font-family: monospace;
                 padding: 2px 6px;
-                border-radius: 3px;
+                border-radius: 4px;
                 display: inline-flex;
                 align-items: center;
             }
             .ecart-hausse {
-                color: #34D399;
-                background: rgba(16, 185, 129, 0.12);
+                color: #047857;
+                background: #ECFDF5;
+                border: 1px solid #D1FAE5;
             }
             .ecart-baisse {
-                color: #F87171;
-                background: rgba(239, 68, 68, 0.12);
+                color: #B91C1C;
+                background: #FEF2F2;
+                border: 1px solid #FEE2E2;
             }
             @media (max-width: 640px) {
                 .bandeau-matieres-etiquette {
@@ -125,7 +131,7 @@
             <span>Commodities</span>
         </div>
 
-        {{-- Bandeau defilant boucle en continu --}}
+        {{-- Bandeau defilant boucle en continu sur fond blanc --}}
         <div class="bandeau-matieres-defilement" role="marquee" aria-live="off">
             {{-- Boucle 1 --}}
             @foreach($matieresPremieres as $matiere)
@@ -144,7 +150,7 @@
 
                     {{-- Tracee SVG de la courbe (5 a 10 points) --}}
                     <svg class="matiere-courbe" viewBox="0 0 60 20" aria-hidden="true">
-                        <path d="{{ $matiere->genererTraceSvg(60, 20) }}" fill="none" stroke="{{ $matiere->couleur_tendance }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="{{ $matiere->genererTraceSvg(60, 20) }}" fill="none" stroke="{{ $matiere->couleur_tendance }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
 
                     {{-- Ecart entre l'entree et la sortie (-7%, etc.) --}}
@@ -166,7 +172,7 @@
                         </span>
                     </div>
                     <svg class="matiere-courbe" viewBox="0 0 60 20" aria-hidden="true">
-                        <path d="{{ $matiere->genererTraceSvg(60, 20) }}" fill="none" stroke="{{ $matiere->couleur_tendance }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="{{ $matiere->genererTraceSvg(60, 20) }}" fill="none" stroke="{{ $matiere->couleur_tendance }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <span class="matiere-ecart {{ $matiere->pourcentage_variation >= 0 ? 'ecart-hausse' : 'ecart-baisse' }}">
                         {{ $matiere->pourcentage_variation >= 0 ? '+' : '' }}{{ $matiere->pourcentage_variation }}%

@@ -52,7 +52,7 @@ class MatieresPremieresSeeder extends Seeder
                     'prix_actuel' => $pSortie,
                     'pourcentage_variation' => $variation,
                     'image_png' => $m['img'],
-                    'donnees_courbe_json' => $seriePoints,
+                    'donnees_courbe_json' => json_encode($seriePoints),
                     'ordre_affichage' => $m['ord'],
                     'est_actif' => true,
                 ]

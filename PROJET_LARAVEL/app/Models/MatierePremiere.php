@@ -41,6 +41,19 @@ class MatierePremiere extends Model
     ];
 
     /**
+     * Casts d attributs pour compatibilite Laravel 10 et 11.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'prix_actuel' => 'float',
+        'pourcentage_variation' => 'float',
+        'ordre_affichage' => 'integer',
+        'est_actif' => 'boolean',
+        'donnees_courbe_json' => 'array',
+    ];
+
+    /**
      * Conversions de types.
      *
      * @return array<string, string>
@@ -52,7 +65,20 @@ class MatierePremiere extends Model
             'pourcentage_variation' => 'float',
             'ordre_affichage' => 'integer',
             'est_actif' => 'boolean',
+            'donnees_courbe_json' => 'array',
         ];
+    }
+
+    /**
+     * Mutateur garantissant le stockage JSON sous forme de chaîne valide.
+     */
+    public function setDonneesCourbeJsonAttribute(mixed $valeur): void
+    {
+        if (is_array($valeur)) {
+            $this->attributes['donnees_courbe_json'] = json_encode($valeur);
+        } else {
+            $this->attributes['donnees_courbe_json'] = (string) $valeur;
+        }
     }
 
     /**
@@ -74,6 +100,10 @@ class MatierePremiere extends Model
     {
         if (empty($this->donnees_courbe_json)) {
             return [];
+        }
+
+        if (is_array($this->donnees_courbe_json)) {
+            return $this->donnees_courbe_json;
         }
 
         $points = json_decode($this->donnees_courbe_json, true);

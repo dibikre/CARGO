@@ -26,16 +26,16 @@
     @endif
 
     {{-- Current Sparkline Preview --}}
-    <div class="bg-gray-900 p-4 rounded-lg border border-gray-800 flex items-center justify-between text-white">
+    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between text-gray-900">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-gray-800 border border-gray-700 rounded flex items-center justify-center p-1">
-                <img src="{{ asset($matiere->image_png) }}" alt="{{ $matiere->nom }}" class="w-10 h-10 object-contain drop-shadow" />
+            <div class="w-12 h-12 bg-white border border-gray-200 rounded flex items-center justify-center p-1 shadow-sm">
+                <img src="{{ asset($matiere->image_png) }}" alt="{{ $matiere->nom }}" class="w-10 h-10 object-contain" />
             </div>
             <div>
-                <div class="text-xs text-gray-400 font-mono">{{ $matiere->code_symbole }} &bull; {{ $matiere->unite_mesure }}</div>
-                <div class="text-lg font-bold">{{ $matiere->nom }}</div>
-                <div class="text-sm font-mono text-gray-300">
-                    Current: <strong class="text-white">{{ $matiere->prix_formate }} {{ $matiere->devise }}</strong>
+                <div class="text-xs text-gray-500 font-mono">{{ $matiere->code_symbole }} &bull; {{ $matiere->unite_mesure }}</div>
+                <div class="text-lg font-bold text-gray-900">{{ $matiere->nom }}</div>
+                <div class="text-sm font-mono text-gray-600">
+                    Current: <strong class="text-gray-900">{{ $matiere->prix_formate }} {{ $matiere->devise }}</strong>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
             <svg class="w-24 h-8 overflow-visible" viewBox="0 0 80 24">
                 <path d="{{ $matiere->genererTraceSvg(80, 24) }}" fill="none" stroke="{{ $matiere->couleur_tendance }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="text-sm font-mono font-bold px-2 py-1 rounded {{ $matiere->pourcentage_variation >= 0 ? 'text-emerald-400 bg-emerald-950/60' : 'text-rose-400 bg-rose-950/60' }}">
+            <span class="text-sm font-mono font-bold px-2 py-1 rounded border {{ $matiere->pourcentage_variation >= 0 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200' }}">
                 {{ $matiere->pourcentage_variation >= 0 ? '+' : '' }}{{ $matiere->pourcentage_variation }}%
             </span>
         </div>

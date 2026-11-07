@@ -146,8 +146,9 @@ class AccueilControleur extends Controller
         $dernierDocument = DocumentRessource::actif()->latest()->first();
 
         // Les 10 meilleurs tags (mots-clés avec le plus grand nombre d'articles associés)
-        $meilleursTags = Tag::withCount('articles')
-            ->having('articles_count', '>', 0)
+        // Utilisation de has('articles') au lieu de having() pour compatibilité stricte SQLite & MySQL
+        $meilleursTags = Tag::has('articles')
+            ->withCount('articles')
             ->orderByDesc('articles_count')
             ->orderBy('nom')
             ->limit(10)

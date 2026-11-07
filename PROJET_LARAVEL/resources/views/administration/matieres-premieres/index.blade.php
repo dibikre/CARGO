@@ -33,23 +33,23 @@
     </div>
 
     {{-- Live Ticker Preview --}}
-    <div class="bg-gray-900 p-4 rounded-lg border border-gray-800 shadow">
-        <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2 flex items-center justify-between">
+    <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+        <div class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2 flex items-center justify-between">
             <span>Visual Preview (Non-clickable Live Ticker)</span>
-            <span class="text-[11px] text-gray-500">Continuous Scrolling Banner</span>
+            <span class="text-[11px] text-gray-400">White Background Ticker</span>
         </div>
-        <div class="flex items-center gap-6 overflow-x-auto py-2">
+        <div class="flex items-center gap-6 overflow-x-auto py-2 bg-white">
             @forelse ($matieres as $m)
-                <div class="flex-shrink-0 flex items-center gap-3 bg-gray-800/80 border border-gray-700/60 rounded px-3 py-1.5 select-none">
-                    <img src="{{ asset($m->image_png) }}" alt="{{ $m->nom }}" class="w-7 h-7 object-contain drop-shadow" />
+                <div class="flex-shrink-0 flex items-center gap-3 bg-white border border-gray-200 rounded px-3 py-1.5 shadow-sm select-none">
+                    <img src="{{ asset($m->image_png) }}" alt="{{ $m->nom }}" class="w-7 h-7 object-contain" />
                     <div>
-                        <div class="text-[11px] font-bold text-gray-300">{{ $m->nom }}</div>
-                        <div class="text-xs font-mono font-bold text-white">{{ $m->prix_formate }} <span class="text-[9px] text-gray-400">{{ $m->devise }}</span></div>
+                        <div class="text-[11px] font-bold text-gray-700">{{ $m->nom }}</div>
+                        <div class="text-xs font-mono font-bold text-gray-900">{{ $m->prix_formate }} <span class="text-[9px] text-gray-500">{{ $m->devise }}</span></div>
                     </div>
                     <svg class="w-16 h-6 overflow-visible" viewBox="0 0 80 24">
                         <path d="{{ $m->genererTraceSvg(80, 24) }}" fill="none" stroke="{{ $m->couleur_tendance }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <span class="text-xs font-mono font-bold px-1.5 py-0.5 rounded {{ $m->pourcentage_variation >= 0 ? 'text-emerald-400 bg-emerald-950/60' : 'text-rose-400 bg-rose-950/60' }}">
+                    <span class="text-xs font-mono font-bold px-1.5 py-0.5 rounded border {{ $m->pourcentage_variation >= 0 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200' }}">
                         {{ $m->pourcentage_variation >= 0 ? '+' : '' }}{{ $m->pourcentage_variation }}%
                     </span>
                 </div>
