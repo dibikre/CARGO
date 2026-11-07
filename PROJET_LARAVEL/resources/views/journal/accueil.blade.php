@@ -6,22 +6,6 @@
 {{-- Section Hero animé avec transition en fondu (fade) toutes les 7 secondes entre les 5 articles à la une --}}
 @include('journal.composants.hero-diaporama', ['articlesALaUne' => $articlesALaUne])
 
-    {{-- Illustration camion CARGO de transition --}}
-    <div style="background:var(--dark); padding-bottom:16px;">
-        <div class="wrap" style="display:flex; justify-content:flex-end;">
-            <svg viewBox="0 0 600 150" aria-hidden="true" style="display:block; width:min(100%,780px);">
-                <g fill="var(--accent)"><rect x="10" y="22" width="390" height="128"></rect><path d="M410 150V54Q410 46 420 46H492L546 96Q558 108 558 122V150Z"></path></g>
-                <path d="M10 118h390" stroke="rgba(0,0,0,.2)" stroke-width="6"></path>
-                <text x="38" y="100" font-family="Archivo,sans-serif" font-weight="900" font-size="52" letter-spacing="3" fill="#fff">CARGO</text>
-                <rect x="412" y="12" width="9" height="40" fill="#14151C"></rect>
-                <path d="M428 58h60l38 36H428z" fill="#14151C"></path>
-                <rect x="548" y="114" width="10" height="10" fill="#FFC93C"></rect>
-                <path d="M64 132h44M452 132h60" stroke="#14151C" stroke-width="36" stroke-linecap="round"></path>
-                <path d="M64 132h44M452 132h60" stroke="#E6E8EC" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 44"></path>
-            </svg>
-        </div>
-    </div>
-
 {{-- Bandeau En Bref --}}
 @include('journal.composants.bandeau-urgent', ['alertes' => $alertesUrgentes])
 

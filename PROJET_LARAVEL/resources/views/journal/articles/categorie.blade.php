@@ -47,7 +47,7 @@
             <div style="grid-column: 1 / -1; background:#fff; padding:48px; text-align:center; border:1px solid #E2E5EB;">
                 <h3 class="dsp" style="margin:0; font-size:24px; color:var(--dark);">No briefings published in this section yet</h3>
                 <p style="color:var(--text-muted); margin:8px 0 20px;">Check back soon or explore our comprehensive archive of logistics intelligence.</p>
-                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:'Archivo',sans-serif; text-transform:uppercase; font-size:13px; letter-spacing:0.05em; text-decoration:none;">Browse All Intelligence</a>
+                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none;">Browse All Intelligence</a>
             </div>
         @endforelse
     </div>

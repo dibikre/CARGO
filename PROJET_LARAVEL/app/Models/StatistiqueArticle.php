@@ -38,11 +38,37 @@ class StatistiqueArticle extends Model
     protected function casts(): array
     {
         return [
-            'date_statistique' => 'date',
+            'date_statistique' => 'date:Y-m-d',
             'nombre_vues' => 'integer',
             'nombre_lectures_uniques' => 'integer',
             'nombre_partages' => 'integer',
         ];
+    }
+
+    /**
+     * Normaliser la date statistique au format strict Y-m-d pour SQLite et MySQL.
+     */
+    public function setDateStatistiqueAttribute($valeur): void
+    {
+        if ($valeur instanceof \DateTimeInterface) {
+            $this->attributes['date_statistique'] = $valeur->format('Y-m-d');
+        } elseif (is_string($valeur) && strlen($valeur) >= 10) {
+            $this->attributes['date_statistique'] = substr($valeur, 0, 10);
+        } else {
+            $this->attributes['date_statistique'] = $valeur;
+        }
+    }
+
+    /**
+     * Obtenir la date statistique au format strict Y-m-d.
+     */
+    public function getDateStatistiqueAttribute($valeur): ?string
+    {
+        if (empty($valeur)) {
+            return null;
+        }
+
+        return substr((string) $valeur, 0, 10);
     }
 
     /**

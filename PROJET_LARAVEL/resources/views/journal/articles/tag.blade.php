@@ -20,7 +20,7 @@
         @empty
             <div style="grid-column: 1 / -1; background:#fff; padding:48px; text-align:center; border:1px solid #E2E5EB;">
                 <h3 class="dsp" style="margin:0; font-size:24px;">No briefings linked to this topic yet</h3>
-                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:'Archivo',sans-serif; text-transform:uppercase; font-size:13px; letter-spacing:0.05em; text-decoration:none; margin-top:16px;">Browse All Intelligence</a>
+                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none; margin-top:16px;">Browse All Intelligence</a>
             </div>
         @endforelse
     </div>

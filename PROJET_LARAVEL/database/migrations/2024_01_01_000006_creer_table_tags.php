@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('tags');
+
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('nom', 80);

@@ -31,7 +31,7 @@
         @forelse($articles as $index => $article)
             <div style="background:#fff; padding:24px 28px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
                 <div style="display:flex; gap:20px; align-items:baseline;">
-                    <b style="font:900 32px/1 'Archivo',sans-serif; color:var(--yellow); min-width:35px;">
+                    <b style="font:900 calc(32px * var(--echelle-texte))/1 var(--police-titre); color:var(--yellow); min-width:35px;">
                         {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                     </b>
                     <div>

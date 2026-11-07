@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('abonnements_utilisateurs');
+        Schema::dropIfExists('formules_abonnements');
+        Schema::enableForeignKeyConstraints();
+
         Schema::create('formules_abonnements', function (Blueprint $table) {
             $table->id();
             $table->string('nom', 100);

@@ -120,7 +120,7 @@
                         Unlock the full briefing, including proprietary freight rate benchmarks, corridor bottleneck predictions, and strategic logistics data.
                     </p>
                     <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px;">
-                        <a href="{{ route('abonnements.index') }}" style="background: var(--accent); color: #fff; font-weight: 700; padding: 14px 32px; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Archivo', sans-serif;">
+                        <a href="{{ route('abonnements.index') }}" style="background: var(--accent); color: #fff; font-weight: 700; padding: 14px 32px; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--police-titre); font-size: calc(13.5px * var(--echelle-texte));">
                             Subscribe to CARGO PRO
                         </a>
                         <a href="{{ route('login') }}" style="color: #fff; font-weight: 600; font-size: 14px; text-decoration: underline; padding: 8px 12px;">
@@ -186,7 +186,7 @@
                 </div>
 
                 <div>
-                    <button type="submit" style="background: var(--accent); color: #fff; font-weight: 700; padding: 12px 26px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Archivo', sans-serif;">
+                    <button type="submit" style="background: var(--accent); color: #fff; font-weight: 700; padding: 12px 26px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--police-titre); font-size: calc(13px * var(--echelle-texte));">
                         Post Comment
                     </button>
                 </div>

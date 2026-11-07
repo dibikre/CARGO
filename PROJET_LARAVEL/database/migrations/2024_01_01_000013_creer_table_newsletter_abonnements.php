@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('abonnes_newsletter');
+
         Schema::create('abonnes_newsletter', function (Blueprint $table) {
             $table->id();
             $table->string('email', 191)->unique();

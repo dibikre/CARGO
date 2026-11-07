@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('corridors_transport');
+        Schema::dropIfExists('zones_logistiques');
+
         Schema::create('zones_logistiques', function (Blueprint $table) {
             $table->id();
             $table->string('nom', 100);

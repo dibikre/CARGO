@@ -11,6 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('statistiques_articles_journalieres');
+        Schema::dropIfExists('commentaires');
+        Schema::dropIfExists('article_dossier');
+        Schema::dropIfExists('article_corridor');
+        Schema::dropIfExists('article_zone_logistique');
+        Schema::dropIfExists('article_tag');
+        Schema::dropIfExists('articles');
+        Schema::enableForeignKeyConstraints();
+
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('auteur_id')->constrained('users')->cascadeOnDelete();

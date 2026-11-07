@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('article_dossier');
+        Schema::dropIfExists('article_corridor');
+        Schema::dropIfExists('article_zone_logistique');
+        Schema::dropIfExists('article_tag');
+
         // Pivot Article <-> Tag
         Schema::create('article_tag', function (Blueprint $table) {
             $table->foreignId('article_id')->constrained('articles')->cascadeOnDelete();

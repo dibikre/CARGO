@@ -23,7 +23,7 @@
                     The platform administration has deactivated subscriptions. You have complete, unrestricted access to all premium freight analyses, global shipping data, and investigative dossiers with no payment or card required.
                 </p>
             </div>
-            <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:14px 28px; font-family:'Archivo',sans-serif; text-transform:uppercase; font-size:13px; letter-spacing:0.05em; display:inline-block;">
+            <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:14px 28px; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; display:inline-block;">
                 Explore All Free Articles
             </a>
         </div>
@@ -59,7 +59,7 @@
 
                 @if(isset($abonnementsActifs) && !$abonnementsActifs)
                     <div style="margin-top:auto; padding-top:16px;">
-                        <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; display:block; text-align:center; padding:12px 18px; font-weight:700; text-transform:uppercase; font-size:13px; font-family:'Archivo',sans-serif;">
+                        <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; display:block; text-align:center; padding:12px 18px; font-weight:700; text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); font-family:var(--police-titre);">
                             Open Access (Free Now)
                         </a>
                     </div>
