@@ -16,7 +16,7 @@
                 Edit Article: {{ Str::limit($article->titre, 48) }}
             </h1>
             <p class="text-xs text-gray-500 uppercase tracking-wider">
-                Article #{{ $article->id }} &bull; Author: {{ $article->auteur->name ?? 'Staff' }} &bull; Created {{ $article->created_at->format('M d, Y') }}
+                Article #{{ $article->id }} &bull; Author: {{ $article->auteur->name ?? 'Staff' }} &bull; Created {{ $article->created_at->format('M d, Y') }} &bull; <span class="text-gray-900 font-bold font-mono">{{ number_format($article->vues_compteur) }} Unique IP Views</span>
             </p>
         </div>
         <div class="flex items-center gap-3">

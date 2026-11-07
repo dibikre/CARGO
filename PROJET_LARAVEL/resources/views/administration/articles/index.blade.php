@@ -31,6 +31,12 @@
                         <option value="{{ $cat->id }}" {{ $categorieFiltre == $cat->id ? 'selected' : '' }}>{{ $cat->nom }}</option>
                     @endforeach
                 </select>
+                <select name="tri" class="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-xs focus:ring-1 focus:ring-cargo-red focus:outline-none font-medium">
+                    <option value="recent" {{ ($tri ?? 'recent') === 'recent' ? 'selected' : '' }}>Sort: Most Recent</option>
+                    <option value="plus_vus" {{ ($tri ?? '') === 'plus_vus' ? 'selected' : '' }}>Sort: Most Viewed (IPs)</option>
+                    <option value="moins_vus" {{ ($tri ?? '') === 'moins_vus' ? 'selected' : '' }}>Sort: Least Viewed (IPs)</option>
+                    <option value="ancien" {{ ($tri ?? '') === 'ancien' ? 'selected' : '' }}>Sort: Oldest</option>
+                </select>
                 <button type="submit" class="bg-cargo-red hover:bg-cargo-redDark text-white px-4 py-2 rounded text-xs font-heading font-bold uppercase tracking-wider">
                     Filter
                 </button>
@@ -45,6 +51,7 @@
                         <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 uppercase tracking-wider font-semibold">
                             <th class="p-3.5">Title & Author</th>
                             <th class="p-3.5">Category</th>
+                            <th class="p-3.5 text-center">Views (Unique IPs)</th>
                             <th class="p-3.5 text-center">Urgent Alert</th>
                             <th class="p-3.5 text-center">PRO Paywall</th>
                             <th class="p-3.5 text-center">Featured</th>
@@ -64,6 +71,12 @@
                                 <td class="p-3.5">
                                     <span class="bg-gray-100 text-gray-800 px-2 py-0.5 rounded text-[10px] font-semibold">
                                         {{ $article->categorie->nom ?? 'General' }}
+                                    </span>
+                                </td>
+                                <td class="p-3.5 text-center">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-100 text-slate-800 font-mono font-bold text-xs" title="{{ number_format($article->vues_compteur) }} distinct IP readers">
+                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        {{ number_format($article->vues_compteur) }}
                                     </span>
                                 </td>
                                 <td class="p-3.5 text-center">
@@ -106,7 +119,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="p-6 text-center text-gray-500">No articles matched your criteria.</td>
+                                <td colspan="8" class="p-6 text-center text-gray-500">No articles matched your criteria.</td>
                             </tr>
                         @endforelse
                     </tbody>

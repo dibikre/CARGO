@@ -156,6 +156,9 @@
                                 <div class="text-[11px] text-gray-500">{{ $article->categorie->nom ?? 'General' }} &bull; By {{ $article->auteur->name ?? 'Staff' }}</div>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
+                                <span class="text-[10px] font-mono font-bold bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded" title="{{ number_format($article->vues_compteur) }} unique IP views">
+                                    {{ number_format($article->vues_compteur) }} views
+                                </span>
                                 @if ($article->est_reserve_abonnes)
                                     <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">PRO</span>
                                 @endif

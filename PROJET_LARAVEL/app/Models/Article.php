@@ -140,6 +140,14 @@ class Article extends Model implements HasMedia
     }
 
     /**
+     * Vues uniques enregistrées par adresse IP.
+     */
+    public function vuesIp(): HasMany
+    {
+        return $this->hasMany(VueArticleIp::class, 'article_id');
+    }
+
+    /**
      * Portée pour filtrer les articles publiés et visibles du public.
      */
     public function scopePublie(Builder $query): Builder

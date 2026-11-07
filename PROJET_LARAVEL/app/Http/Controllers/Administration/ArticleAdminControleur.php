@@ -29,8 +29,9 @@ class ArticleAdminControleur extends Controller
         $recherche = $requete->input('recherche');
         $statutFiltre = $requete->input('statut');
         $categorieFiltre = $requete->input('categorie_id');
+        $tri = $requete->input('tri', 'recent');
 
-        $requeteArticles = Article::with(['auteur', 'categorie'])->latest('created_at');
+        $requeteArticles = Article::with(['auteur', 'categorie']);
 
         if (! empty($recherche)) {
             $requeteArticles->where('titre', 'like', "%{$recherche}%");
@@ -42,10 +43,17 @@ class ArticleAdminControleur extends Controller
             $requeteArticles->where('categorie_id', $categorieFiltre);
         }
 
+        match ($tri) {
+            'plus_vus' => $requeteArticles->orderByDesc('vues_compteur'),
+            'moins_vus' => $requeteArticles->orderBy('vues_compteur'),
+            'ancien' => $requeteArticles->oldest('created_at'),
+            default => $requeteArticles->latest('created_at'),
+        };
+
         $articles = $requeteArticles->paginate(15)->withQueryString();
         $categories = Categorie::orderBy('nom')->get();
 
-        return view('administration.articles.index', compact('articles', 'categories', 'recherche', 'statutFiltre', 'categorieFiltre'));
+        return view('administration.articles.index', compact('articles', 'categories', 'recherche', 'statutFiltre', 'categorieFiltre', 'tri'));
     }
 
     /**

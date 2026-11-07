@@ -49,8 +49,8 @@ class ArticleControleur extends Controller
             ->publie()
             ->firstOrFail();
 
-        // Enregistrer la vue quotidienne
-        $this->serviceStatistique->enregistrerVue($article);
+        // Enregistrer la consultation unique basée sur l'adresse IP du lecteur
+        $this->serviceStatistique->enregistrerVueParIp($article, $request->ip(), $request->userAgent());
 
         // Vérifier l'accès réservé aux abonnés (Paywall)
         $aAccesComplet = $this->serviceAbonnement->peutConsulterArticle($request->user(), $article);
