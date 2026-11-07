@@ -132,6 +132,10 @@ Route::prefix('admin')->group(function () {
         // Supervision globale des articles & alertes
         Route::prefix('articles')->name('articles.')->group(function () {
             Route::get('/', [ArticleAdminControleur::class, 'index'])->name('index');
+            Route::get('/creer', [ArticleAdminControleur::class, 'create'])->name('create');
+            Route::post('/', [ArticleAdminControleur::class, 'store'])->name('store');
+            Route::get('/{id}/modifier', [ArticleAdminControleur::class, 'edit'])->name('edit');
+            Route::put('/{id}', [ArticleAdminControleur::class, 'update'])->name('update');
             Route::post('/{id}/alerte-urgente', [ArticleAdminControleur::class, 'basculerAlerte'])->name('alerte');
             Route::post('/{id}/paywall-pro', [ArticleAdminControleur::class, 'basculerPro'])->name('pro');
             Route::post('/{id}/a-la-une', [ArticleAdminControleur::class, 'basculerAlaUne'])->name('alaune');

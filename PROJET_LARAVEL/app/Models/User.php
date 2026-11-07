@@ -110,10 +110,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Vérifier si l'utilisateur fait partie de la rédaction.
+     * Vérifier si l'utilisateur possède des privilèges d'administrateur.
+     */
+    public function estAdministrateur(): bool
+    {
+        return in_array($this->role, ['super_admin', 'administrateur', 'admin'], true);
+    }
+
+    /**
+     * Vérifier si l'utilisateur fait partie de la rédaction ou de l'administration éditoriale.
      */
     public function estMembreRedaction(): bool
     {
-        return in_array($this->role, ['super_admin', 'redacteur_en_chef', 'journaliste', 'redacteur'], true);
+        return in_array($this->role, ['super_admin', 'administrateur', 'admin', 'redacteur_en_chef', 'journaliste', 'redacteur'], true);
     }
 }

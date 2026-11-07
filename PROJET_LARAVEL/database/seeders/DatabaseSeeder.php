@@ -7,6 +7,7 @@ use App\Models\Categorie;
 use App\Models\CorridorTransport;
 use App\Models\FormuleAbonnement;
 use App\Models\User;
+use App\Models\VideoLogistique;
 use App\Models\ZoneLogistique;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -214,5 +215,34 @@ class DatabaseSeeder extends Seeder
 
         // 6. Articles complémentaires pour tous les modes de transport
         $this->call(ArticlesFretSeeder::class);
+
+        // 7. Vidéos logistiques de démonstration pour la barre latérale
+        VideoLogistique::firstOrCreate(
+            ['slug' => 'automated-container-terminals-maasvlakte-ii'],
+            [
+                'user_id' => $superAdmin->id,
+                'titre' => 'Automated Container Terminals: Maasvlakte II Operations',
+                'url_embed' => 'https://www.youtube.com/embed/ScMzIvxBSi4',
+                'source' => 'Port of Rotterdam Logistics',
+                'duree' => '05:14',
+                'description' => 'Inside Europe\'s most automated deep-sea container terminal handling 24,000 TEU ultra-large vessels.',
+                'est_actif' => true,
+                'ordre_affichage' => 1,
+            ]
+        );
+
+        VideoLogistique::firstOrCreate(
+            ['slug' => 'intermodal-freight-trains-corridor-operations'],
+            [
+                'user_id' => $redacteur->id,
+                'titre' => 'Intermodal Freight Trains: Trans-European Corridor Operations',
+                'url_embed' => 'https://www.youtube.com/embed/jNQXAC9IVRw',
+                'source' => 'European Rail Logistics Desk',
+                'duree' => '04:02',
+                'description' => 'High-frequency rail shuttle linking sea ports to dry ports and continental distribution hubs.',
+                'est_actif' => true,
+                'ordre_affichage' => 2,
+            ]
+        );
     }
 }

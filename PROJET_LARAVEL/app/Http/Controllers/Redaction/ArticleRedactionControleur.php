@@ -42,8 +42,12 @@ class ArticleRedactionControleur extends Controller
     /**
      * Formulaire de rédaction d'un nouvel article.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (request()->user()?->estAdministrateur()) {
+            return redirect()->route('admin.articles.create');
+        }
+
         $categories = Categorie::actif()->get();
         $tags = Tag::all();
         $zones = ZoneLogistique::actif()->get();
@@ -108,14 +112,22 @@ class ArticleRedactionControleur extends Controller
             $article->corridors()->sync($donnees['corridors']);
         }
 
+        if ($request->user()->estAdministrateur()) {
+            return redirect()->route('admin.articles.index')->with('succes', 'Article enregistré avec succès.');
+        }
+
         return redirect()->route('redaction.articles.index')->with('succes', 'Article enregistré avec succès.');
     }
 
     /**
      * Formulaire d'édition d'un article existant avec éditeur HTML.
      */
-    public function edit(Article $article): View
+    public function edit(Article $article): View|RedirectResponse
     {
+        if (request()->user()?->estAdministrateur()) {
+            return redirect()->route('admin.articles.edit', $article->id);
+        }
+
         $categories = Categorie::actif()->get();
         $tags = Tag::all();
         $zones = ZoneLogistique::actif()->get();
@@ -168,6 +180,10 @@ class ArticleRedactionControleur extends Controller
         $article->tags()->sync($donnees['tags'] ?? []);
         $article->zonesLogistiques()->sync($donnees['zones'] ?? []);
         $article->corridors()->sync($donnees['corridors'] ?? []);
+
+        if ($request->user()->estAdministrateur()) {
+            return redirect()->route('admin.articles.index')->with('succes', 'Article mis à jour avec succès.');
+        }
 
         return redirect()->route('redaction.articles.index')->with('succes', 'Article mis à jour avec succès.');
     }

@@ -11,7 +11,7 @@
                 <p class="text-xs text-gray-500 uppercase tracking-wider">Logistics publication metrics, subscriber operations & security telemetry</p>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('redaction.articles.create') }}" class="bg-cargo-red hover:bg-cargo-redDark text-white font-heading font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded shadow transition flex items-center gap-1.5">
+                <a href="{{ route('admin.articles.create') }}" class="bg-cargo-red hover:bg-cargo-redDark text-white font-heading font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded shadow transition flex items-center gap-1.5">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     New Article
                 </a>

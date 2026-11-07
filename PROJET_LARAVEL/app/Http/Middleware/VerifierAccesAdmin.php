@@ -38,7 +38,7 @@ class VerifierAccesAdmin
         }
 
         // 3. Vérification des privilèges d'administration
-        $rolesAutorises = ['super_admin', 'administrateur'];
+        $rolesAutorises = ['super_admin', 'administrateur', 'admin'];
         $aRoleAutorise = in_array($utilisateur->role, $rolesAutorises, true);
 
         if (! $aRoleAutorise && method_exists($utilisateur, 'hasAnyRole')) {

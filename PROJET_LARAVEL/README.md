@@ -94,3 +94,4 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
 * **Langue du Code** : 100% en français pour les identifiants internes (classes, variables, méthodes, migrations).
 * **Interface Graphique** : Textes en anglais professionnel, design sobre avec boutons d'action rouges (`#D4201A`), fond clair et polices Archivo / IBM Plex Sans.
 * **Hébergement Partagé** : Respect de la limite MySQL d'index à 191 caractères (`Schema::defaultStringLength(191)`).
+* **RAFRAICHRIR LA BD** : php artisan migrate:fresh --seed

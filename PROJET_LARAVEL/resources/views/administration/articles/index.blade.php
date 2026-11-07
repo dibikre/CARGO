@@ -9,7 +9,7 @@
                 <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">Articles & Real-Time Alerts Control</h1>
                 <p class="text-xs text-gray-500 uppercase tracking-wider">Supervise editorial dispatches, urgent breaking banners & paywall flags</p>
             </div>
-            <a href="{{ route('redaction.articles.create') }}" class="bg-cargo-red hover:bg-cargo-redDark text-white font-heading font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded shadow transition">
+            <a href="{{ route('admin.articles.create') }}" class="bg-cargo-red hover:bg-cargo-redDark text-white font-heading font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded shadow transition">
                 + Create Article
             </a>
         </div>
@@ -96,7 +96,7 @@
                                     </span>
                                 </td>
                                 <td class="p-3.5 text-right space-x-2">
-                                    <a href="{{ route('redaction.articles.edit', $article->id) }}" class="text-xs font-semibold text-gray-600 hover:text-cargo-red">Edit</a>
+                                    <a href="{{ route('admin.articles.edit', $article->id) }}" class="text-xs font-semibold text-gray-600 hover:text-cargo-red">Edit</a>
                                     <form action="{{ route('admin.articles.destroy', $article->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Confirm deletion of this article?');">
                                         @csrf
                                         @method('DELETE')
