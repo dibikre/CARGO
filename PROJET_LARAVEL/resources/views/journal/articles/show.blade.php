@@ -133,18 +133,22 @@
 
         {{-- Tags & Supply Chain Corridors --}}
         <div style="margin-top: 40px; padding: 24px; background: #fff; border: 1px solid #E2E5EB;">
-            <div class="kick" style="color: var(--dark); margin-bottom: 12px; font-size: 11px;">Mots-clés &amp; Corridors sous surveillance</div>
+            <div class="kick" style="color: var(--dark); margin-bottom: 12px; font-size: 11px;">
+                {{ ($corridorsActifs ?? true) && $article->corridors->isNotEmpty() ? 'Mots-clés & Corridors sous surveillance' : 'Mots-clés de l\'article' }}
+            </div>
             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                 @foreach($article->tags as $tag)
                     <a href="{{ route('tags.articles', $tag->slug) }}" style="background: #F1F3F7; border: 1px solid #D1D5DB; padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--dark);">
                         #{{ $tag->nom }}
                     </a>
                 @endforeach
-                @foreach($article->corridors as $corridor)
-                    <a href="{{ route('corridors.articles', $corridor->slug) }}" style="background: var(--yellow); color: #14151C; padding: 6px 14px; font-size: 12px; font-weight: 700;">
-                        Corridor : {{ $corridor->nom }}
-                    </a>
-                @endforeach
+                @if($corridorsActifs ?? true)
+                    @foreach($article->corridors as $corridor)
+                        <a href="{{ route('corridors.articles', $corridor->slug) }}" style="background: var(--yellow); color: #14151C; padding: 6px 14px; font-size: 12px; font-weight: 700;">
+                            Corridor : {{ $corridor->nom }}
+                        </a>
+                    @endforeach
+                @endif
             </div>
         </div>
 

@@ -106,4 +106,28 @@ class ConfigurationSysteme extends Model
 
         return $nouvelEtat;
     }
+
+    /**
+     * Vérifier si la fonctionnalité des corridors de fret est active côté visiteur.
+     */
+    public static function corridorsSontActifs(): bool
+    {
+        $valeur = self::obtenirValeur('corridors_actifs', '1');
+        return $valeur === '1' || $valeur === true || $valeur === 1;
+    }
+
+    /**
+     * Basculer l'activation publique des corridors de fret et de la gestion des perturbations.
+     */
+    public static function basculerCorridors(): bool
+    {
+        $nouvelEtat = ! self::corridorsSontActifs();
+        self::definirValeur(
+            'corridors_actifs',
+            $nouvelEtat ? '1' : '0',
+            'Affichage public des corridors de fret et alertes de perturbations'
+        );
+
+        return $nouvelEtat;
+    }
 }

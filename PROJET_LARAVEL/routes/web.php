@@ -23,9 +23,11 @@ use App\Http\Controllers\Administration\NewsletterAdminControleur;
 use App\Http\Controllers\Administration\TableauBordAdminControleur;
 use App\Http\Controllers\Administration\UtilisateurAdminControleur;
 use App\Http\Controllers\Redaction\ArticleRedactionControleur;
+use App\Http\Controllers\Redaction\ConnexionRedactionControleur;
 use App\Http\Controllers\Redaction\ModerationCommentaireControleur;
 use App\Http\Controllers\Redaction\VideoRedactionControleur;
 use App\Http\Middleware\VerifierAccesAdmin;
+use App\Http\Middleware\VerifierAccesRedaction;
 use Illuminate\Support\Facades\Route;
 
 // --- Pages Publiques du Journal ---
@@ -87,27 +89,35 @@ Route::prefix('ressources')->name('ressources.')->group(function () {
     Route::get('/{slug}/telecharger', [DocumentRessourceControleur::class, 'telecharger'])->name('telecharger');
 });
 
-// --- Espace Rédaction et Modération (Authentifié) ---
-Route::middleware(['auth'])->prefix('redaction')->name('redaction.')->group(function () {
-    // Gestion des articles
-    Route::resource('articles', ArticleRedactionControleur::class)->except(['show']);
-    Route::post('/articles/{id}/publier', [ArticleRedactionControleur::class, 'publier'])->name('articles.publier');
-    Route::post('/articles/{id}/archiver', [ArticleRedactionControleur::class, 'archiver'])->name('articles.archiver');
+// --- Espace Rédaction et Modération (Portail Journalistes & Desk Éditorial) ---
+Route::prefix('redaction')->name('redaction.')->group(function () {
+    // Authentification dédiée à la rédaction (différente de l'admin et de l'abonné PRO)
+    Route::get('/connexion', [ConnexionRedactionControleur::class, 'afficherFormulaire'])->name('connexion');
+    Route::post('/connexion', [ConnexionRedactionControleur::class, 'connecter'])->name('connexion.post');
+    Route::post('/deconnexion', [ConnexionRedactionControleur::class, 'deconnecter'])->name('deconnexion');
 
-    // Modération des commentaires
-    Route::prefix('commentaires')->name('commentaires.')->group(function () {
-        Route::get('/', [ModerationCommentaireControleur::class, 'index'])->name('index');
-        Route::post('/{id}/approuver', [ModerationCommentaireControleur::class, 'approuver'])->name('approuver');
-        Route::post('/{id}/rejeter', [ModerationCommentaireControleur::class, 'rejeter'])->name('rejeter');
-        Route::post('/{id}/spam', [ModerationCommentaireControleur::class, 'marquerSpam'])->name('spam');
-        Route::delete('/{id}', [ModerationCommentaireControleur::class, 'destroy'])->name('destroy');
-    });
+    // Desk éditorial protégé par authentification et rôle de rédaction strict
+    Route::middleware(['auth', VerifierAccesRedaction::class])->group(function () {
+        // Gestion des articles
+        Route::resource('articles', ArticleRedactionControleur::class)->except(['show']);
+        Route::post('/articles/{id}/publier', [ArticleRedactionControleur::class, 'publier'])->name('articles.publier');
+        Route::post('/articles/{id}/archiver', [ArticleRedactionControleur::class, 'archiver'])->name('articles.archiver');
 
-    // Gestion des vidéos logistiques embarquées (embeds)
-    Route::prefix('videos')->name('videos.')->group(function () {
-        Route::get('/', [VideoRedactionControleur::class, 'index'])->name('index');
-        Route::post('/', [VideoRedactionControleur::class, 'store'])->name('store');
-        Route::delete('/{id}', [VideoRedactionControleur::class, 'destroy'])->name('destroy');
+        // Modération des commentaires
+        Route::prefix('commentaires')->name('commentaires.')->group(function () {
+            Route::get('/', [ModerationCommentaireControleur::class, 'index'])->name('index');
+            Route::post('/{id}/approuver', [ModerationCommentaireControleur::class, 'approuver'])->name('approuver');
+            Route::post('/{id}/rejeter', [ModerationCommentaireControleur::class, 'rejeter'])->name('rejeter');
+            Route::post('/{id}/spam', [ModerationCommentaireControleur::class, 'marquerSpam'])->name('spam');
+            Route::delete('/{id}', [ModerationCommentaireControleur::class, 'destroy'])->name('destroy');
+        });
+
+        // Gestion des vidéos logistiques embarquées (embeds)
+        Route::prefix('videos')->name('videos.')->group(function () {
+            Route::get('/', [VideoRedactionControleur::class, 'index'])->name('index');
+            Route::post('/', [VideoRedactionControleur::class, 'store'])->name('store');
+            Route::delete('/{id}', [VideoRedactionControleur::class, 'destroy'])->name('destroy');
+        });
     });
 });
 
@@ -151,6 +161,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [CorridorAdminControleur::class, 'index'])->name('index');
             Route::post('/', [CorridorAdminControleur::class, 'store'])->name('store');
             Route::put('/{id}/statut', [CorridorAdminControleur::class, 'updateStatut'])->name('statut');
+            Route::post('/basculer-visibilite', [CorridorAdminControleur::class, 'basculerVisibilitePublique'])->name('basculer');
         });
 
         // Piste d'audit et logs de sécurité

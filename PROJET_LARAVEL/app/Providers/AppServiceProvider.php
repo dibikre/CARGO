@@ -56,14 +56,17 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        // Partager le statut des abonnements (mode 100% gratuit si inactif)
+        // Partager le statut des abonnements et des corridors avec l'ensemble des vues
         \Illuminate\Support\Facades\View::composer(['layouts.*', 'journal.*', 'administration.*'], function ($vue) {
             try {
                 $abonnementsActifs = \App\Models\ConfigurationSysteme::abonnementsSontActifs();
+                $corridorsActifs = \App\Models\ConfigurationSysteme::corridorsSontActifs();
             } catch (\Throwable) {
                 $abonnementsActifs = true;
+                $corridorsActifs = true;
             }
             $vue->with('abonnementsActifs', $abonnementsActifs);
+            $vue->with('corridorsActifs', $corridorsActifs);
         });
     }
 }

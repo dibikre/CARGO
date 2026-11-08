@@ -11,6 +11,35 @@
             </div>
         </div>
 
+        {{-- Commutateur : Activation / Désactivation de la fonctionnalité côté Visiteur --}}
+        <div class="p-5 rounded-lg border {{ $corridorsActifs ? 'bg-white border-gray-200' : 'bg-amber-50 border-amber-300' }} shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded {{ $corridorsActifs ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-amber-100 text-amber-900 border border-amber-300' }}">
+                        <span class="w-2 h-2 rounded-full {{ $corridorsActifs ? 'bg-emerald-500' : 'bg-amber-500' }}"></span>
+                        {{ $corridorsActifs ? 'Feature Active on Visitor Site' : 'Feature Deactivated for Visitors' }}
+                    </span>
+                    <span class="text-[11px] font-mono text-gray-400">corridors_actifs</span>
+                </div>
+                <h2 class="text-base font-heading font-black text-cargo-dark">
+                    {{ $corridorsActifs ? 'Freight Corridors & Perturbation Status are Visible to Visitors' : 'Freight Corridors & Disruption Management are Hidden from Visitors' }}
+                </h2>
+                <p class="text-xs text-gray-600 leading-relaxed max-w-2xl">
+                    {{ $corridorsActifs 
+                        ? 'Visitors can access dedicated corridor tracking pages (/corridors/{slug}) and view live perturbation badges on articles.'
+                        : 'The feature is currently disabled on the public site. Public corridor routes return 404 and corridor badges are hidden from articles.' }}
+                </p>
+            </div>
+
+            <form action="{{ route('admin.corridors.basculer') }}" method="POST" onsubmit="return confirm('{{ $corridorsActifs ? 'Deactivate the freight corridors and disruption management feature for visitors?' : 'Re-activate the freight corridors and disruption management feature for visitors?' }}');" class="shrink-0">
+                @csrf
+                <button type="submit" class="w-full sm:w-auto py-2.5 px-4 rounded font-heading font-bold uppercase text-xs tracking-wider transition shadow flex items-center justify-center gap-2 {{ $corridorsActifs ? 'bg-cargo-red hover:bg-cargo-redDark text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                    {{ $corridorsActifs ? 'Deactivate for Visitors' : 'Activate for Visitors' }}
+                </button>
+            </form>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {{-- Formulaire de nouveau corridor --}}
             <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm h-fit">

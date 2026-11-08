@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ConfigurationSysteme;
 use App\Models\CorridorTransport;
 use App\Models\DocumentRessource;
 use App\Models\DossierThematique;
@@ -110,8 +111,11 @@ class AccueilControleur extends Controller
             ];
         }
 
-        // Corridors sous surveillance
-        $corridorsSousSurveillance = CorridorTransport::actif()->limit(6)->get();
+        // Corridors sous surveillance (si la fonctionnalité est activée côté visiteur)
+        $corridorsActifs = ConfigurationSysteme::corridorsSontActifs();
+        $corridorsSousSurveillance = $corridorsActifs
+            ? CorridorTransport::actif()->limit(6)->get()
+            : collect();
 
         // Les 6 meilleurs articles de la semaine (les plus vus sur les 7 derniers jours)
         $articlesTopSemaine = Article::with(['auteur', 'categorie'])

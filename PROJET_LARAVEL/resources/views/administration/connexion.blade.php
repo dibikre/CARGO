@@ -103,7 +103,20 @@
             </div>
         </div>
 
-        <div class="text-center mt-6">
+        {{-- Liens vers les autres portails --}}
+        <div class="mt-6 bg-cargo-surface/60 border border-gray-800 rounded-lg p-3.5 text-xs text-gray-400 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Other Access Portals:</div>
+            <div class="flex items-center justify-between">
+                <span>Accredited Journalist or Editor?</span>
+                <a href="{{ route('redaction.connexion') }}" class="text-cargo-yellow font-bold hover:underline">Newsroom Desk &rarr;</a>
+            </div>
+            <div class="flex items-center justify-between border-t border-gray-800/80 pt-1.5">
+                <span>CARGO PRO Reader or Subscriber?</span>
+                <a href="{{ route('login') }}" class="text-gray-300 font-bold hover:underline">Subscriber Portal &rarr;</a>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
             <a href="{{ route('accueil') }}" class="text-xs text-gray-400 hover:text-white transition">Return to CARGO Public Edition</a>
         </div>
     </div>

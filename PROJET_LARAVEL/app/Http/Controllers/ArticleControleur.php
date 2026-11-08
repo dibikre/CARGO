@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Categorie;
+use App\Models\ConfigurationSysteme;
 use App\Models\CorridorTransport;
 use App\Models\Tag;
 use App\Models\ZoneLogistique;
@@ -178,6 +179,10 @@ class ArticleControleur extends Controller
      */
     public function parCorridor(string $slug): View
     {
+        if (! ConfigurationSysteme::corridorsSontActifs()) {
+            abort(404, 'The freight corridors monitoring feature is currently disabled.');
+        }
+
         $corridor = CorridorTransport::where('slug', $slug)->first();
 
         if (! $corridor) {

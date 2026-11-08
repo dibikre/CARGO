@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Models\ConfigurationSysteme;
 use App\Models\CorridorTransport;
 use App\Models\JournalActivite;
 use Illuminate\Http\RedirectResponse;
@@ -23,7 +24,9 @@ class CorridorAdminControleur extends Controller
             ->orderBy('nom', 'asc')
             ->get();
 
-        return view('administration.corridors.index', compact('corridors'));
+        $corridorsActifs = ConfigurationSysteme::corridorsSontActifs();
+
+        return view('administration.corridors.index', compact('corridors', 'corridorsActifs'));
     }
 
     /**
@@ -96,5 +99,29 @@ class CorridorAdminControleur extends Controller
         );
 
         return back()->with('succes', 'New freight corridor registered.');
+    }
+
+    /**
+     * Basculer l'activation publique de la fonctionnalité des corridors côté visiteur.
+     */
+    public function basculerVisibilitePublique(): RedirectResponse
+    {
+        $nouvelEtat = ConfigurationSysteme::basculerCorridors();
+
+        JournalActivite::enregistrer(
+            description: $nouvelEtat
+                ? "Reactivated public 'Freight Corridors & Disruption Management' feature for visitors"
+                : "Deactivated 'Freight Corridors & Disruption Management' feature on the visitor-facing website",
+            nomLog: 'administration',
+            evenement: 'bascule_visibilite_corridors',
+            auteur: Auth::user(),
+            donnees: ['corridors_actifs' => $nouvelEtat]
+        );
+
+        $message = $nouvelEtat
+            ? 'Freight corridors and disruption alerts are now ACTIVE on the visitor site.'
+            : 'Freight corridors and disruption management are now DEACTIVATED on the visitor site.';
+
+        return back()->with('succes', $message);
     }
 }

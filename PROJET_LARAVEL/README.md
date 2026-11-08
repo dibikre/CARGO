@@ -58,15 +58,27 @@ php artisan optimize:clear
 
 ---
 
+## Les 3 Portails de Connexion Distincts
+
+La plateforme CARGO sépare strictement ses trois publics d'utilisateurs avec des portails de connexion autonomes, dotés de designs spécifiques, de contrôles RBAC dédiés et de redirections adaptées :
+
+| Portail | URL d'accès | Public visé & Rôles | Caractéristiques |
+| :--- | :--- | :--- | :--- |
+| **Portail Rédaction (Newsroom Desk)** | **`/redaction/connexion`** | **Journalistes & Rédacteurs** (`journaliste`, `redacteur`, `redacteur_en_chef`) | Workspace éditorial, création/modification d'articles, calendrier de publication, embeds vidéo et modération. *Rejette les abonnés non habilités.* |
+| **Console Administration** | **`/admin/connexion`** | **Administrateurs & Super Admins** (`super_admin`, `administrateur`) | Console haute sécurité sombre, surveillance opérationnelle, gestion des utilisateurs, audit, abonnements et corridors. |
+| **Portail Abonnés PRO (Lecteurs)** | **`/login`** | **Abonnés & Lecteurs** (`abonne`, `lecteur`) | Déverrouillage des analyses exclusives sous paywall PRO, consultation des dossiers et gestion de son abonnement (`/mon-abonnement`). |
+
+---
+
 ## Identifiants des Comptes de Test (Pré-configurés)
 
 Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration sont immédiatement prêts :
 
-| Rôle | Email | Mot de passe | Espace d'accès |
-| :--- | :--- | :--- | :--- |
-| **Super Administrateur** | `admin@cargo-logistics.com` | `CargoAdmin2026!` | `/admin/connexion` (Console Haute Sécurité) |
-| **Journaliste / Rédacteur** | `journaliste@cargo-logistics.com` | `CargoRedac2026!` | `/redaction/articles` (Gestion éditoriale) |
-| **Abonné PRO** | `abonne@chargeur-global.com` | `CargoPro2026!` | `/` (Articles exclusifs paywall) |
+| Rôle | Email | Mot de passe | Portail de connexion dédié | Destination post-connexion |
+| :--- | :--- | :--- | :--- | :--- |
+| **Super Administrateur** | `admin@cargo-logistics.com` | `CargoAdmin2026!` | **`/admin/connexion`** | Console d'Administration (`/admin`) |
+| **Journaliste / Rédacteur** | `journaliste@cargo-logistics.com` | `CargoRedac2026!` | **`/redaction/connexion`** | Desk Éditorial (`/redaction/articles`) |
+| **Abonné PRO** | `abonne@chargeur-global.com` | `CargoPro2026!` | **`/login`** | Espace Abonné (`/mon-abonnement`) |
 
 ---
 
@@ -97,8 +109,12 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
    * Protection anti-bruteforce (limitation stricte à 5 essais avec lockout de 15 minutes).
    * Champ piège invisible *honeypot* anti-robot.
    * Traçabilité d'audit immuable de toutes les actions et tentatives d'intrusion.
-   * Bascule en un clic des alertes urgentes et du statut opérationnel des corridors.
-3. **Espace Rédaction (`/redaction/articles`) & Gestion Éditoriale** :
+   * **Supervision des Corridors & Commutateur de Visibilité (`/admin/corridors`)** :
+     - Surveillance opérationnelle (fluide, ralenti, congestionné, bloqué).
+     - Commutateur de visibilité publique `corridors_actifs` pour activer ou désactiver d'un seul clic la consultation des corridors côté visiteur (coupure 404 et masquage des badges).
+   * Bascule en un clic des alertes urgentes (*Breaking News*).
+3. **Espace Rédaction (`/redaction/articles`) & Desk Éditorial** :
+   * **Page de connexion dédiée (`/redaction/connexion`)** : portail d'authentification réservé aux journalistes et rédacteurs, distinct de l'administration et des abonnés PRO.
    * Rédaction d'articles avec formatage WYSIWYG/HTML, ajout de tags (max 4), corridor et classification par transport.
    * **Conversion & Compression WebP Automatique (Exclusif aux Articles)** :
      - Toute image d'article téléversée (`fichier_image`) ou rapatriée depuis une URL distante est automatiquement interceptée par `ServiceGestionImage` et convertie au format WebP compressé (`.webp`) via `ServiceConversionWebp`.
