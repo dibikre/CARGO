@@ -17,14 +17,14 @@
     @if(isset($abonnementsActifs) && !$abonnementsActifs)
         <div style="background:#ECFDF5; border:2px solid #10B981; padding:28px 32px; margin-bottom:36px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px;">
             <div style="max-width:680px;">
-                <span class="kick" style="color:#047857; font-size:12px; display:block; margin-bottom:6px;">CARGO OPEN ACCESS ACTIVE</span>
-                <h2 class="dsp" style="margin:0 0 8px; font-size:26px; color:#064E3B;">All Subscriptions Are Currently Free & Unlocked</h2>
+                <span class="kick" style="color:#047857; font-size:12px; display:block; margin-bottom:6px;">CARGO ACCÈS LIBRE ACTIF</span>
+                <h2 class="dsp" style="margin:0 0 8px; font-size:26px; color:#064E3B;">Toutes les formules sont actuellement gratuites et en libre accès</h2>
                 <p style="margin:0; color:#065F46; font-size:15px; line-height:1.6;">
-                    The platform administration has deactivated subscriptions. You have complete, unrestricted access to all premium freight analyses, global shipping data, and investigative dossiers with no payment or card required.
+                    La rédaction et l'administration ont désactivé la facturation des abonnements. Vous bénéficiez d'un accès libre, intégral et illimité à l'ensemble des analyses fret, données maritimes et dossiers d'investigation sans aucun paiement requis.
                 </p>
             </div>
             <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:14px 28px; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; display:inline-block;">
-                Explore All Free Articles
+                Explorer tous les articles
             </a>
         </div>
     @endif
@@ -60,7 +60,7 @@
                 @if(isset($abonnementsActifs) && !$abonnementsActifs)
                     <div style="margin-top:auto; padding-top:16px;">
                         <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; display:block; text-align:center; padding:12px 18px; font-weight:700; text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); font-family:var(--police-titre);">
-                            Open Access (Free Now)
+                            Accès Libre (Sans Frais)
                         </a>
                     </div>
                 @else

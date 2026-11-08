@@ -1,6 +1,6 @@
 @extends('administration.layouts.admin')
 
-@section('titre', 'Edit Article #' . $article->id . ' — Security Console')
+@section('titre', 'Modifier l\'article #' . $article->id . ' — Administration')
 
 @section('contenu')
 <div class="space-y-6 max-w-5xl mx-auto">
@@ -9,7 +9,7 @@
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <a href="{{ route('admin.articles.index') }}" class="text-xs font-semibold text-gray-500 hover:text-cargo-red uppercase tracking-wider">
-                    &larr; Articles Control
+                    &larr; Gestion des articles
                 </a>
             </div>
             <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">

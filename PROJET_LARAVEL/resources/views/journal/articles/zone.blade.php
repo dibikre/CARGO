@@ -5,7 +5,7 @@
 @section('contenu')
 <div style="background:var(--dark); color:#fff; padding:48px 0 36px;">
     <div class="wrap">
-        <span class="kick" style="color:var(--yellow);">Regional Logistics Zone @if($zone->code_region)· {{ $zone->code_region }} @endif</span>
+        <span class="kick" style="color:var(--yellow);">Zone logistique régionale @if($zone->code_region)· {{ $zone->code_region }} @endif</span>
         <h1 class="dsp" style="margin:12px 0 0; font-size:48px; font-weight:900;">{{ $zone->nom }}</h1>
         @if($zone->description)
             <p style="color:#C9CCD6; font-size:18px; margin-top:8px;">{{ $zone->description }}</p>
@@ -19,8 +19,8 @@
             @include('journal.composants.carte-article', ['article' => $article, 'theme' => $loop->iteration % 2 === 0 ? 'sombre' : 'clair'])
         @empty
             <div style="grid-column: 1 / -1; background:#fff; padding:48px; text-align:center; border:1px solid #E2E5EB;">
-                <h3 class="dsp" style="margin:0; font-size:24px;">No logistics briefings recorded in this zone</h3>
-                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none; margin-top:16px;">Browse All Intelligence</a>
+                <h3 class="dsp" style="margin:0; font-size:24px;">Aucun article enregistré pour cette zone</h3>
+                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none; margin-top:16px;">Voir tous les articles</a>
             </div>
         @endforelse
     </div>

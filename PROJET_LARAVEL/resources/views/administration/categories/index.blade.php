@@ -1,27 +1,27 @@
 @extends('administration.layouts.admin')
 
-@section('titre', 'Editorial Categories & Sections')
+@section('titre', 'Rubriques & Sections — Administration')
 
 @section('contenu')
 <div class="space-y-6">
-    {{-- Header --}}
+    {{-- En-tête --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-lg border border-gray-200">
         <div>
-            <h1 class="text-2xl font-heading font-black text-cargo-dark">Editorial Sections & Taxonomy</h1>
-            <p class="text-sm text-gray-500 mt-1">Configure logistics categories, custom background banners, and contrast scrim protection.</p>
+            <h1 class="text-2xl font-heading font-black text-cargo-dark">Sections Éditoriales & Rubriques</h1>
+            <p class="text-sm text-gray-500 mt-1">Configuration des rubriques logistiques, visuels d'en-tête et protections de contraste.</p>
         </div>
         <div class="text-sm font-semibold text-gray-600 bg-gray-50 px-4 py-2 rounded border border-gray-200">
-            Total Sections: <strong class="text-cargo-dark font-black">{{ $categories->count() }}</strong>
+            Total Rubriques : <strong class="text-cargo-dark font-black">{{ $categories->count() }}</strong>
         </div>
     </div>
 
-    {{-- Grid Layout: Add New + List --}}
+    {{-- Disposition : Formulaire + Liste --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {{-- Create Form Card --}}
+        {{-- Carte Formulaire Création --}}
         <div class="bg-white p-6 rounded-lg border border-gray-200 h-fit">
             <h2 class="text-lg font-heading font-bold text-cargo-dark mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
                 <svg class="w-5 h-5 text-cargo-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Create Section
+                Créer une rubrique
             </h2>
 
             <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">

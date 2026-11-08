@@ -76,8 +76,8 @@
 </head>
 <body>
     @if(isset($abonnementsActifs) && !$abonnementsActifs)
-        <aside aria-label="Open access banner" style="background:#0F766E; color:#fff; font-size:calc(12.5px * var(--echelle-texte)); font-weight:700; text-align:center; padding:9px 16px; letter-spacing:0.04em;">
-            CARGO OPEN ACCESS — Subscriptions are currently disabled by administration. All premium intelligence briefings, data dossiers, and analyses are 100% free for all readers.
+        <aside aria-label="Bandeau accès libre" style="background:#0F766E; color:#fff; font-size:calc(12.5px * var(--echelle-texte)); font-weight:700; text-align:center; padding:9px 16px; letter-spacing:0.04em;">
+            CARGO ACCÈS LIBRE — Les formules d'abonnement sont temporairement suspendues par la rédaction. Toutes les analyses, enquêtes et dossiers stratégiques sont 100% en accès libre.
         </aside>
     @endif
     <header style="background: var(--dark); color: #fff; border-bottom: 1px solid var(--dark-border);">
@@ -101,22 +101,22 @@
                 <a href="{{ route('evenements.index') }}" style="padding:12px 0">Agenda</a>
             </nav>
             <span style="display:flex; gap:12px; align-items:center;">
-                <a href="{{ route('recherche') }}" aria-label="Search" style="width:42px; height:42px; border:1px solid #4A4E5C; display:flex; align-items:center; justify-content:center;">
+                <a href="{{ route('recherche') }}" aria-label="Rechercher" style="width:42px; height:42px; border:1px solid #4A4E5C; display:flex; align-items:center; justify-content:center;">
                     <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
                 </a>
                 @if(isset($abonnementsActifs) && !$abonnementsActifs)
-                    <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:11px 16px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(11.8px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">100% Free Access</a>
+                    <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:11px 16px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(11.8px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">Accès Libre 100%</a>
                 @else
-                    <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:11px 18px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">Subscribe</a>
+                    <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:11px 18px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">S'abonner</a>
                 @endif
                 @auth
                     @if(auth()->user()->estMembreRedaction())
-                        <a href="{{ route('redaction.articles.index') }}" style="background:#fff; color:var(--dark); font-weight:700; padding:11px 15px; font-size:calc(12.5px * var(--echelle-texte));">Staff Desk</a>
+                        <a href="{{ route('redaction.articles.index') }}" style="background:#fff; color:var(--dark); font-weight:700; padding:11px 15px; font-size:calc(12.5px * var(--echelle-texte));">Espace Rédaction</a>
                     @else
-                        <a href="{{ route('abonnements.espace') }}" style="color:#C9CCD6; font-size:calc(12.5px * var(--echelle-texte)); font-weight:600;">My Account</a>
+                        <a href="{{ route('abonnements.espace') }}" style="color:#C9CCD6; font-size:calc(12.5px * var(--echelle-texte)); font-weight:600;">Mon Compte</a>
                     @endif
                 @else
-                    <a href="{{ route('login') }}" style="color:#C9CCD6; font-size:calc(12.5px * var(--echelle-texte)); font-weight:600;">Sign In</a>
+                    <a href="{{ route('login') }}" style="color:#C9CCD6; font-size:calc(12.5px * var(--echelle-texte)); font-weight:600;">Se connecter</a>
                 @endauth
             </span>
         </div>
@@ -144,15 +144,15 @@
         <div class="wrap" style="display:flex; flex-wrap:wrap; gap:40px; padding-top:44px; padding-bottom:28px;">
             <div style="flex:2 1 280px; display:flex; flex-direction:column; gap:12px;">
                 <span style="font:900 calc(36px * var(--echelle-texte))/1 var(--police-titre); letter-spacing:.04em; color:var(--yellow);">CARGO</span>
-                <span style="max-width:320px; line-height:1.5; color:#C9CCD6; font-size:calc(13.8px * var(--echelle-texte));">Global freight, shipping, multimodal logistics, and supply chain intelligence.</span>
+                <span style="max-width:320px; line-height:1.5; color:#C9CCD6; font-size:calc(13.8px * var(--echelle-texte));">Le média de référence pour le fret maritime, routier, ferroviaire, aérien et la veille logistique stratégique.</span>
             </div>
             <div style="flex:1 1 160px; display:flex; flex-direction:column; gap:10px; font-size:calc(13.8px * var(--echelle-texte));">
-                <strong class="kick" style="color:var(--yellow);">Sections</strong>
-                <a href="{{ route('categories.articles', 'transport-routier') }}">Road Freight</a>
+                <strong class="kick" style="color:var(--yellow);">Rubriques</strong>
+                <a href="{{ route('categories.articles', 'transport-routier') }}">Transport Routier</a>
                 <a href="{{ route('categories.articles', 'fret-maritime-ports') }}">Maritime & Ports</a>
-                <a href="{{ route('categories.articles', 'ferroviaire-intermodal') }}">Rail Intermodal</a>
+                <a href="{{ route('categories.articles', 'ferroviaire-intermodal') }}">Ferroviaire & Rail</a>
                 <a href="{{ route('categories.articles', 'supply-chain-tech') }}">Supply Chain Tech</a>
-                <a href="{{ route('categories.articles', 'entreposage-logistique') }}">Warehousing</a>
+                <a href="{{ route('categories.articles', 'entreposage-logistique') }}">Entreposage & Hubs</a>
             </div>
             <div style="flex:1 1 160px; display:flex; flex-direction:column; gap:10px; font-size:calc(13.8px * var(--echelle-texte));">
                 <strong class="kick">Le journal</strong>

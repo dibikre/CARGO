@@ -5,16 +5,16 @@
 @section('contenu')
 <div style="background:var(--dark); color:#fff; padding:48px 0 36px;">
     <div class="wrap">
-        <span class="kick" style="color:var(--yellow);">Strategic Freight Corridor · {{ strtoupper($corridor->type_flux) }}</span>
+        <span class="kick" style="color:var(--yellow);">Corridor logistique stratégique · {{ strtoupper($corridor->type_flux) }}</span>
         <h1 class="dsp" style="margin:12px 0 0; font-size:48px; font-weight:900;">{{ $corridor->nom }}</h1>
         <div style="display:flex; align-items:center; gap:12px; margin-top:16px;">
-            <span style="font-size:14px; font-weight:600;">Operational Status:</span>
+            <span style="font-size:14px; font-weight:600;">État opérationnel :</span>
             @if(in_array($corridor->statut_operationnel, ['normal', 'fluide'], true))
-                <span style="background:#22C55E; color:#fff; padding:4px 10px; font-weight:700; font-size:13px;">NORMAL FLOW</span>
+                <span style="background:#22C55E; color:#fff; padding:4px 10px; font-weight:700; font-size:13px;">FLUX NORMAL</span>
             @elseif($corridor->statut_operationnel === 'ralenti')
-                <span style="background:var(--yellow); color:#14151C; padding:4px 10px; font-weight:700; font-size:13px;">CONGESTED / SLOW</span>
+                <span style="background:var(--yellow); color:#14151C; padding:4px 10px; font-weight:700; font-size:13px;">TRAFIC RALENTI / CONGESTION</span>
             @else
-                <span style="background:var(--accent); color:#fff; padding:4px 10px; font-weight:700; font-size:13px;">MAJOR DISRUPTION</span>
+                <span style="background:var(--accent); color:#fff; padding:4px 10px; font-weight:700; font-size:13px;">PERTURBATION MAJEURE</span>
             @endif
         </div>
         @if($corridor->description)
@@ -24,14 +24,14 @@
 </div>
 
 <div class="wrap" style="padding-top:40px;">
-    <h2 class="dsp" style="font-size:28px; margin-bottom:24px;">Corridor Disruption & Operations Intel</h2>
+    <h2 class="dsp" style="font-size:28px; margin-bottom:24px;">Alertes et analyses sur ce corridor</h2>
     <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:28px;">
         @forelse($articles as $article)
             @include('journal.composants.carte-article', ['article' => $article, 'theme' => $loop->iteration % 2 === 0 ? 'sombre' : 'clair'])
         @empty
             <div style="grid-column: 1 / -1; background:#fff; padding:48px; text-align:center; border:1px solid #E2E5EB;">
-                <h3 class="dsp" style="margin:0; font-size:24px;">No recent intelligence on this freight corridor</h3>
-                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none; margin-top:16px;">Browse All Intelligence</a>
+                <h3 class="dsp" style="margin:0; font-size:24px;">Aucune actualité récente sur ce corridor de fret</h3>
+                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none; margin-top:16px;">Voir tous les articles</a>
             </div>
         @endforelse
     </div>

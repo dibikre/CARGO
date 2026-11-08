@@ -5,14 +5,14 @@
     <div style="display:flex; justify-content:space-between; align-items:flex-end; padding-bottom:12px; border-bottom:2px solid var(--dark); margin-bottom:16px;">
         <div>
             <span class="kick" style="color:var(--accent); font-size:calc(11.5px * var(--echelle-texte)); display:block; font-weight:700;">
-                Industry Topics &amp; Brands
+                Mots-clés &amp; Acteurs majeurs
             </span>
             <h3 class="dsp" style="margin:3px 0 0; font-size:calc(21px * var(--echelle-texte)); line-height:1.15; color:var(--dark); font-weight:900;">
-                Top 10 Freight Tags
+                Top 10 des Tags Fret
             </h3>
         </div>
         <span style="font-size:calc(10.5px * var(--echelle-texte)); font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.04em;">
-            By Articles
+            Par volume
         </span>
     </div>
 
@@ -39,7 +39,7 @@
             </a>
         @empty
             <div style="padding:16px; text-align:center; background:#F8FAFC; border:1px dashed #CBD5E1; color:var(--text-muted); font-size:12px;">
-                No tags recorded yet.
+                Aucun tag enregistré pour le moment.
             </div>
         @endforelse
     </div>

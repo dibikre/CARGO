@@ -1,42 +1,42 @@
 @extends('administration.layouts.admin')
 
-@section('titre', 'Raw Materials Ticker Management - CARGO Admin')
+@section('titre', 'Bandeau des Matières Premières — Administration')
 
 @section('contenu')
 <div class="space-y-6">
-    {{-- Header with Quota Counter --}}
+    {{-- En-tête avec compteur de quota --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <div>
             <div class="flex items-center gap-3">
-                <h1 class="text-2xl font-heading font-black text-cargo-dark">Commodities Ticker Bar</h1>
+                <h1 class="text-2xl font-heading font-black text-cargo-dark">Bandeau Défilant des Matières Premières</h1>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $quotaAtteint ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800' }}">
-                    {{ $totalProduits }} / {{ $maxProduits }} Products Max
+                    {{ $totalProduits }} / {{ $maxProduits }} Produits Max
                 </span>
             </div>
             <p class="text-sm text-gray-500 mt-1">
-                Manage raw commodity prices, transparent PNG icons, and entry-exit sparkline curves (5-10 nodes JSON).
+                Gestion des prix des commodités brutes, icônes PNG détourées et courbes de tendance sparkline (JSON 5 à 10 nœuds).
             </p>
         </div>
 
         <div>
             @if ($quotaAtteint)
                 <button disabled class="inline-flex items-center gap-2 bg-gray-300 text-gray-600 px-4 py-2 rounded text-sm font-semibold cursor-not-allowed">
-                    Limit Reached (20 max)
+                    Limite atteinte (20 max)
                 </button>
             @else
                 <a href="{{ route('admin.matieres-premieres.create') }}" class="inline-flex items-center gap-2 bg-cargo-red hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold transition shadow">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Add New Commodity
+                    Ajouter une matière
                 </a>
             @endif
         </div>
     </div>
 
-    {{-- Live Ticker Preview --}}
+    {{-- Aperçu du bandeau --}}
     <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
         <div class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2 flex items-center justify-between">
-            <span>Visual Preview (Non-clickable Live Ticker)</span>
-            <span class="text-[11px] text-gray-400">White Background Ticker</span>
+            <span>Aperçu Visuel (Bandeau non-cliquable en direct)</span>
+            <span class="text-[11px] text-gray-400">Fond blanc 100% neutre</span>
         </div>
         <div class="flex items-center gap-6 overflow-x-auto py-2 bg-white">
             @forelse ($matieres as $m)
@@ -54,24 +54,24 @@
                     </span>
                 </div>
             @empty
-                <div class="text-gray-500 text-xs py-2">No commodities configured yet.</div>
+                <div class="text-gray-500 text-xs py-2">Aucune matière première configurée pour le moment.</div>
             @endforelse
         </div>
     </div>
 
-    {{-- Table of Commodities --}}
+    {{-- Tableau des matières premières --}}
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
                 <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-semibold">
                     <tr>
-                        <th class="px-4 py-3 text-left">Order</th>
-                        <th class="px-4 py-3 text-left">Icon (PNG)</th>
-                        <th class="px-4 py-3 text-left">Commodity / Symbol</th>
-                        <th class="px-4 py-3 text-right">Latest Price</th>
-                        <th class="px-4 py-3 text-center">Entry-Exit Gap</th>
-                        <th class="px-4 py-3 text-center">Sparkline (5-10 nodes)</th>
-                        <th class="px-4 py-3 text-center">Status</th>
+                        <th class="px-4 py-3 text-left">Ordre</th>
+                        <th class="px-4 py-3 text-left">Icône PNG</th>
+                        <th class="px-4 py-3 text-left">Matière / Symbole</th>
+                        <th class="px-4 py-3 text-right">Dernier Prix</th>
+                        <th class="px-4 py-3 text-center">Écart Entrée/Sortie</th>
+                        <th class="px-4 py-3 text-center">Courbe (5-10 nœuds)</th>
+                        <th class="px-4 py-3 text-center">Statut</th>
                         <th class="px-4 py-3 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -108,20 +108,20 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <span class="inline-flex px-2 py-0.5 rounded text-xs font-semibold {{ $matiere->est_actif ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600' }}">
-                                    {{ $matiere->est_actif ? 'Active' : 'Disabled' }}
+                                    {{ $matiere->est_actif ? 'Actif' : 'Désactivé' }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.matieres-premieres.edit', $matiere->id) }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-2.5 py-1 rounded border border-blue-200">
-                                        Edit / Update
+                                        Modifier
                                     </a>
 
-                                    <form action="{{ route('admin.matieres-premieres.destroy', $matiere->id) }}" method="POST" onsubmit="return confirm('Delete this commodity from the ticker?');">
+                                    <form action="{{ route('admin.matieres-premieres.destroy', $matiere->id) }}" method="POST" onsubmit="return confirm('Supprimer ce produit du bandeau de cours ?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 px-2.5 py-1 rounded border border-rose-200">
-                                            Delete
+                                            Supprimer
                                         </button>
                                     </form>
                                 </div>
@@ -130,7 +130,7 @@
                     @empty
                         <tr>
                             <td colspan="8" class="px-4 py-8 text-center text-gray-500">
-                                No commodities found. Click "Add New Commodity" above to get started.
+                                Aucune matière première enregistrée. Cliquez sur « Ajouter une matière » ci-dessus pour commencer.
                             </td>
                         </tr>
                     @endforelse

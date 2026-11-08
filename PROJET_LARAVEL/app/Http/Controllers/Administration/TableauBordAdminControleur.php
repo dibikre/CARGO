@@ -14,6 +14,9 @@ use App\Models\EvenementLogistique;
 use App\Models\JournalActivite;
 use App\Models\StatistiqueArticle;
 use App\Models\User;
+use App\Models\ConfigurationSysteme;
+use App\Models\FormuleAbonnement;
+use App\Models\MatierePremiere;
 use Illuminate\View\View;
 
 class TableauBordAdminControleur extends Controller
@@ -23,37 +26,57 @@ class TableauBordAdminControleur extends Controller
      */
     public function index(): View
     {
-        // 1. Indicateurs clés d'articles et taxonomie
+        // 1. Indicateurs clés d'articles et comparaisons de période
         $totalArticles = Article::count();
         $articlesPublies = Article::where('statut', 'publie')->count();
         $articlesBrouillons = Article::where('statut', 'brouillon')->count();
-        $articlesAlerteUrgente = Article::where('est_urgent', true)->where('statut', 'publie')->count();
-        $totalCategories = Categorie::count();
+        $articlesCeMois = Article::where('statut', 'publie')
+            ->where('date_publication', '>=', now()->startOfMonth())
+            ->count();
+        $articlesMoisPrecedent = Article::where('statut', 'publie')
+            ->whereBetween('date_publication', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])
+            ->count();
 
-        // 2. Modération et communauté
+        // 2. Alerte urgente active en direct sur le portail
+        $alerteUrgenteActive = Article::where('est_urgent', true)
+            ->where('statut', 'publie')
+            ->with(['auteur', 'categorie'])
+            ->latest('date_publication')
+            ->first();
+        $articlesAlerteUrgente = Article::where('est_urgent', true)->where('statut', 'publie')->count();
+
+        // 3. Modération et retours terrain
         $commentairesEnAttente = Commentaire::enAttente()->count();
 
-        // 3. Abonnements, audience et newsletter
+        // 4. Abonnements, audience et paywall
         $totalAbonnesActifs = AbonnementUtilisateur::where('statut', 'actif')
             ->where('date_fin', '>=', now())
             ->count();
         $totalUtilisateurs = User::count();
         $totalNewsletter = AbonneNewsletter::count();
+        $totalFormules = FormuleAbonnement::count();
+        $abonnementsActifs = ConfigurationSysteme::abonnementsSontActifs();
 
-        // 4. Corridors de transport surveillés
+        // 5. Corridors logistiques et commodités sous surveillance
         $corridorsPerturbes = CorridorTransport::whereIn('statut_operationnel', ['ralenti', 'perturbe', 'bloque', 'congestionne'])
             ->get();
         $totalCorridors = CorridorTransport::count();
+        $totalMatieres = MatierePremiere::count();
 
-        // 5. Événements et livres blancs
+        // 6. Événements et livres blancs
         $totalEvenements = EvenementLogistique::count();
         $totalDocuments = DocumentRessource::count();
+        $totalCategories = Categorie::count();
 
-        // 6. Total consultations estimées (derniers 30 jours)
+        // 7. Audience et consultations vérifiées
+        $totalLecturesCumulees = (int) Article::sum('vues_compteur');
         $consultationsMois = (int) StatistiqueArticle::where('date_statistique', '>=', now()->subDays(30))
             ->sum('nombre_vues');
+        if ($consultationsMois === 0 && $totalLecturesCumulees > 0) {
+            $consultationsMois = $totalLecturesCumulees;
+        }
 
-        // 7. Activités et alertes récentes
+        // 8. Journal d'audit et dernières publications
         $activitesRecentes = JournalActivite::with('auteur')
             ->latest()
             ->take(8)
@@ -68,17 +91,24 @@ class TableauBordAdminControleur extends Controller
             'totalArticles',
             'articlesPublies',
             'articlesBrouillons',
+            'articlesCeMois',
+            'articlesMoisPrecedent',
+            'alerteUrgenteActive',
             'articlesAlerteUrgente',
             'totalCategories',
             'commentairesEnAttente',
             'totalAbonnesActifs',
             'totalUtilisateurs',
             'totalNewsletter',
+            'totalFormules',
+            'abonnementsActifs',
             'corridorsPerturbes',
             'totalCorridors',
+            'totalMatieres',
             'totalEvenements',
             'totalDocuments',
             'consultationsMois',
+            'totalLecturesCumulees',
             'activitesRecentes',
             'derniersArticles'
         ));

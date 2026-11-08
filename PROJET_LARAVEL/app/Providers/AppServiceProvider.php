@@ -23,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
         // Limite pour compatibilité stricte MySQL/MariaDB sur hébergement partagé (InnoDB 767 octets max pour index utf8mb4)
         Schema::defaultStringLength(191);
 
+        // Définir la langue de l'application en français (dates, pluriels, temps relatif)
+        app()->setLocale('fr');
+        \Carbon\Carbon::setLocale('fr');
+        setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'fr', 'fra', 'French');
+
         // Partager les rubriques actives du menu avec le layout et les vues du journal
         \Illuminate\Support\Facades\View::composer(['layouts.journal', 'journal.*'], function ($vue) {
             try {

@@ -18,17 +18,17 @@
     <div class="wrap" style="position:relative; z-index:2;">
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
             <span class="kick" style="background:#14151C; color:#FFC93C; padding:6px 12px; font-weight:800; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; border-left:3px solid var(--accent); box-shadow:0 2px 4px rgba(0,0,0,0.4);">
-                Logistics Sector Intelligence
+                Veille sectorielle logistique
             </span>
             @if(isset($articles) && method_exists($articles, 'total'))
                 <span style="font-size:12px; font-weight:600; color:#E2E5EB; background:rgba(20,21,28,0.7); padding:4px 10px; border-radius:2px; text-shadow:0 1px 2px rgba(0,0,0,0.8);">
-                    {{ $articles->total() }} Briefings
+                    {{ $articles->total() }} Articles
                 </span>
             @endif
         </div>
 
         <h1 class="dsp" style="margin:0; font-size:52px; font-weight:900; line-height:1.05; color:#FFFFFF; text-shadow:0 2px 10px rgba(0,0,0,0.9), 0 1px 2px rgba(0,0,0,0.95); letter-spacing:-0.01em;">
-            {{ $categorie->nom ?? 'Logistics Section' }}
+            {{ $categorie->nom ?? 'Rubrique Logistique' }}
         </h1>
 
         @if(!empty($categorie?->description))
@@ -45,9 +45,9 @@
             @include('journal.composants.carte-article', ['article' => $article, 'theme' => $loop->iteration % 2 === 0 ? 'sombre' : 'clair'])
         @empty
             <div style="grid-column: 1 / -1; background:#fff; padding:48px; text-align:center; border:1px solid #E2E5EB;">
-                <h3 class="dsp" style="margin:0; font-size:24px; color:var(--dark);">No briefings published in this section yet</h3>
-                <p style="color:var(--text-muted); margin:8px 0 20px;">Check back soon or explore our comprehensive archive of logistics intelligence.</p>
-                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none;">Browse All Intelligence</a>
+                <h3 class="dsp" style="margin:0; font-size:24px; color:var(--dark);">Aucun article publié dans cette rubrique pour le moment</h3>
+                <p style="color:var(--text-muted); margin:8px 0 20px;">Revenez très prochainement ou explorez l'ensemble des articles du journal.</p>
+                <a href="{{ route('articles.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:12px 24px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; text-decoration:none;">Voir toutes les publications</a>
             </div>
         @endforelse
     </div>

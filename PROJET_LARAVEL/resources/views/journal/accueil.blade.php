@@ -73,18 +73,18 @@
         </div>
         <div style="flex:1 1 460px; background:#F8FAFC; border:1px solid #E2E5EB; padding:36px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between; gap:16px;">
             <div>
-                <span class="kick" style="color:var(--accent);">Global Logistics Documentation</span>
-                <h3 class="dsp" style="margin:6px 0 10px; font-size:calc(28px * var(--echelle-texte)); line-height:1.2;">Exclusive Supply Chain Whitepapers & Indices</h3>
+                <span class="kick" style="color:var(--accent);">Documentation & Études Métier</span>
+                <h3 class="dsp" style="margin:6px 0 10px; font-size:calc(28px * var(--echelle-texte)); line-height:1.2;">Livres Blancs, Guides Tarifaires & Données Fret</h3>
                 <p style="margin:0; color:var(--text-muted); font-size:calc(14.5px * var(--echelle-texte)); line-height:1.55;">
-                    Download technical logistics dossiers, customs tariff guides, and freight corridor benchmark datasets compiled quarterly by CARGO correspondents.
+                    Téléchargez les dossiers techniques, grilles comparatives de douane et baromètres trimestriels de corridors logistiques rédigés par la rédaction CARGO.
                 </p>
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
                 <a href="{{ route('ressources.index') }}" style="background:var(--dark); color:#fff; font-family:var(--police-titre); font-weight:700; font-size:calc(13px * var(--echelle-texte)); padding:12px 20px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em;">
-                    Access Whitepaper Library
+                    Consulter les livres blancs
                 </a>
                 <a href="{{ route('dossiers.index') }}" style="border:2px solid var(--dark); color:var(--dark); font-family:var(--police-titre); font-weight:700; font-size:calc(13px * var(--echelle-texte)); padding:10px 18px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em;">
-                    View Special Dossiers
+                    Voir les dossiers spéciaux
                 </a>
             </div>
         </div>

@@ -53,11 +53,11 @@
 
                         <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:2px; align-items:center;">
                             <a href="{{ route('articles.show', $article->slug) }}" class="btn-yellow" style="display:inline-flex; align-items:center; gap:8px;">
-                                <span>Read Full Briefing</span>
+                                <span>Lire l'article complet</span>
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </a>
                             <a href="{{ route('articles.index') }}" class="btn-outline-white">
-                                All Logistics Sections
+                                Toutes les rubriques
                             </a>
                         </div>
                     </div>
@@ -65,11 +65,11 @@
             </div>
         </div>
 
-        {{-- Right Column: 5 Numbered Edition Tracks with Live Progress Fill --}}
+        {{-- Colonne droite : 5 pistes de l'édition avec barre de défilement --}}
         <div style="flex:1 1 300px; display:flex; flex-direction:column; justify-content:center; border-left:1px solid rgba(255,255,255,0.1); padding-left:22px;">
             <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; border-bottom:2px dashed #4A4E5C; margin-bottom:8px;">
-                <span class="kick" style="color:#AEB3C0; font-size:calc(11.5px * var(--echelle-texte));">In This Edition (01-05)</span>
-                <span style="font-size:calc(11px * var(--echelle-texte)); font-weight:600; color:var(--yellow);">Select to View</span>
+                <span class="kick" style="color:#AEB3C0; font-size:calc(11.5px * var(--echelle-texte));">Dans cette édition (01-05)</span>
+                <span style="font-size:calc(11px * var(--echelle-texte)); font-weight:600; color:var(--yellow);">Sélectionner</span>
             </div>
 
             <div class="hero-onglets-liste" style="display:flex; flex-direction:column; gap:4px;">

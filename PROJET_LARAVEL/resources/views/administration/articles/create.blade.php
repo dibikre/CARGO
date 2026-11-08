@@ -1,6 +1,6 @@
 @extends('administration.layouts.admin')
 
-@section('titre', 'Create Article — Security Console')
+@section('titre', 'Rédiger un article — Administration')
 
 @section('contenu')
 <div class="space-y-6 max-w-5xl mx-auto">
@@ -9,10 +9,10 @@
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <a href="{{ route('admin.articles.index') }}" class="text-xs font-semibold text-gray-500 hover:text-cargo-red uppercase tracking-wider">
-                    &larr; Articles Control
+                    &larr; Gestion des articles
                 </a>
             </div>
-            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">Create Editorial Article</h1>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">Rédiger un article éditorial</h1>
             <p class="text-xs text-gray-500 uppercase tracking-wider">Direct administrator publication & emergency dispatching</p>
         </div>
         <a href="{{ route('admin.articles.index') }}" class="text-xs font-semibold text-gray-600 hover:text-gray-900 px-3 py-2 border border-gray-300 rounded bg-white">

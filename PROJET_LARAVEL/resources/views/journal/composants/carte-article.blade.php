@@ -40,7 +40,7 @@
         {{ $article->categorie->nom ?? 'Logistique' }}
         @if($article->est_reserve_abonnes)
             @if(isset($abonnementsActifs) && !$abonnementsActifs)
-                · <span style="background:#0F766E; color:#fff; padding:2px 6px; font-weight:700;">OPEN ACCESS</span>
+                · <span style="background:#0F766E; color:#fff; padding:2px 6px; font-weight:700;">ACCÈS LIBRE</span>
             @else
                 · <span style="background:var(--yellow); color:#14151C; padding:2px 6px; font-weight:700;">PRO</span>
             @endif

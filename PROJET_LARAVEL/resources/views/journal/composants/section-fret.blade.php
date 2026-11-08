@@ -55,7 +55,7 @@
                     {{ $config['description'] }}
                 </p>
                 <a href="{{ route('categories.articles', $config['slug'] ?? 'transport-routier') }}" class="kick" style="color:var(--dark); text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; white-space:nowrap; border-bottom:2px solid var(--accent); padding-bottom:2px; font-size:calc(11.5px * var(--echelle-texte));">
-                    View All
+                    Voir tout
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
                 </a>
             </div>
@@ -74,13 +74,13 @@
 
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                         <span class="kick" style="color:var(--accent-dark); font-size:calc(11.5px * var(--echelle-texte));">
-                            {{ $centre->categorie->nom ?? 'Analysis' }}
+                            {{ $centre->categorie->nom ?? 'Analyse' }}
                             @if($centre->est_reserve_abonnes)
                                 · <span style="background:var(--yellow); color:#14151C; padding:2px 6px; font-weight:700;">PRO</span>
                             @endif
                         </span>
                         <span style="font-size:calc(12px * var(--echelle-texte)); color:var(--text-muted);">
-                            {{ $centre->date_publication ? $centre->date_publication->format('M d, Y') : now()->format('M d, Y') }}
+                            {{ $centre->date_publication ? $centre->date_publication->translatedFormat('d M Y') : now()->translatedFormat('d M Y') }}
                         </span>
                     </div>
 
@@ -96,34 +96,34 @@
 
                     <div style="margin-top:auto; padding-top:16px; border-top:1px solid #E6E8EC; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px;">
                         <span style="font-size:calc(12px * var(--echelle-texte)); color:var(--text-muted); font-weight:500;">
-                            By {{ $centre->auteur->name ?? 'Cargo Intelligence' }} · {{ $centre->temps_lecture_minutes ?? 5 }}m read
+                            Par {{ $centre->auteur->name ?? 'Rédaction CARGO' }} · {{ $centre->temps_lecture_minutes ?? 5 }} min de lecture
                         </span>
                         <a href="{{ route('articles.show', $centre->slug) }}" style="background:var(--accent); color:#fff; font-family:var(--police-titre); font-size:calc(12px * var(--echelle-texte)); font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:8px 16px; display:inline-flex; align-items:center; gap:6px;">
-                            Read
+                            Lire
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
                         </a>
                     </div>
                 @else
-                    <p style="color:var(--text-muted); font-style:italic;">No lead intelligence report currently filed for this division.</p>
+                    <p style="color:var(--text-muted); font-style:italic;">Aucune analyse majeure actuellement enregistrée dans cette rubrique.</p>
                 @endif
             </div>
 
             {{-- Colonne Droite : Les 4 Récents qui suivent l'article centré --}}
             <div style="flex:1 1 330px; min-width:0; display:flex; flex-direction:column; justify-content:space-between; background:#fff; padding:20px 24px; box-sizing:border-box;">
                 <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; border-bottom:2px solid var(--dark); margin-bottom:10px;">
-                    <span class="kick" style="color:var(--dark); font-weight:700; font-size:calc(11.5px * var(--echelle-texte));">Division Dispatches</span>
-                    <span style="font-size:calc(11px * var(--echelle-texte)); color:var(--text-muted); text-transform:uppercase; font-weight:600;">Sequential</span>
+                    <span class="kick" style="color:var(--dark); font-weight:700; font-size:calc(11.5px * var(--echelle-texte));">Dépêches du secteur</span>
+                    <span style="font-size:calc(11px * var(--echelle-texte)); color:var(--text-muted); text-transform:uppercase; font-weight:600;">En continu</span>
                 </div>
 
                 @forelse($suivants as $idx => $artSuivant)
                     <article style="padding: 10px 0; {{ !$loop->last ? 'border-bottom: 1px dashed var(--dashed-border);' : '' }}">
                         <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
                             <span class="kick" style="color:var(--accent-dark); font-size:calc(10.5px * var(--echelle-texte));">
-                                {{ $artSuivant->categorie->nom ?? 'Dispatches' }}
+                                {{ $artSuivant->categorie->nom ?? 'Dépêches' }}
                             </span>
                             <span style="color:var(--dashed-border);">·</span>
                             <span style="font-size:calc(11.5px * var(--echelle-texte)); color:var(--text-muted);">
-                                {{ $artSuivant->date_publication ? $artSuivant->date_publication->format('M d, Y') : now()->format('M d, Y') }}
+                                {{ $artSuivant->date_publication ? $artSuivant->date_publication->translatedFormat('d M Y') : now()->translatedFormat('d M Y') }}
                             </span>
                         </div>
                         <h4 class="dsp" style="margin:0 0 4px; font-size:calc(15px * var(--echelle-texte)); line-height:1.25;">
@@ -132,14 +132,14 @@
                             </a>
                         </h4>
                         <div style="display:flex; align-items:center; gap:6px; font-size:calc(11.5px * var(--echelle-texte)); color:var(--text-muted);">
-                            <span>{{ $artSuivant->temps_lecture_minutes ?? 4 }} min read</span>
+                            <span>{{ $artSuivant->temps_lecture_minutes ?? 4 }} min de lecture</span>
                             <span>·</span>
-                            <span>{{ $artSuivant->auteur->name ?? 'Staff Correspondent' }}</span>
+                            <span>{{ $artSuivant->auteur->name ?? 'Correspondant Rédaction' }}</span>
                         </div>
                     </article>
                 @empty
                     <div style="padding: 16px 0; color:var(--text-muted); font-style:italic;">
-                        Additional dispatches in preparation by our correspondents.
+                        Dépêches complémentaires en cours de préparation par nos correspondants.
                     </div>
                 @endforelse
             </div>

@@ -1,50 +1,57 @@
 @extends('administration.layouts.admin')
 
-@section('titre', 'Users & RBAC Permissions')
+@section('titre', 'Utilisateurs & Permissions RBAC')
 
 @section('contenu')
     <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
             <div>
-                <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">Users & Access Control (RBAC)</h1>
-                <p class="text-xs text-gray-500 uppercase tracking-wider">Account lifecycle, role privileges & credential management</p>
+                <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">Utilisateurs & Contrôle d'Accès (RBAC)</h1>
+                <p class="text-xs text-gray-500 uppercase tracking-wider">Cycle de vie des comptes, privilèges de rôles & gestion des accès de sécurité</p>
             </div>
         </div>
 
-        {{-- Filters Bar --}}
+        {{-- Barre de filtrage --}}
         <form method="GET" action="{{ route('admin.utilisateurs.index') }}" class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-wrap gap-4 items-center justify-between">
             <div class="flex-1 min-w-[240px] flex gap-2">
-                <input type="text" name="recherche" value="{{ $recherche }}" placeholder="Search by name or email..."
+                <input type="text" name="recherche" value="{{ $recherche }}" placeholder="Rechercher par nom ou e-mail..."
                        class="w-full bg-gray-50 border border-gray-300 rounded px-3 py-2 text-xs focus:ring-1 focus:ring-cargo-red focus:outline-none">
                 <select name="role" class="bg-gray-50 border border-gray-300 rounded px-3 py-2 text-xs focus:ring-1 focus:ring-cargo-red focus:outline-none">
-                    <option value="">All Roles</option>
-                    <option value="super_admin" {{ $roleFiltre === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
-                    <option value="administrateur" {{ $roleFiltre === 'administrateur' ? 'selected' : '' }}>Administrator</option>
-                    <option value="redacteur_en_chef" {{ $roleFiltre === 'redacteur_en_chef' ? 'selected' : '' }}>Editor-in-Chief</option>
-                    <option value="journaliste" {{ $roleFiltre === 'journaliste' ? 'selected' : '' }}>Journalist</option>
-                    <option value="redacteur" {{ $roleFiltre === 'redacteur' ? 'selected' : '' }}>Writer</option>
-                    <option value="abonne" {{ $roleFiltre === 'abonne' ? 'selected' : '' }}>PRO Subscriber</option>
-                    <option value="lecteur" {{ $roleFiltre === 'lecteur' ? 'selected' : '' }}>Reader</option>
+                    <option value="">Tous les rôles</option>
+                    @php
+                        $rolesTraductions = [
+                            'super_admin' => 'Super Administrateur',
+                            'administrateur' => 'Administrateur',
+                            'redacteur_en_chef' => 'Rédacteur en Chef',
+                            'journaliste' => 'Journaliste',
+                            'redacteur' => 'Rédacteur',
+                            'abonne' => 'Abonné PRO',
+                            'lecteur' => 'Lecteur',
+                        ];
+                    @endphp
+                    @foreach($rolesTraductions as $cle => $libelle)
+                        <option value="{{ $cle }}" {{ $roleFiltre === $cle ? 'selected' : '' }}>{{ $libelle }}</option>
+                    @endforeach
                 </select>
                 <button type="submit" class="bg-cargo-red hover:bg-cargo-redDark text-white px-4 py-2 rounded text-xs font-heading font-bold uppercase tracking-wider">
-                    Filter
+                    Filtrer
                 </button>
             </div>
             @if ($recherche || $roleFiltre)
-                <a href="{{ route('admin.utilisateurs.index') }}" class="text-xs text-gray-500 hover:text-gray-900 underline">Reset Filters</a>
+                <a href="{{ route('admin.utilisateurs.index') }}" class="text-xs text-gray-500 hover:text-gray-900 underline">Réinitialiser</a>
             @endif
         </form>
 
-        {{-- Users Table --}}
+        {{-- Tableau des utilisateurs --}}
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 uppercase tracking-wider font-semibold">
-                            <th class="p-3.5">User</th>
-                            <th class="p-3.5">Role</th>
-                            <th class="p-3.5">Status</th>
-                            <th class="p-3.5">Last Login</th>
+                            <th class="p-3.5">Utilisateur</th>
+                            <th class="p-3.5">Rôle</th>
+                            <th class="p-3.5">Statut</th>
+                            <th class="p-3.5">Dernière connexion</th>
                             <th class="p-3.5 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -61,8 +68,8 @@
                                         @method('PUT')
                                         <input type="hidden" name="est_actif" value="{{ $user->est_actif ? '1' : '0' }}">
                                         <select name="role" onchange="this.form.submit()" class="bg-gray-50 border border-gray-300 rounded px-2 py-1 text-[11px] font-semibold">
-                                            @foreach(['super_admin', 'administrateur', 'redacteur_en_chef', 'journaliste', 'redacteur', 'abonne', 'lecteur'] as $r)
-                                                <option value="{{ $r }}" {{ $user->role === $r ? 'selected' : '' }}>{{ ucwords(str_replace('_', ' ', $r)) }}</option>
+                                            @foreach($rolesTraductions as $r => $libelle)
+                                                <option value="{{ $r }}" {{ $user->role === $r ? 'selected' : '' }}>{{ $libelle }}</option>
                                             @endforeach
                                         </select>
                                     </form>
@@ -74,24 +81,24 @@
                                         <input type="hidden" name="role" value="{{ $user->role }}">
                                         <input type="hidden" name="est_actif" value="{{ $user->est_actif ? '0' : '1' }}">
                                         <button type="submit" class="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider transition {{ $user->est_actif ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
-                                            {{ $user->est_actif ? 'Active' : 'Disabled' }}
+                                            {{ $user->est_actif ? 'Actif' : 'Désactivé' }}
                                         </button>
                                     </form>
                                 </td>
                                 <td class="p-3.5 font-mono text-[11px] text-gray-500">
-                                    {{ $user->derniere_connexion_a ? $user->derniere_connexion_a->format('Y-m-d H:i') : 'Never' }}
+                                    {{ $user->derniere_connexion_a ? $user->derniere_connexion_a->translatedFormat('d/m/Y H:i') : 'Jamais' }}
                                 </td>
                                 <td class="p-3.5 text-right">
                                     <details class="relative inline-block text-left">
-                                        <summary class="cursor-pointer text-xs font-semibold text-gray-600 hover:text-cargo-red list-none">Reset Key &darr;</summary>
+                                        <summary class="cursor-pointer text-xs font-semibold text-gray-600 hover:text-cargo-red list-none">Sécurité &darr;</summary>
                                         <div class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded shadow-xl p-3 z-30">
                                             <form action="{{ route('admin.utilisateurs.mdp', $user->id) }}" method="POST" class="space-y-2">
                                                 @csrf
-                                                <div class="text-[11px] font-bold text-gray-800">Set New Security Password</div>
-                                                <input type="password" name="nouveau_mot_de_passe" placeholder="Min 10 chars + symbols" required
+                                                <div class="text-[11px] font-bold text-gray-800">Nouveau mot de passe</div>
+                                                <input type="password" name="nouveau_mot_de_passe" placeholder="Min. 10 caractères" required
                                                        class="w-full bg-gray-50 border border-gray-300 rounded p-1.5 text-xs">
                                                 <button type="submit" class="w-full bg-cargo-red text-white py-1 rounded text-[11px] font-bold uppercase">
-                                                    Update Password
+                                                    Mettre à jour
                                                 </button>
                                             </form>
                                         </div>
@@ -100,7 +107,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="p-6 text-center text-gray-500">No users match your query.</td>
+                                <td colspan="5" class="p-6 text-center text-gray-500">Aucun utilisateur ne correspond à votre recherche.</td>
                             </tr>
                         @endforelse
                     </tbody>

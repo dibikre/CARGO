@@ -128,7 +128,7 @@
         {{-- Badge fixe a gauche --}}
         <div class="bandeau-matieres-etiquette" aria-hidden="true">
             <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#FFF; animation: pulse 1.5s infinite;"></span>
-            <span>Commodities</span>
+            <span>Matières Premières</span>
         </div>
 
         {{-- Bandeau defilant boucle en continu sur fond blanc --}}
