@@ -942,6 +942,39 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               </div>
             </div>
 
+            {/* WebP Compression Live Simulator Banner */}
+            <div className="bg-gradient-to-r from-[#14151C] to-[#2B2E3A] text-white p-5 rounded-lg border-l-4 border-emerald-500 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-500 text-white px-2 py-0.5 rounded font-heading">
+                    Laravel Engine: WebP Compressor Active
+                  </span>
+                  <span className="text-xs text-gray-300 font-mono">ServiceConversionWebp @ 82% Quality</span>
+                </div>
+                <h3 className="font-heading font-black text-lg text-white">
+                  Exclusive Article Image Compression (Auto .webp)
+                </h3>
+                <p className="text-xs text-gray-300 max-w-2xl leading-relaxed">
+                  Only article uploads are converted to WebP with alpha transparency preserved and large images scaled to max 1920x1080.
+                  Categories and commodities retain their native formats.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+                <div className="bg-white/10 px-3 py-2 rounded text-xs font-mono text-center border border-white/10">
+                  <span className="text-gray-400 block text-[10px] uppercase">Example Savings</span>
+                  <span className="text-emerald-400 font-bold">2.8 MB &rarr; 390 KB (-86%)</span>
+                </div>
+                <button
+                  onClick={() => declencherToast("WebP conversion simulated: 'shipping-hub.jpg' (2.8 MB) successfully converted to 'shipping-hub-67c.webp' (390 KB, -86% size)!")}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-bold uppercase tracking-wider transition shadow flex items-center gap-1.5"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Simulate WebP Upload
+                </button>
+              </div>
+            </div>
+
             {/* Toast Notification */}
             {toastMessage && (
               <div className="bg-emerald-50 border-l-4 border-emerald-500 p-3.5 rounded text-xs text-emerald-800 font-semibold flex items-center gap-2 animate-fade-in shadow-sm">
@@ -1391,7 +1424,7 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Feature 1 Summary */}
               <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
                 <div className="flex items-center gap-2 text-[#D4201A] font-heading font-bold text-base">
@@ -1462,7 +1495,7 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
                 </ul>
               </div>
 
-              {/* Feature 4 Summary (NEW) */}
+              {/* Feature 4 Summary */}
               <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-3">
                 <div className="flex items-center gap-2 text-[#FFC93C] font-heading font-bold text-base bg-[#14151C] p-2 rounded">
                   <Clock className="w-5 h-5 shrink-0 text-[#FFC93C]" />
@@ -1484,6 +1517,36 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <span><strong>Controls:</strong> 5 numbered tracks (01-05), animated 7s progress bar, Next/Prev/Pause buttons, and hover-to-pause.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Feature 5 Summary (NEW - WebP Optimization) */}
+              <div className="bg-white p-6 rounded-lg border-2 border-emerald-400 space-y-3 shadow-sm">
+                <div className="flex items-center gap-2 text-emerald-800 font-heading font-bold text-base bg-emerald-50 p-2 rounded">
+                  <Sparkles className="w-5 h-5 shrink-0 text-emerald-600" />
+                  <span>5. WebP Compression (Articles Only)</span>
+                </div>
+                <ul className="text-xs space-y-2 text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Service:</strong> <code>App\Services\ServiceConversionWebp.php</code> with 82% quality compression.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Scope:</strong> Intercepts <code>dossier === 'articles'</code> in <code>ServiceGestionImage</code>; leaves categories & commodities untouched.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Alpha Transparency:</strong> Full RGBA preservation for transparent PNGs converted to modern WebP.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Proportional Bounds:</strong> Auto-scales oversized photos (max 1920x1080) without distortion or upscaling small images.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Automated Testing:</strong> <code>ConversionImageWebpTest.php</code> verifying dimensions, WebP generation, and fallback.</span>
                   </li>
                 </ul>
               </div>

@@ -62,12 +62,13 @@
         <div style="background:#F9FAFB; padding:18px; border:1px solid #E5E7EB; display:flex; flex-direction:column; gap:14px;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E5E7EB; padding-bottom:8px;">
                 <span class="kick" style="color:var(--dark); font-size:11px; font-weight:700;">Featured Editorial Image</span>
-                <span style="font-size:11px; color:var(--text-muted);">Stored locally in public/images/articles/</span>
+                <span style="font-size:11px; color:#166534; background:#DCFCE7; padding:2px 8px; border-radius:4px; font-weight:600;">Auto-converted to compressed WebP (.webp)</span>
             </div>
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
                 <div>
                     <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Upload Local Image File</label>
                     <input type="file" name="fichier_image" accept="image/*" class="form-input" style="height:42px; padding:6px 10px;">
+                    <p style="font-size:10px; color:#6B7280; margin:4px 0 0;">Images are automatically converted to compressed WebP format.</p>
                 </div>
                 <div>
                     <label style="font-weight:700; font-size:12px; display:block; margin-bottom:4px; text-transform:uppercase;">Or Local Path / Remote URL</label>

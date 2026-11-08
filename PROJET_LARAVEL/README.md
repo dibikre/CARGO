@@ -84,8 +84,15 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
    * Champ piège invisible *honeypot* anti-robot.
    * Traçabilité d'audit immuable de toutes les actions et tentatives d'intrusion.
    * Bascule en un clic des alertes urgentes et du statut opérationnel des corridors.
-3. **Espace Rédaction (`/redaction/articles`)** :
-   * Rédaction d'articles avec formatage, ajout de tags (max 4), corridor et classification par transport.
+3. **Espace Rédaction (`/redaction/articles`) & Gestion Éditoriale** :
+   * Rédaction d'articles avec formatage WYSIWYG/HTML, ajout de tags (max 4), corridor et classification par transport.
+   * **Conversion & Compression WebP Automatique (Exclusif aux Articles)** :
+     - Toute image d'article téléversée (`fichier_image`) ou rapatriée depuis une URL distante est automatiquement interceptée par `ServiceGestionImage` et convertie au format WebP compressé (`.webp`) via `ServiceConversionWebp`.
+     - **Taux de compression optimal** : encodage à 82% de qualité, réduisant le poids des images de 60% à 85% par rapport au JPEG/PNG natif, sans dégradation visuelle perceptible.
+     - **Préservation de la transparence** : gestion complète du canal alpha (couche RGBA) pour les fichiers PNG transparents.
+     - **Redimensionnement proportionnel intelligent** : limitation automatique des images démesurées (max 1920x1080) sans déformation de ratio ni agrandissement artificiel des petites images.
+     - **Ciblage strict** : s'applique exclusivement aux images du dossier `articles`. Les bannières de rubriques (`categories`) et les icônes de matières premières (`matieres`, PNG 96x96 alpha) conservent intacts leurs formats spécifiques.
+     - **Résilience & Logs** : mécanisme de repli transparent (fallback) avec journalisation détaillée via `Log::info()` et `Log::warning()`.
 4. **Modération des Commentaires (`/redaction/commentaires`)** :
    * Approbation, rejet ou signalement antispam des avis lecteurs.
 

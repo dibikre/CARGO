@@ -92,13 +92,16 @@
         <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
             <div class="flex items-center justify-between pb-2 border-b border-gray-200">
                 <span class="text-xs font-bold uppercase tracking-wider text-gray-800">Lead Editorial Image</span>
-                <span class="text-[11px] text-gray-500">Stored locally in public/images/articles/</span>
+                <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    Auto-converted to compressed WebP (.webp)
+                </span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1">Upload Local Image</label>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1">Upload Local Image (JPEG, PNG, WebP)</label>
                     <input type="file" name="fichier_image" accept="image/*"
                            class="w-full bg-white border border-gray-300 rounded px-2.5 py-1.5 text-xs text-gray-700 focus:outline-none">
+                    <p class="text-[10px] text-gray-500 mt-1">Image will be automatically converted to high-efficiency WebP format.</p>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1">Or Path / Remote URL</label>
