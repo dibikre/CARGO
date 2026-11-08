@@ -106,4 +106,13 @@ class MatierePremiereTest extends TestCase
     {
         $this->assertEquals(20, MatierePremiere::NOMBRE_MAX_PRODUITS);
     }
+
+    /**
+     * Verifie que les dimensions standard des icones PNG sont fixees a 80x80 pixels.
+     */
+    public function test_dimensions_cible_png_fixees_a_quatre_vingts(): void
+    {
+        $this->assertEquals(80, ServiceMatierePremiere::LARGEUR_CIBLE_PNG);
+        $this->assertEquals(80, ServiceMatierePremiere::HAUTEUR_CIBLE_PNG);
+    }
 }

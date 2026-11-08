@@ -95,7 +95,7 @@
                 </div>
                 <div class="flex-1">
                     <input type="file" id="image_png" name="image_png" accept="image/png,.png,image/x-png" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
-                    <p class="text-xs text-gray-500 mt-1">Laissez vide pour conserver l'image actuelle. Tout fichier PNG sélectionné est automatiquement redimensionné à 96x96px.</p>
+                    <p class="text-xs text-gray-500 mt-1">Laissez vide pour conserver l'image actuelle. Tout fichier PNG sélectionné est automatiquement redimensionné à 80x80px.</p>
                 </div>
             </div>
         </div>

@@ -64,7 +64,7 @@
         {{-- Transparent PNG Upload --}}
         <div class="border-t border-gray-200 pt-6">
             <label for="image_png" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Image PNG transparente sans fond *</label>
-            <p class="text-xs text-gray-500 mb-2">Sélectionnez votre fichier PNG (jusqu'à 8 Mo). Il est automatiquement redimensionné à la taille optimale (96x96px) tout en conservant la transparence alpha.</p>
+            <p class="text-xs text-gray-500 mb-2">Sélectionnez votre fichier PNG (jusqu'à 8 Mo). Il est automatiquement redimensionné à la taille optimale (80x80px) tout en conservant la transparence alpha.</p>
             <input type="file" id="image_png" name="image_png" accept="image/png,.png,image/x-png" required class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
         </div>
 

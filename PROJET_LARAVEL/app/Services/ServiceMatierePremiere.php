@@ -16,10 +16,12 @@ use InvalidArgumentException;
 class ServiceMatierePremiere
 {
     /**
-     * Dimensions cibles standard pour les icones du bandeau (format carre adapte).
+     * Dimensions cibles standard pour les icones du bandeau (format carre 80x80).
      */
-    public const LARGEUR_MAX_PNG = 96;
-    public const HAUTEUR_MAX_PNG = 96;
+    public const LARGEUR_CIBLE_PNG = 80;
+    public const HAUTEUR_CIBLE_PNG = 80;
+    public const LARGEUR_MAX_PNG = 80;
+    public const HAUTEUR_MAX_PNG = 80;
 
     /**
      * Valider et normaliser une chaine ou un tableau de noeuds de courbe.
@@ -117,53 +119,43 @@ class ServiceMatierePremiere
     }
 
     /**
-     * Redimensionne un PNG en préservant le canal alpha de transparence et le ratio d'aspect.
+     * Redimensionne et résout un PNG en exactement 80x80 pixels avec canal alpha préservé.
      */
-    protected function redimensionnerPngAvecTransparence(string $sourcePath, string $destPath, int $maxLargeur, int $maxHauteur): bool
+    protected function redimensionnerPngAvecTransparence(string $sourcePath, string $destPath, int $largeurCible = self::LARGEUR_CIBLE_PNG, int $hauteurCible = self::HAUTEUR_CIBLE_PNG): bool
     {
         try {
             $info = @getimagesize($sourcePath);
-            if (! $info) {
+            if (! $info || $info[0] <= 0 || $info[1] <= 0) {
                 return false;
             }
 
             [$largeurSource, $hauteurSource] = $info;
-            if ($largeurSource <= 0 || $hauteurSource <= 0) {
-                return false;
-            }
-
-            // Calcul du ratio pour ne pas déformer l'icône
-            $ratio = min($maxLargeur / $largeurSource, $maxHauteur / $hauteurSource, 1.0);
-            $nouvelleLargeur = (int) round($largeurSource * $ratio);
-            $nouvelleHauteur = (int) round($hauteurSource * $ratio);
+            $ratio = min($largeurCible / $largeurSource, $hauteurCible / $hauteurSource);
+            $nouvelleLargeur = (int) max(1, round($largeurSource * $ratio));
+            $nouvelleHauteur = (int) max(1, round($hauteurSource * $ratio));
+            $posX = (int) max(0, round(($largeurCible - $nouvelleLargeur) / 2));
+            $posY = (int) max(0, round(($hauteurCible - $nouvelleHauteur) / 2));
 
             $imageSource = @imagecreatefrompng($sourcePath);
             if (! $imageSource) {
                 return false;
             }
 
-            // Création d'une image TrueColor avec canal alpha complet
-            $imageCible = imagecreatetruecolor($nouvelleLargeur, $nouvelleHauteur);
+            $imageCible = imagecreatetruecolor($largeurCible, $hauteurCible);
             imagealphablending($imageCible, false);
             imagesavealpha($imageCible, true);
 
             $transparent = imagecolorallocatealpha($imageCible, 0, 0, 0, 127);
-            imagefilledrectangle($imageCible, 0, 0, $nouvelleLargeur, $nouvelleHauteur, $transparent);
+            imagefilledrectangle($imageCible, 0, 0, $largeurCible, $hauteurCible, $transparent);
 
-            // Échantillonnage avec anti-aliasing haute qualité
             imagecopyresampled(
-                $imageCible,
-                $imageSource,
-                0, 0, 0, 0,
-                $nouvelleLargeur,
-                $nouvelleHauteur,
-                $largeurSource,
-                $hauteurSource
+                $imageCible, $imageSource,
+                $posX, $posY, 0, 0,
+                $nouvelleLargeur, $nouvelleHauteur,
+                $largeurSource, $hauteurSource
             );
 
-            // Enregistrement PNG compressé
             $succes = imagepng($imageCible, $destPath, 8);
-
             imagedestroy($imageSource);
             imagedestroy($imageCible);
 

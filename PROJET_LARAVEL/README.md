@@ -79,7 +79,7 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
    * Bloc des 10 meilleurs tags logistiques dans la barre latérale sous les vidéos YouTube.
    * Tableau de bord en direct de l'état des corridors logistiques mondiaux (Suez, Rhin-Alpes, etc.).
 2. **Console Administrative Sécurisée (`/admin/connexion`)** :
-   * Gestion complète des matières premières brutes (`/admin/matieres-premieres`) : ajout, modification, actualisation rapide des nœuds JSON et redimensionnement automatique des PNG en 96x96 avec canal alpha préservé.
+   * Gestion complète des matières premières brutes (`/admin/matieres-premieres`) : ajout, modification, actualisation rapide des nœuds JSON et redimensionnement automatique des PNG en 80x80 avec canal alpha préservé.
    * Protection anti-bruteforce (limitation stricte à 5 essais avec lockout de 15 minutes).
    * Champ piège invisible *honeypot* anti-robot.
    * Traçabilité d'audit immuable de toutes les actions et tentatives d'intrusion.
@@ -91,7 +91,7 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
      - **Taux de compression optimal** : encodage à 82% de qualité, réduisant le poids des images de 60% à 85% par rapport au JPEG/PNG natif, sans dégradation visuelle perceptible.
      - **Préservation de la transparence** : gestion complète du canal alpha (couche RGBA) pour les fichiers PNG transparents.
      - **Redimensionnement proportionnel intelligent** : limitation automatique des images démesurées (max 1920x1080) sans déformation de ratio ni agrandissement artificiel des petites images.
-     - **Ciblage strict** : s'applique exclusivement aux images du dossier `articles`. Les bannières de rubriques (`categories`) et les icônes de matières premières (`matieres`, PNG 96x96 alpha) conservent intacts leurs formats spécifiques.
+     - **Ciblage strict** : s'applique exclusivement aux images du dossier `articles`. Les bannières de rubriques (`categories`) et les icônes de matières premières (`matieres`, PNG 80x80 alpha) conservent intacts leurs formats spécifiques.
      - **Résilience & Logs** : mécanisme de repli transparent (fallback) avec journalisation détaillée via `Log::info()` et `Log::warning()`.
 4. **Modération des Commentaires (`/redaction/commentaires`)** :
    * Approbation, rejet ou signalement antispam des avis lecteurs.
