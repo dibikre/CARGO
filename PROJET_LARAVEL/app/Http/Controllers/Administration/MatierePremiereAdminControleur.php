@@ -80,7 +80,7 @@ class MatierePremiereAdminControleur extends Controller
             'unite_mesure' => 'required|string|max:50',
             'ordre_affichage' => 'required|integer|min:0',
             'est_actif' => 'sometimes|boolean',
-            'image_png' => 'required|image|mimes:png|max:2048',
+            'image_png' => 'required|file|mimetypes:image/png,image/x-png|mimes:png|max:4096',
             'donnees_courbe_json' => 'required|string',
         ];
 
@@ -130,7 +130,7 @@ class MatierePremiereAdminControleur extends Controller
             'unite_mesure' => 'required|string|max:50',
             'ordre_affichage' => 'required|integer|min:0',
             'est_actif' => 'sometimes|boolean',
-            'image_png' => 'nullable|image|mimes:png|max:2048',
+            'image_png' => 'nullable|file|mimetypes:image/png,image/x-png|mimes:png|max:4096',
             'donnees_courbe_json' => 'required|string',
         ];
 

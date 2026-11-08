@@ -94,8 +94,8 @@
                     <img src="{{ asset($matiere->image_png) }}" alt="{{ $matiere->nom }}" class="w-10 h-10 object-contain" />
                 </div>
                 <div class="flex-1">
-                    <input type="file" id="image_png" name="image_png" accept="image/png" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
-                    <p class="text-xs text-gray-500 mt-1">Leave empty to keep current image. Only transparent PNG accepted.</p>
+                    <input type="file" id="image_png" name="image_png" accept="image/png,.png,image/x-png" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+                    <p class="text-xs text-gray-500 mt-1">Leave empty to keep current image. Any uploaded PNG is automatically resized and optimized to 96x96px.</p>
                 </div>
             </div>
         </div>

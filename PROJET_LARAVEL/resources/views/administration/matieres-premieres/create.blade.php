@@ -64,8 +64,8 @@
         {{-- Transparent PNG Upload --}}
         <div class="border-t border-gray-200 pt-6">
             <label for="image_png" class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Transparent PNG Image (no background) *</label>
-            <p class="text-xs text-gray-500 mb-2">Upload a transparent PNG icon (recommended 64x64px or 128x128px, max 2MB).</p>
-            <input type="file" id="image_png" name="image_png" accept="image/png" required class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+            <p class="text-xs text-gray-500 mb-2">Upload any transparent PNG file (up to 4MB). It is automatically resized to the optimal 96x96px dimensions while preserving alpha transparency.</p>
+            <input type="file" id="image_png" name="image_png" accept="image/png,.png,image/x-png" required class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
         </div>
 
         {{-- JSON Points Textarea --}}

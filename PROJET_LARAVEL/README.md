@@ -75,14 +75,17 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
 1. **Portail Public (`/`)** :
    * Une éditoriale avec badges de modes de transport (Maritime, Rail, Route, Air).
    * Bandeau rouge défilant d'alertes urgentes (*Breaking News*).
+   * **Bandeau défilant des matières premières brutes (Commodities Ticker)** : bandeau défilant sur fond blanc, non-cliquable, avec icônes PNG transparentes, prix, tracé sparkline (5-10 nœuds) et calcul automatique de l'écart entrée/sortie (-7%, etc.).
+   * Bloc des 10 meilleurs tags logistiques dans la barre latérale sous les vidéos YouTube.
    * Tableau de bord en direct de l'état des corridors logistiques mondiaux (Suez, Rhin-Alpes, etc.).
 2. **Console Administrative Sécurisée (`/admin/connexion`)** :
+   * Gestion complète des matières premières brutes (`/admin/matieres-premieres`) : ajout, modification, actualisation rapide des nœuds JSON et redimensionnement automatique des PNG en 96x96 avec canal alpha préservé.
    * Protection anti-bruteforce (limitation stricte à 5 essais avec lockout de 15 minutes).
    * Champ piège invisible *honeypot* anti-robot.
    * Traçabilité d'audit immuable de toutes les actions et tentatives d'intrusion.
    * Bascule en un clic des alertes urgentes et du statut opérationnel des corridors.
 3. **Espace Rédaction (`/redaction/articles`)** :
-   * Rédaction d'articles avec formatage, tag, corridor et classification par transport.
+   * Rédaction d'articles avec formatage, ajout de tags (max 4), corridor et classification par transport.
 4. **Modération des Commentaires (`/redaction/commentaires`)** :
    * Approbation, rejet ou signalement antispam des avis lecteurs.
 
@@ -94,4 +97,4 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
 * **Langue du Code** : 100% en français pour les identifiants internes (classes, variables, méthodes, migrations).
 * **Interface Graphique** : Textes en anglais professionnel, design sobre avec boutons d'action rouges (`#D4201A`), fond clair et polices Archivo / IBM Plex Sans.
 * **Hébergement Partagé** : Respect de la limite MySQL d'index à 191 caractères (`Schema::defaultStringLength(191)`).
-* **RAFRAICHRIR LA BD** : php artisan migrate:fresh --seed
+* **Rafraîchir la base de données** : `php artisan migrate:fresh --seed`
