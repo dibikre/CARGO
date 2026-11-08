@@ -27,6 +27,19 @@
                 Explorer tous les articles
             </a>
         </div>
+    @elseif(isset($souscriptionsActives) && !$souscriptionsActives)
+        <div style="background:#FFFBEB; border:2px solid #F59E0B; padding:28px 32px; margin-bottom:36px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px;">
+            <div style="max-width:680px;">
+                <span class="kick" style="color:#B45309; font-size:12px; display:block; margin-bottom:6px;">SOUSCRIPTIONS TEMPORAIREMENT FERMÉES</span>
+                <h2 class="dsp" style="margin:0 0 8px; font-size:26px; color:#92400E;">Les nouvelles souscriptions sont actuellement désactivées</h2>
+                <p style="margin:0; color:#78350F; font-size:15px; line-height:1.6;">
+                    L'administration a suspendu la souscription à de nouveaux forfaits d'abonnement. Les abonnés actifs disposent toujours de l'intégralité de leurs accès réservés.
+                </p>
+            </div>
+            <a href="{{ route('accueil') }}" style="background:#B45309; color:#fff; font-weight:700; padding:14px 28px; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; display:inline-block;">
+                Retour à l'accueil
+            </a>
+        </div>
     @endif
 
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:32px;">
@@ -62,6 +75,12 @@
                         <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; display:block; text-align:center; padding:12px 18px; font-weight:700; text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); font-family:var(--police-titre);">
                             Accès Libre (Sans Frais)
                         </a>
+                    </div>
+                @elseif(isset($souscriptionsActives) && !$souscriptionsActives)
+                    <div style="margin-top:auto; padding-top:16px;">
+                        <button disabled style="background:#E5E7EB; color:#9CA3AF; width:100%; display:block; text-align:center; padding:12px 18px; font-weight:700; text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); font-family:var(--police-titre); border:none; cursor:not-allowed;">
+                            Souscriptions Suspendues
+                        </button>
                     </div>
                 @else
                     @auth

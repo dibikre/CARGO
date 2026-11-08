@@ -16,9 +16,11 @@ class AbonnementControleur extends Controller
      */
     public function index(): View
     {
+        $abonnementsActifs = \App\Models\ConfigurationSysteme::abonnementsSontActifs();
+        $souscriptionsActives = \App\Models\ConfigurationSysteme::souscriptionsSontActives();
         $formules = FormuleAbonnement::actif()->get();
 
-        return view('journal.abonnements.tarifs', compact('formules'));
+        return view('journal.abonnements.tarifs', compact('formules', 'abonnementsActifs', 'souscriptionsActives'));
     }
 
     /**
@@ -26,6 +28,14 @@ class AbonnementControleur extends Controller
      */
     public function souscrire(AbonnementFormRequest $request, ServiceAbonnementLecteur $serviceAbonnement): RedirectResponse
     {
+        if (! \App\Models\ConfigurationSysteme::souscriptionsSontActives()) {
+            return back()->with('erreur', 'New subscription sign-ups and purchases are currently disabled by the administration.');
+        }
+
+        if (! \App\Models\ConfigurationSysteme::abonnementsSontActifs()) {
+            return back()->with('erreur', 'The site is currently in 100% Free Open Access mode; subscriptions are not required.');
+        }
+
         $donnees = $request->validated();
         $utilisateur = $request->user();
 

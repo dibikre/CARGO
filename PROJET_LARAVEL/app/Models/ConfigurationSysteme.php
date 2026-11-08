@@ -82,4 +82,28 @@ class ConfigurationSysteme extends Model
 
         return $nouvelEtat;
     }
+
+    /**
+     * Vérifier si les nouvelles souscriptions d'abonnements sont autorisées.
+     */
+    public static function souscriptionsSontActives(): bool
+    {
+        $valeur = self::obtenirValeur('souscriptions_actives', '1');
+        return $valeur === '1' || $valeur === true || $valeur === 1;
+    }
+
+    /**
+     * Basculer la possibilité pour les lecteurs de souscrire à un abonnement.
+     */
+    public static function basculerSouscriptions(): bool
+    {
+        $nouvelEtat = ! self::souscriptionsSontActives();
+        self::definirValeur(
+            'souscriptions_actives',
+            $nouvelEtat ? '1' : '0',
+            'Autorisation de nouvelles souscriptions d\'abonnements'
+        );
+
+        return $nouvelEtat;
+    }
 }

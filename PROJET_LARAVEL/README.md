@@ -79,6 +79,20 @@ Grâce au seeder automatique (`DatabaseSeeder`), trois comptes de démonstration
    * Bloc des 10 meilleurs tags logistiques dans la barre latérale sous les vidéos YouTube.
    * Tableau de bord en direct de l'état des corridors logistiques mondiaux (Suez, Rhin-Alpes, etc.).
 2. **Console Administrative Sécurisée (`/admin/connexion`)** :
+   * **Gestion des Utilisateurs & Contrôle d'Accès RBAC (`/admin/utilisateurs`)** :
+     - Ajout complet de nouveaux comptes avec attribution de rôle (Super Admin, Administrateur, Rédacteur en chef, Journaliste, Rédacteur, Abonné, Lecteur).
+     - Modification des profils utilisateurs, coordonnées, rôles et réinitialisation de mot de passe.
+     - Activation / désactivation en un clic (`est_actif`) bloquant immédiatement l'accès au site et au backoffice.
+     - Suppression de compte avec protection *SoftDeletes* préservant l'intégrité des articles et de l'historique d'audit.
+     - Garde-fous de sécurité stricts (interdiction de s'auto-rétrograder, s'auto-désactiver ou s'auto-supprimer ; protection du dernier Super Administrateur).
+   * **Gestion des Formules d'Abonnement & Contrôle des Souscriptions (`/admin/abonnements`)** :
+     - **Ajout de formules d'abonnement** (`storeFormule`) : nom, durée en jours (30, 90, 365, etc.), prix HT et TVA, sièges simultanés, privilèges archives et dossiers exclusifs.
+     - **Modification complète** (`updateFormule`) : ajustement des tarifs, durées, descriptions, avec régénération automatique du slug unique.
+     - **Suppression sécurisée** (`destroyFormule`) : suppression définitive autorisée uniquement si aucun abonné n'est lié au forfait (préservation de l'intégrité contractuelle et comptable).
+     - **Désactivation du fait de s'abonner** :
+       * *Par formule* : bascule rapide en 1 clic de l'état `est_actif` pour retirer instantanément une formule de la grille publique des tarifs.
+       * *À l'échelle de la plateforme* : interrupteur global `souscriptions_actives` dans `ConfigurationSysteme` bloquant tout nouveau paiement/souscription (`POST /abonnements/souscrire`) tout en maintenant l'accès des abonnés en cours.
+       * *Bascule Paywall Global* : interrupteur `abonnements_actifs` rendant le média 100% gratuit et ouvert sans paywall.
    * Gestion complète des matières premières brutes (`/admin/matieres-premieres`) : ajout, modification, actualisation rapide des nœuds JSON et redimensionnement automatique des PNG en 80x80 avec canal alpha préservé.
    * Protection anti-bruteforce (limitation stricte à 5 essais avec lockout de 15 minutes).
    * Champ piège invisible *honeypot* anti-robot.

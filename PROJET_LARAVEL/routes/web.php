@@ -126,8 +126,11 @@ Route::prefix('admin')->group(function () {
         // Gestion des utilisateurs et permissions
         Route::prefix('utilisateurs')->name('utilisateurs.')->group(function () {
             Route::get('/', [UtilisateurAdminControleur::class, 'index'])->name('index');
+            Route::post('/', [UtilisateurAdminControleur::class, 'store'])->name('store');
             Route::put('/{id}', [UtilisateurAdminControleur::class, 'update'])->name('update');
+            Route::post('/{id}/basculer-statut', [UtilisateurAdminControleur::class, 'basculerStatut'])->name('statut');
             Route::post('/{id}/reinitialiser-mdp', [UtilisateurAdminControleur::class, 'reinitialiserMotDePasse'])->name('mdp');
+            Route::delete('/{id}', [UtilisateurAdminControleur::class, 'destroy'])->name('destroy');
         });
 
         // Supervision globale des articles & alertes
@@ -169,7 +172,10 @@ Route::prefix('admin')->group(function () {
         Route::prefix('abonnements')->name('abonnements.')->group(function () {
             Route::get('/', [AbonnementAdminControleur::class, 'index'])->name('index');
             Route::post('/basculer-paywall', [AbonnementAdminControleur::class, 'basculerPaywallGlobal'])->name('basculer-paywall');
+            Route::post('/basculer-souscriptions', [AbonnementAdminControleur::class, 'basculerSouscriptionsGlobales'])->name('basculer-souscriptions');
             Route::post('/formules', [AbonnementAdminControleur::class, 'storeFormule'])->name('formules.store');
+            Route::put('/formules/{id}', [AbonnementAdminControleur::class, 'updateFormule'])->name('formules.update');
+            Route::delete('/formules/{id}', [AbonnementAdminControleur::class, 'destroyFormule'])->name('formules.destroy');
             Route::post('/formules/{id}/basculer', [AbonnementAdminControleur::class, 'basculerFormule'])->name('formules.basculer');
             Route::post('/{id}/statut', [AbonnementAdminControleur::class, 'updateStatutAbonnement'])->name('update-statut');
         });

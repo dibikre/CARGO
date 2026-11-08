@@ -4,7 +4,8 @@ import {
   Eye, Code, CheckCircle, AlertTriangle, Sliders, Sparkles, Clipboard,
   Heading1, Heading2, Heading3, Bold, Italic, Underline, List, ListOrdered,
   PlusCircle, RefreshCw, ExternalLink, Settings, Layout, Lock, Unlock, Globe,
-  Play, Pause, ChevronLeft, ChevronRight, Clock
+  Play, Pause, ChevronLeft, ChevronRight, Clock,
+  Users, UserPlus, Edit, Trash2, Power, Search, Check, X, CreditCard
 } from 'lucide-react';
 
 interface CategorieLogistique {
@@ -168,11 +169,122 @@ const ARTICLES_A_LA_UNE_HERO: ArticleHero[] = [
 
 const ARTICLES_EXEMPLES = ARTICLES_A_LA_UNE_HERO;
 
+interface UtilisateurCompte {
+  id: number;
+  name: string;
+  email: string;
+  role: 'super_admin' | 'administrateur' | 'redacteur_en_chef' | 'journaliste' | 'redacteur' | 'abonne' | 'lecteur';
+  telephone?: string;
+  estActif: boolean;
+  derniereConnexion: string;
+}
+
+const UTILISATEURS_INITIAUX: UtilisateurCompte[] = [
+  { id: 1, name: 'Super Admin', email: 'admin@cargo-logistics.com', role: 'super_admin', telephone: '+33 1 42 68 00 01', estActif: true, derniereConnexion: 'Today · 10:15 AM' },
+  { id: 2, name: 'Claire Delamare', email: 'journaliste@cargo-logistics.com', role: 'journaliste', telephone: '+33 6 45 12 89 00', estActif: true, derniereConnexion: 'Today · 09:30 AM' },
+  { id: 3, name: 'Global Shipper Corp', email: 'abonne@chargeur-global.com', role: 'abonne', telephone: '+33 4 72 00 11 22', estActif: true, derniereConnexion: 'Yesterday · 04:45 PM' },
+  { id: 4, name: 'Marc Lemaître', email: 'marc.lemaitre@cargo-logistics.com', role: 'redacteur', telephone: '+33 6 11 22 33 44', estActif: false, derniereConnexion: 'Nov 2, 2026' },
+];
+
+interface FormulePlan {
+  id: number;
+  nom: string;
+  slug: string;
+  description: string;
+  prixHt: number;
+  tauxTva: number;
+  dureeEnJours: number;
+  accesArchivesIllimite: boolean;
+  accesDossiersExclusifs: boolean;
+  nombreUtilisateursMax: number;
+  estActif: boolean;
+  ordreAffichage: number;
+  abonnementsCount: number;
+}
+
+const FORMULES_INITIALES: FormulePlan[] = [
+  {
+    id: 1,
+    nom: 'CARGO Pro Mensuel',
+    slug: 'cargo-pro-mensuel',
+    description: 'Accès individuel illimité aux analyses de fret et alertes temps réel.',
+    prixHt: 39,
+    tauxTva: 20,
+    dureeEnJours: 30,
+    accesArchivesIllimite: true,
+    accesDossiersExclusifs: true,
+    nombreUtilisateursMax: 1,
+    estActif: true,
+    ordreAffichage: 1,
+    abonnementsCount: 24,
+  },
+  {
+    id: 2,
+    nom: 'CARGO Pro Annuel',
+    slug: 'cargo-pro-annuel',
+    description: 'Formule recommandée pour directions supply chain avec 2 mois offerts.',
+    prixHt: 390,
+    tauxTva: 20,
+    dureeEnJours: 365,
+    accesArchivesIllimite: true,
+    accesDossiersExclusifs: true,
+    nombreUtilisateursMax: 1,
+    estActif: true,
+    ordreAffichage: 2,
+    abonnementsCount: 89,
+  },
+  {
+    id: 3,
+    nom: 'CARGO Enterprise Fleet 5',
+    slug: 'cargo-enterprise-fleet-5',
+    description: 'Licence 5 postes pour équipes d’affrètement et transitaires.',
+    prixHt: 1250,
+    tauxTva: 20,
+    dureeEnJours: 365,
+    accesArchivesIllimite: true,
+    accesDossiersExclusifs: true,
+    nombreUtilisateursMax: 5,
+    estActif: true,
+    ordreAffichage: 3,
+    abonnementsCount: 0,
+  },
+];
+
 export default function App() {
   const [vueActive, setVueActive] = useState<'accueil' | 'rubrique' | 'editeur' | 'admin' | 'architecture'>('accueil');
   const [categories, setCategories] = useState<CategorieLogistique[]>(CATEGORIES_INITIALES);
   const [categorieSelectionneeId, setCategorieSelectionneeId] = useState<number>(1);
   const [abonnementsActifs, setAbonnementsActifs] = useState<boolean>(true);
+  const [souscriptionsActives, setSouscriptionsActives] = useState<boolean>(true);
+  const [formules, setFormules] = useState<FormulePlan[]>(FORMULES_INITIALES);
+  const [formuleEnEdition, setFormuleEnEdition] = useState<FormulePlan | null>(null);
+  const [afficherModalNouvelleFormule, setAfficherModalNouvelleFormule] = useState<boolean>(false);
+  const [formulaireNouvelleFormule, setFormulaireNouvelleFormule] = useState({
+    nom: '',
+    prixHt: 49,
+    tauxTva: 20,
+    dureeEnJours: 30,
+    description: '',
+    nombreUtilisateursMax: 1,
+    accesArchivesIllimite: true,
+    accesDossiersExclusifs: true,
+    estActif: true,
+    ordreAffichage: 4,
+  });
+  const [utilisateurs, setUtilisateurs] = useState<UtilisateurCompte[]>(UTILISATEURS_INITIAUX);
+  const [ongletAdmin, setOngletAdmin] = useState<'abonnements' | 'utilisateurs' | 'categories'>('abonnements');
+  const [utilisateurEnEdition, setUtilisateurEnEdition] = useState<UtilisateurCompte | null>(null);
+  const [formulaireNouvelUtilisateur, setFormulaireNouvelUtilisateur] = useState({
+    name: '',
+    email: '',
+    role: 'redacteur' as UtilisateurCompte['role'],
+    telephone: '',
+    estActif: true,
+  });
+  const [afficherFormulaireAjout, setAfficherFormulaireAjout] = useState<boolean>(false);
+  const [rechercheUtilisateur, setRechercheUtilisateur] = useState<string>('');
+  const [filtreRoleUtilisateur, setFiltreRoleUtilisateur] = useState<string>('tous');
+  const [filtreStatutUtilisateur, setFiltreStatutUtilisateur] = useState<string>('tous');
 
   // Hero Diaporama 7s Animation State
   const [heroIndexActif, setHeroIndexActif] = useState<number>(0);
@@ -240,6 +352,164 @@ export default function App() {
   const declencherToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4500);
+  };
+
+  const creerUtilisateur = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formulaireNouvelUtilisateur.name.trim() || !formulaireNouvelUtilisateur.email.trim()) {
+      declencherToast('Please fill in name and email.');
+      return;
+    }
+    const nouvelId = Date.now();
+    const nouvelUtilisateur: UtilisateurCompte = {
+      id: nouvelId,
+      name: formulaireNouvelUtilisateur.name.trim(),
+      email: formulaireNouvelUtilisateur.email.trim(),
+      role: formulaireNouvelUtilisateur.role,
+      telephone: formulaireNouvelUtilisateur.telephone.trim() || undefined,
+      estActif: formulaireNouvelUtilisateur.estActif,
+      derniereConnexion: 'Never',
+    };
+    setUtilisateurs(prev => [nouvelUtilisateur, ...prev]);
+    setFormulaireNouvelUtilisateur({
+      name: '',
+      email: '',
+      role: 'redacteur',
+      telephone: '',
+      estActif: true,
+    });
+    setAfficherFormulaireAjout(false);
+    declencherToast(`User account "${nouvelUtilisateur.name}" created successfully (Logged to JournalActivite).`);
+  };
+
+  const sauvegarderModificationUtilisateur = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!utilisateurEnEdition) return;
+    if (utilisateurEnEdition.id === 1 && utilisateurEnEdition.role !== 'super_admin') {
+      declencherToast('Security Guard: You cannot demote your own administrator account role.');
+      return;
+    }
+    setUtilisateurs(prev => prev.map(u => u.id === utilisateurEnEdition.id ? utilisateurEnEdition : u));
+    declencherToast(`Account for "${utilisateurEnEdition.name}" updated successfully.`);
+    setUtilisateurEnEdition(null);
+  };
+
+  const basculerStatutUtilisateur = (id: number) => {
+    if (id === 1) {
+      declencherToast('Security Guard: You cannot deactivate your own active administrator account.');
+      return;
+    }
+    setUtilisateurs(prev => prev.map(u => {
+      if (u.id === id) {
+        const nouveauStatut = !u.estActif;
+        declencherToast(
+          nouveauStatut 
+            ? `User "${u.name}" activated successfully.` 
+            : `User "${u.name}" deactivated. Account is blocked from logging into the portal.`
+        );
+        return { ...u, estActif: nouveauStatut };
+      }
+      return u;
+    }));
+  };
+
+  const supprimerUtilisateur = (id: number) => {
+    if (id === 1) {
+      declencherToast('Security Guard: You cannot delete your own active administrator account.');
+      return;
+    }
+    const cible = utilisateurs.find(u => u.id === id);
+    if (!cible) return;
+
+    if (cible.role === 'super_admin') {
+      const nbSuperAdmins = utilisateurs.filter(u => u.role === 'super_admin').length;
+      if (nbSuperAdmins <= 1) {
+        declencherToast('Security Guard: Cannot delete the only remaining Super Administrator.');
+        return;
+      }
+    }
+
+    setUtilisateurs(prev => prev.filter(u => u.id !== id));
+    declencherToast(`User account "${cible.name}" soft deleted (relational records preserved).`);
+  };
+
+  const basculerSouscriptionsGlobales = () => {
+    const nouvelEtat = !souscriptionsActives;
+    setSouscriptionsActives(nouvelEtat);
+    declencherToast(
+      nouvelEtat
+        ? "Subscription purchases are now ENABLED platform-wide."
+        : "Subscription purchases are now DISABLED platform-wide. Readers cannot place new subscription orders."
+    );
+  };
+
+  const creerFormule = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formulaireNouvelleFormule.nom.trim()) {
+      declencherToast("Please specify a plan name.");
+      return;
+    }
+    const slug = formulaireNouvelleFormule.nom.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const nouvelle: FormulePlan = {
+      id: Date.now(),
+      nom: formulaireNouvelleFormule.nom.trim(),
+      slug,
+      description: formulaireNouvelleFormule.description.trim(),
+      prixHt: Number(formulaireNouvelleFormule.prixHt),
+      tauxTva: Number(formulaireNouvelleFormule.tauxTva),
+      dureeEnJours: Number(formulaireNouvelleFormule.dureeEnJours),
+      accesArchivesIllimite: formulaireNouvelleFormule.accesArchivesIllimite,
+      accesDossiersExclusifs: formulaireNouvelleFormule.accesDossiersExclusifs,
+      nombreUtilisateursMax: Number(formulaireNouvelleFormule.nombreUtilisateursMax),
+      estActif: formulaireNouvelleFormule.estActif,
+      ordreAffichage: Number(formulaireNouvelleFormule.ordreAffichage),
+      abonnementsCount: 0,
+    };
+    setFormules(prev => [...prev, nouvelle]);
+    setAfficherModalNouvelleFormule(false);
+    setFormulaireNouvelleFormule({
+      nom: '',
+      prixHt: 49,
+      tauxTva: 20,
+      dureeEnJours: 30,
+      description: '',
+      nombreUtilisateursMax: 1,
+      accesArchivesIllimite: true,
+      accesDossiersExclusifs: true,
+      estActif: true,
+      ordreAffichage: formules.length + 2,
+    });
+    declencherToast(`Subscription plan "${nouvelle.nom}" created successfully (Logged to JournalActivite).`);
+  };
+
+  const sauvegarderModificationFormule = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formuleEnEdition) return;
+    setFormules(prev => prev.map(f => f.id === formuleEnEdition.id ? formuleEnEdition : f));
+    declencherToast(`Subscription plan "${formuleEnEdition.nom}" updated successfully.`);
+    setFormuleEnEdition(null);
+  };
+
+  const basculerFormule = (id: number) => {
+    setFormules(prev => prev.map(f => {
+      if (f.id === id) {
+        const nouvelEtat = !f.estActif;
+        declencherToast(`Subscription plan "${f.nom}" status set to ${nouvelEtat ? 'Active' : 'Inactive'}.`);
+        return { ...f, estActif: nouvelEtat };
+      }
+      return f;
+    }));
+  };
+
+  const supprimerFormule = (id: number) => {
+    const cible = formules.find(f => f.id === id);
+    if (!cible) return;
+    if (cible.abonnementsCount > 0) {
+      declencherToast(`Cannot delete plan "${cible.nom}" because ${cible.abonnementsCount} subscriber record(s) are linked to it. Please deactivate the plan instead to stop new sign-ups while maintaining subscriber records.`);
+      return;
+    }
+    setFormules(prev => prev.filter(f => f.id !== id));
+    declencherToast(`Subscription plan "${cible.nom}" has been permanently deleted.`);
   };
 
   // Synchronisation contenu
@@ -1307,103 +1577,1113 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <span className="text-xs font-black uppercase text-[#D4201A] tracking-wider font-heading">
-                  Administrative Console
+            {/* Admin Tabs */}
+            <div className="flex border-b border-gray-200 gap-4 pt-2">
+              <button
+                onClick={() => setOngletAdmin('abonnements')}
+                className={`pb-3 px-3 font-heading text-sm font-bold border-b-2 transition flex items-center gap-2 ${
+                  ongletAdmin === 'abonnements'
+                    ? 'border-[#D4201A] text-[#D4201A]'
+                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                <CreditCard className="w-4 h-4" />
+                Subscriptions & Plans (/admin/abonnements)
+                <span className="ml-1 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
+                  {formules.length}
                 </span>
-                <h1 className="text-2xl font-heading font-black text-[#14151C] mt-1">
-                  Editorial Sections & Background Banner Management
-                </h1>
-                <p className="text-sm text-gray-500 mt-1">
-                  Upload custom background images per freight rubric and configure dark scrim contrast settings.
-                </p>
-              </div>
-
-              <div className="text-xs font-bold text-gray-700 bg-gray-50 px-3 py-2 rounded border border-gray-200">
-                Total Active Sections: <strong className="text-[#14151C]">{categories.length}</strong>
-              </div>
+              </button>
+              <button
+                onClick={() => setOngletAdmin('utilisateurs')}
+                className={`pb-3 px-3 font-heading text-sm font-bold border-b-2 transition flex items-center gap-2 ${
+                  ongletAdmin === 'utilisateurs'
+                    ? 'border-[#D4201A] text-[#D4201A]'
+                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                Users & RBAC (/admin/utilisateurs)
+                <span className="ml-1 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
+                  {utilisateurs.length}
+                </span>
+              </button>
+              <button
+                onClick={() => setOngletAdmin('categories')}
+                className={`pb-3 px-3 font-heading text-sm font-bold border-b-2 transition flex items-center gap-2 ${
+                  ongletAdmin === 'categories'
+                    ? 'border-[#D4201A] text-[#D4201A]'
+                    : 'border-transparent text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                <Sliders className="w-4 h-4" />
+                Editorial Sections & Banners
+              </button>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-gray-700 font-heading">
-                  Configured Logistics Rubrics
-                </h2>
-              </div>
+            {/* TAB: SUBSCRIPTIONS & PLANS ADMINISTRATION */}
+            {ongletAdmin === 'abonnements' && (
+              <div className="space-y-6">
+                {/* Dual Master Switches */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Switch 1: Global Paywall */}
+                  <div className={`p-5 rounded-lg border shadow-xs flex flex-col justify-between ${
+                    abonnementsActifs ? 'bg-white border-gray-200' : 'bg-emerald-50 border-emerald-400'
+                  }`}>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded font-mono ${
+                          abonnementsActifs ? 'bg-amber-100 text-amber-900' : 'bg-emerald-600 text-white'
+                        }`}>
+                          {abonnementsActifs ? 'Paywall Active' : '100% Free Open Access'}
+                        </span>
+                        <span className="text-[10px] text-gray-400 font-mono">abonnements_actifs</span>
+                      </div>
+                      <h3 className="font-heading font-black text-base text-[#14151C] mt-2">
+                        {abonnementsActifs ? 'Monetized PRO Paywall is Active' : 'Platform is 100% Free for Everyone'}
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1">
+                        {abonnementsActifs 
+                          ? 'Non-subscribers encounter the paywall when reading exclusive PRO investigations.'
+                          : 'All paywalls bypassed. Visitors read every briefing without paying or registering.'}
+                      </p>
+                    </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-sm">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                      <th className="py-3 px-4">Order</th>
-                      <th className="py-3 px-4">Section / Slug</th>
-                      <th className="py-3 px-4">Header Background Banner</th>
-                      <th className="py-3 px-4">Contrast Protection</th>
-                      <th className="py-3 px-4 text-center">Menu Status</th>
-                      <th className="py-3 px-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {categories.map((cat) => (
-                      <tr key={cat.id} className="hover:bg-gray-50/50 transition">
-                        <td className="py-3.5 px-4 font-mono font-bold text-gray-500">
-                          #{cat.ordreAffichage}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <div className="font-bold text-[#14151C]">{cat.nom}</div>
-                          <div className="font-mono text-xs text-gray-400">/rubriques/{cat.slug}</div>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          {cat.imageFond ? (
-                            <div className="flex items-center gap-2.5">
-                              <div className="w-16 h-10 rounded border border-gray-300 overflow-hidden relative shadow-sm bg-[#14151C]">
-                                <img src={cat.imageFond} alt={cat.nom} className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-black/40"></div>
-                              </div>
-                              <span className="text-xs text-gray-500 truncate max-w-[140px] font-mono">
-                                {cat.imageFond.substring(0, 30)}...
-                              </span>
+                    <div className="pt-3 mt-3 border-t border-gray-100">
+                      <button
+                        onClick={basculerAbonnements}
+                        className={`w-full py-2 px-3 rounded font-heading font-bold uppercase text-xs tracking-wider transition shadow flex items-center justify-center gap-2 ${
+                          abonnementsActifs ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-[#D4201A] hover:bg-red-700 text-white'
+                        }`}
+                      >
+                        {abonnementsActifs ? <Unlock className="w-3.5 h-3.5" /> : <Lock className="w-3.5 h-3.5" />}
+                        {abonnementsActifs ? 'Deactivate Paywall (Make 100% Free)' : 'Re-Activate Paid Paywall'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Switch 2: Subscription Sign-Ups Allowed (Désactiver le fait de s'abonner) */}
+                  <div className={`p-5 rounded-lg border shadow-xs flex flex-col justify-between ${
+                    souscriptionsActives ? 'bg-white border-gray-200' : 'bg-amber-50 border-amber-400'
+                  }`}>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded font-mono ${
+                          souscriptionsActives ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900 font-bold'
+                        }`}>
+                          {souscriptionsActives ? 'Sign-Ups Allowed' : 'Sign-Ups Disabled'}
+                        </span>
+                        <span className="text-[10px] text-gray-400 font-mono">souscriptions_actives</span>
+                      </div>
+                      <h3 className="font-heading font-black text-base text-[#14151C] mt-2">
+                        {souscriptionsActives ? 'New Reader Subscriptions Enabled' : 'Subscription Sign-Ups Are Disabled'}
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1">
+                        {souscriptionsActives
+                          ? 'Readers and shippers can select any active formula and purchase access.'
+                          : 'New subscriptions are paused. Readers cannot subscribe, while existing active subscribers keep access.'}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 mt-3 border-t border-gray-100">
+                      <button
+                        onClick={basculerSouscriptionsGlobales}
+                        className={`w-full py-2 px-3 rounded font-heading font-bold uppercase text-xs tracking-wider transition shadow flex items-center justify-center gap-2 ${
+                          souscriptionsActives ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                        }`}
+                      >
+                        <Power className="w-3.5 h-3.5" />
+                        {souscriptionsActives ? 'Disable Subscribing (Pause Sign-Ups)' : 'Enable Subscription Sign-Ups'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white p-5 rounded-lg border border-gray-200">
+                    <span className="text-xs uppercase font-bold tracking-wider text-gray-500">Active PRO Subscribers</span>
+                    <div className="text-3xl font-heading font-black text-[#14151C] mt-1">128</div>
+                  </div>
+                  <div className="bg-white p-5 rounded-lg border border-gray-200">
+                    <span className="text-xs uppercase font-bold tracking-wider text-gray-500">Processed Orders</span>
+                    <div className="text-3xl font-heading font-black text-[#14151C] mt-1">245</div>
+                  </div>
+                  <div className="bg-white p-5 rounded-lg border border-gray-200">
+                    <span className="text-xs uppercase font-bold tracking-wider text-gray-500">Gross Processed Volume</span>
+                    <div className="text-3xl font-heading font-black text-emerald-600 mt-1">48 590,00 €</div>
+                  </div>
+                </div>
+
+                {/* Plans Header & Grid */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                    <div>
+                      <h2 className="text-lg font-heading font-black text-[#14151C]">Subscription Plans & Grids (Formules)</h2>
+                      <p className="text-xs text-gray-500">Add, edit, deactivate, or delete commercial pricing formulas.</p>
+                    </div>
+
+                    <button
+                      onClick={() => setAfficherModalNouvelleFormule(true)}
+                      className="px-4 py-2 bg-[#D4201A] hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider rounded transition shadow flex items-center gap-1.5 shrink-0"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      Add Subscription Plan
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {formules.map((f) => (
+                      <div key={f.id} className="border border-gray-200 rounded-lg p-5 flex flex-col justify-between bg-white shadow-xs hover:border-gray-300 transition">
+                        <div>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <span className="text-[10px] font-mono font-bold text-gray-400 uppercase">#{f.ordreAffichage} · SLUG: {f.slug}</span>
+                              <h3 className="font-bold text-base text-[#14151C] font-heading mt-0.5">{f.nom}</h3>
                             </div>
-                          ) : (
-                            <span className="text-xs text-gray-400 italic">No image (Default Dark)</span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider shrink-0 ${
+                              f.estActif ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
+                            }`}>
+                              {f.estActif ? 'Active' : 'Inactive'}
+                            </span>
+                          </div>
+
+                          <div className="text-2xl font-black font-heading text-[#14151C] my-2">
+                            {f.prixHt.toLocaleString('fr-FR')} € <span className="text-xs font-normal text-gray-500 font-sans">HT / {f.dureeEnJours} days</span>
+                            <span className="block text-[11px] font-normal text-gray-400 font-mono">
+                              TTC: {(f.prixHt * (1 + f.tauxTva / 100)).toFixed(2)} € (TVA {f.tauxTva}%)
+                            </span>
+                          </div>
+
+                          {f.description && (
+                            <p className="text-xs text-gray-600 mb-3">{f.description}</p>
                           )}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800 border border-gray-200 font-mono">
-                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                            {cat.opaciteOverlay}% Dark Scrim
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4 text-center">
-                          <button
-                            onClick={() => {
-                              setCategories(prev => prev.map(c => c.id === cat.id ? { ...c, afficherDansMenu: !c.afficherDansMenu } : c));
-                            }}
-                            className={`text-xs px-2.5 py-1 rounded font-bold uppercase tracking-wider transition ${
-                              cat.afficherDansMenu ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'
-                            }`}
-                          >
-                            {cat.afficherDansMenu ? 'In Header' : 'Hidden'}
-                          </button>
-                        </td>
-                        <td className="py-3.5 px-4 text-right">
-                          <button
-                            onClick={() => {
-                              setCategorieSelectionneeId(cat.id);
-                              setVueActive('rubrique');
-                            }}
-                            className="text-xs font-bold bg-[#D4201A] text-white px-3 py-1.5 rounded hover:bg-red-700 transition"
-                          >
-                            Preview Banner
-                          </button>
-                        </td>
-                      </tr>
+
+                          <div className="flex flex-wrap gap-1.5 mb-3 text-[11px]">
+                            <span className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded font-medium">
+                              {f.nombreUtilisateursMax} seat{f.nombreUtilisateursMax > 1 ? 's' : ''}
+                            </span>
+                            {f.accesArchivesIllimite && (
+                              <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded font-medium">Archives</span>
+                            )}
+                            {f.accesDossiersExclusifs && (
+                              <span className="px-2 py-0.5 bg-purple-50 text-purple-700 rounded font-medium">PRO Briefings</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-gray-100 flex flex-col gap-2.5">
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <span className="font-semibold">{f.abonnementsCount} subscriber(s)</span>
+                            <button
+                              onClick={() => basculerFormule(f.id)}
+                              className={`font-bold text-[11px] uppercase tracking-wider transition ${
+                                f.estActif ? 'text-amber-700 hover:text-amber-900' : 'text-emerald-700 hover:text-emerald-900'
+                              }`}
+                            >
+                              {f.estActif ? 'Deactivate' : 'Activate'}
+                            </button>
+                          </div>
+
+                          <div className="flex items-center justify-end gap-2 pt-1 border-t border-gray-50">
+                            <button
+                              onClick={() => setFormuleEnEdition({ ...f })}
+                              className="px-2.5 py-1 text-xs font-bold text-gray-700 hover:text-[#14151C] bg-gray-100 hover:bg-gray-200 rounded transition flex items-center gap-1"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                              Edit
+                            </button>
+
+                            {f.abonnementsCount > 0 ? (
+                              <span className="text-[11px] text-gray-400 italic" title="Cannot delete: linked subscribers exist. Deactivate plan instead.">
+                                Protected (Linked)
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => supprimerFormule(f.id)}
+                                className="px-2.5 py-1 text-xs font-bold text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition flex items-center gap-1"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                Delete
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
+                </div>
+
+                {/* MODAL: ADD SUBSCRIPTION PLAN */}
+                {afficherModalNouvelleFormule && (
+                  <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 animate-scaleIn border border-gray-200">
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+                        <div className="flex items-center gap-2">
+                          <PlusCircle className="w-5 h-5 text-[#D4201A]" />
+                          <h3 className="font-heading font-black text-lg text-[#14151C]">Create Subscription Plan</h3>
+                        </div>
+                        <button onClick={() => setAfficherModalNouvelleFormule(false)} className="text-gray-400 hover:text-gray-600">
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <form onSubmit={creerFormule} className="mt-4 space-y-4 text-xs">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Plan Name *</label>
+                            <input
+                              type="text"
+                              required
+                              value={formulaireNouvelleFormule.nom}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, nom: e.target.value })}
+                              placeholder="e.g. CARGO Pro Enterprise 5-Seats"
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Duration (in Days) *</label>
+                            <select
+                              value={formulaireNouvelleFormule.dureeEnJours}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, dureeEnJours: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] bg-white"
+                            >
+                              <option value={30}>30 Days (1 Month)</option>
+                              <option value={90}>90 Days (Quarterly)</option>
+                              <option value={180}>180 Days (Semi-Annual)</option>
+                              <option value={365}>365 Days (1 Year)</option>
+                              <option value={730}>730 Days (2 Years)</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Price excl. Tax (EUR HT) *</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              required
+                              value={formulaireNouvelleFormule.prixHt}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, prixHt: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">VAT Rate (%)</label>
+                            <input
+                              type="number"
+                              step="0.1"
+                              min="0"
+                              value={formulaireNouvelleFormule.tauxTva}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, tauxTva: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Max Simultaneous Seats</label>
+                            <input
+                              type="number"
+                              min="1"
+                              max="500"
+                              value={formulaireNouvelleFormule.nombreUtilisateursMax}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, nombreUtilisateursMax: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Display Order</label>
+                            <input
+                              type="number"
+                              min="0"
+                              value={formulaireNouvelleFormule.ordreAffichage}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, ordreAffichage: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Description</label>
+                          <textarea
+                            rows={2}
+                            value={formulaireNouvelleFormule.description}
+                            onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, description: e.target.value })}
+                            placeholder="Key benefits and target subscribers..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                          />
+                        </div>
+
+                        <div className="pt-2 border-t border-gray-100 flex flex-wrap gap-4">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formulaireNouvelleFormule.accesArchivesIllimite}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, accesArchivesIllimite: e.target.checked })}
+                              className="rounded text-[#D4201A] focus:ring-[#D4201A]"
+                            />
+                            <span className="font-semibold text-gray-700">Unlimited Archives</span>
+                          </label>
+
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formulaireNouvelleFormule.accesDossiersExclusifs}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, accesDossiersExclusifs: e.target.checked })}
+                              className="rounded text-[#D4201A] focus:ring-[#D4201A]"
+                            />
+                            <span className="font-semibold text-gray-700">Exclusive PRO Briefings</span>
+                          </label>
+
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formulaireNouvelleFormule.estActif}
+                              onChange={(e) => setFormulaireNouvelleFormule({ ...formulaireNouvelleFormule, estActif: e.target.checked })}
+                              className="rounded text-[#D4201A] focus:ring-[#D4201A]"
+                            />
+                            <span className="font-semibold text-gray-700">Active Immediately</span>
+                          </label>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-200">
+                          <button
+                            type="button"
+                            onClick={() => setAfficherModalNouvelleFormule(false)}
+                            className="px-4 py-2 border border-gray-300 rounded text-gray-700 font-bold hover:bg-gray-50 transition"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-5 py-2 bg-[#D4201A] hover:bg-red-700 text-white font-bold rounded transition shadow"
+                          >
+                            Create Subscription Plan
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
+
+                {/* MODAL: EDIT SUBSCRIPTION PLAN */}
+                {formuleEnEdition && (
+                  <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 animate-scaleIn border border-gray-200">
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+                        <div className="flex items-center gap-2">
+                          <Edit className="w-5 h-5 text-[#D4201A]" />
+                          <h3 className="font-heading font-black text-lg text-[#14151C]">Edit Plan: {formuleEnEdition.nom}</h3>
+                        </div>
+                        <button onClick={() => setFormuleEnEdition(null)} className="text-gray-400 hover:text-gray-600">
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <form onSubmit={sauvegarderModificationFormule} className="mt-4 space-y-4 text-xs">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Plan Name *</label>
+                            <input
+                              type="text"
+                              required
+                              value={formuleEnEdition.nom}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, nom: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Duration (in Days) *</label>
+                            <select
+                              value={formuleEnEdition.dureeEnJours}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, dureeEnJours: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] bg-white"
+                            >
+                              <option value={30}>30 Days (1 Month)</option>
+                              <option value={90}>90 Days (Quarterly)</option>
+                              <option value={180}>180 Days (Semi-Annual)</option>
+                              <option value={365}>365 Days (1 Year)</option>
+                              <option value={730}>730 Days (2 Years)</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Price excl. Tax (EUR HT) *</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              required
+                              value={formuleEnEdition.prixHt}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, prixHt: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">VAT Rate (%)</label>
+                            <input
+                              type="number"
+                              step="0.1"
+                              min="0"
+                              value={formuleEnEdition.tauxTva}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, tauxTva: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Max Simultaneous Seats</label>
+                            <input
+                              type="number"
+                              min="1"
+                              max="500"
+                              value={formuleEnEdition.nombreUtilisateursMax}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, nombreUtilisateursMax: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block font-bold text-gray-700 mb-1">Display Order</label>
+                            <input
+                              type="number"
+                              min="0"
+                              value={formuleEnEdition.ordreAffichage}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, ordreAffichage: Number(e.target.value) })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] font-mono"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Description</label>
+                          <textarea
+                            rows={2}
+                            value={formuleEnEdition.description}
+                            onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, description: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                          />
+                        </div>
+
+                        <div className="pt-2 border-t border-gray-100 flex flex-wrap gap-4">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formuleEnEdition.accesArchivesIllimite}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, accesArchivesIllimite: e.target.checked })}
+                              className="rounded text-[#D4201A] focus:ring-[#D4201A]"
+                            />
+                            <span className="font-semibold text-gray-700">Unlimited Archives</span>
+                          </label>
+
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formuleEnEdition.accesDossiersExclusifs}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, accesDossiersExclusifs: e.target.checked })}
+                              className="rounded text-[#D4201A] focus:ring-[#D4201A]"
+                            />
+                            <span className="font-semibold text-gray-700">Exclusive PRO Briefings</span>
+                          </label>
+
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formuleEnEdition.estActif}
+                              onChange={(e) => setFormuleEnEdition({ ...formuleEnEdition, estActif: e.target.checked })}
+                              className="rounded text-[#D4201A] focus:ring-[#D4201A]"
+                            />
+                            <span className="font-semibold text-gray-700">Active Plan</span>
+                          </label>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-200">
+                          <button
+                            type="button"
+                            onClick={() => setFormuleEnEdition(null)}
+                            className="px-4 py-2 border border-gray-300 rounded text-gray-700 font-bold hover:bg-gray-50 transition"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-5 py-2 bg-[#D4201A] hover:bg-red-700 text-white font-bold rounded transition shadow"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
+
+                {/* Audit & Backend status */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                  <div>
+                    <span className="text-gray-400 block font-medium">Laravel Controller:</span>
+                    <strong className="text-gray-800 font-mono">AbonnementAdminControleur</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block font-medium">Subscribing Guard:</span>
+                    <strong className="text-emerald-700 font-medium">ConfigurationSysteme toggle</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block font-medium">Form Validation:</span>
+                    <strong className="text-gray-800 font-mono">FormuleAbonnementFormRequest</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block font-medium">Activity Log:</span>
+                    <strong className="text-[#D4201A] font-mono">JournalActivite</strong>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* TAB: USERS ADMINISTRATION */}
+            {ongletAdmin === 'utilisateurs' && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-lg border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-black uppercase text-[#D4201A] tracking-wider font-heading">
+                      User Management & RBAC Security
+                    </span>
+                    <h1 className="text-2xl font-heading font-black text-[#14151C] mt-1">
+                      User Accounts Administration (/admin/utilisateurs)
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-1 max-w-2xl">
+                      Add new staff or subscribers, edit roles and credentials, instantly activate/deactivate accounts, or perform safe soft-deletions preserving article authorship history.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => setAfficherFormulaireAjout(!afficherFormulaireAjout)}
+                    className="px-4 py-2.5 rounded bg-[#D4201A] hover:bg-red-700 text-white font-heading font-bold text-xs uppercase tracking-wider transition shadow flex items-center gap-2 shrink-0"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    {afficherFormulaireAjout ? 'Hide Add Form' : 'Add New User'}
+                  </button>
+                </div>
+
+                {/* ADD USER FORM */}
+                {afficherFormulaireAjout && (
+                  <div className="bg-white p-6 rounded-lg border-2 border-red-100 shadow-sm animate-fadeIn">
+                    <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-red-100 text-[#D4201A] flex items-center justify-center font-bold">
+                          <UserPlus className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-heading font-black text-[#14151C]">Create New User Account</h3>
+                          <p className="text-xs text-gray-500">Route: POST /admin/utilisateurs · Logged in JournalActivite</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setAfficherFormulaireAjout(false)}
+                        className="text-gray-400 hover:text-gray-600 text-sm p-1"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <form onSubmit={creerUtilisateur} className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Full Name *</label>
+                        <input
+                          type="text"
+                          required
+                          value={formulaireNouvelUtilisateur.name}
+                          onChange={(e) => setFormulaireNouvelUtilisateur({ ...formulaireNouvelUtilisateur, name: e.target.value })}
+                          placeholder="e.g. Alexandre Moreau"
+                          className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Email Address *</label>
+                        <input
+                          type="email"
+                          required
+                          value={formulaireNouvelUtilisateur.email}
+                          onChange={(e) => setFormulaireNouvelUtilisateur({ ...formulaireNouvelUtilisateur, email: e.target.value })}
+                          placeholder="e.g. a.moreau@cargo-logistics.com"
+                          className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Role / Access Level *</label>
+                        <select
+                          value={formulaireNouvelUtilisateur.role}
+                          onChange={(e) => setFormulaireNouvelUtilisateur({ ...formulaireNouvelUtilisateur, role: e.target.value as UtilisateurCompte['role'] })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] bg-white"
+                        >
+                          <option value="super_admin">Super Administrator (Full System Control)</option>
+                          <option value="administrateur">Administrator (Operations & Content)</option>
+                          <option value="redacteur_en_chef">Editor in Chief (Editorial Oversight)</option>
+                          <option value="journaliste">Journalist (Freight Reporter)</option>
+                          <option value="redacteur">Writer / Contributor</option>
+                          <option value="abonne">Pro Subscriber (Full Paywall Access)</option>
+                          <option value="lecteur">Reader (Public Access)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-gray-700 mb-1">Phone Number (Optional)</label>
+                        <input
+                          type="text"
+                          value={formulaireNouvelUtilisateur.telephone}
+                          onChange={(e) => setFormulaireNouvelUtilisateur({ ...formulaireNouvelUtilisateur, telephone: e.target.value })}
+                          placeholder="e.g. +33 1 42 68 00 20"
+                          className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                        />
+                      </div>
+
+                      <div className="md:col-span-2 flex items-center justify-between pt-2 border-t border-gray-100">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formulaireNouvelUtilisateur.estActif}
+                            onChange={(e) => setFormulaireNouvelUtilisateur({ ...formulaireNouvelUtilisateur, estActif: e.target.checked })}
+                            className="rounded text-[#D4201A] focus:ring-[#D4201A] w-4 h-4"
+                          />
+                          <span className="font-bold text-gray-800">Activate account immediately</span>
+                          <span className="text-gray-500">(User can log in right away)</span>
+                        </label>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setAfficherFormulaireAjout(false)}
+                            className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-50 font-bold text-gray-600 transition"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-5 py-2 rounded bg-[#D4201A] hover:bg-red-700 text-white font-bold transition shadow"
+                          >
+                            Create User Account
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* EDIT USER MODAL */}
+                {utilisateurEnEdition && (
+                  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 animate-scaleIn border border-gray-200">
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+                        <div className="flex items-center gap-2">
+                          <Edit className="w-5 h-5 text-[#D4201A]" />
+                          <h3 className="font-heading font-black text-lg text-[#14151C]">
+                            Edit User: {utilisateurEnEdition.name}
+                          </h3>
+                        </div>
+                        <button
+                          onClick={() => setUtilisateurEnEdition(null)}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <form onSubmit={sauvegarderModificationUtilisateur} className="mt-4 space-y-4 text-xs">
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Full Name</label>
+                          <input
+                            type="text"
+                            required
+                            value={utilisateurEnEdition.name}
+                            onChange={(e) => setUtilisateurEnEdition({ ...utilisateurEnEdition, name: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Email Address</label>
+                          <input
+                            type="email"
+                            required
+                            value={utilisateurEnEdition.email}
+                            onChange={(e) => setUtilisateurEnEdition({ ...utilisateurEnEdition, email: e.target.value })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Role / Privilege Level</label>
+                          <select
+                            value={utilisateurEnEdition.role}
+                            disabled={utilisateurEnEdition.id === 1}
+                            onChange={(e) => setUtilisateurEnEdition({ ...utilisateurEnEdition, role: e.target.value as UtilisateurCompte['role'] })}
+                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A] bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+                          >
+                            <option value="super_admin">Super Administrator</option>
+                            <option value="administrateur">Administrator</option>
+                            <option value="redacteur_en_chef">Editor in Chief</option>
+                            <option value="journaliste">Journalist</option>
+                            <option value="redacteur">Writer / Contributor</option>
+                            <option value="abonne">Pro Subscriber</option>
+                            <option value="lecteur">Reader</option>
+                          </select>
+                          {utilisateurEnEdition.id === 1 && (
+                            <p className="text-[11px] text-amber-700 mt-1">
+                              Security: Your active Super Admin role cannot be demoted.
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-gray-700 mb-1">Phone Number</label>
+                          <input
+                            type="text"
+                            value={utilisateurEnEdition.telephone || ''}
+                            onChange={(e) => setUtilisateurEnEdition({ ...utilisateurEnEdition, telephone: e.target.value })}
+                            placeholder="+33..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#D4201A]"
+                          />
+                        </div>
+
+                        <div className="pt-2">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              disabled={utilisateurEnEdition.id === 1}
+                              checked={utilisateurEnEdition.estActif}
+                              onChange={(e) => setUtilisateurEnEdition({ ...utilisateurEnEdition, estActif: e.target.checked })}
+                              className="rounded text-[#D4201A] focus:ring-[#D4201A] w-4 h-4 disabled:opacity-50"
+                            />
+                            <span className="font-bold text-gray-800">Account Active (Authorized to log in)</span>
+                          </label>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-200">
+                          <button
+                            type="button"
+                            onClick={() => setUtilisateurEnEdition(null)}
+                            className="px-4 py-2 rounded border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-5 py-2 rounded bg-[#D4201A] text-white font-bold hover:bg-red-700 transition shadow"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
+
+                {/* SEARCH & FILTERS BAR */}
+                <div className="bg-white p-4 rounded-lg border border-gray-200 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+                  <div className="relative w-full md:w-72">
+                    <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search name, email..."
+                      value={rechercheUtilisateur}
+                      onChange={(e) => setRechercheUtilisateur(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded text-xs focus:outline-none focus:border-[#D4201A]"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-3 w-full md:w-auto">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-500 font-bold">Role:</span>
+                      <select
+                        value={filtreRoleUtilisateur}
+                        onChange={(e) => setFiltreRoleUtilisateur(e.target.value)}
+                        className="px-2.5 py-1.5 border border-gray-300 rounded text-xs bg-white focus:outline-none"
+                      >
+                        <option value="tous">All Roles</option>
+                        <option value="super_admin">Super Admin</option>
+                        <option value="administrateur">Administrator</option>
+                        <option value="redacteur_en_chef">Editor in Chief</option>
+                        <option value="journaliste">Journalist</option>
+                        <option value="redacteur">Writer</option>
+                        <option value="abonne">Subscriber</option>
+                        <option value="lecteur">Reader</option>
+                      </select>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-500 font-bold">Status:</span>
+                      <select
+                        value={filtreStatutUtilisateur}
+                        onChange={(e) => setFiltreStatutUtilisateur(e.target.value)}
+                        className="px-2.5 py-1.5 border border-gray-300 rounded text-xs bg-white focus:outline-none"
+                      >
+                        <option value="tous">All Statuses</option>
+                        <option value="actif">Active Only</option>
+                        <option value="inactif">Deactivated Only</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* USERS TABLE */}
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-sm">
+                      <thead>
+                        <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                          <th className="py-3 px-4">User</th>
+                          <th className="py-3 px-4">Role / Permissions</th>
+                          <th className="py-3 px-4">Phone / Contact</th>
+                          <th className="py-3 px-4">Account Status</th>
+                          <th className="py-3 px-4">Last Login</th>
+                          <th className="py-3 px-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {utilisateurs
+                          .filter((u) => {
+                            const query = rechercheUtilisateur.toLowerCase();
+                            const matchesSearch = u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query);
+                            const matchesRole = filtreRoleUtilisateur === 'tous' || u.role === filtreRoleUtilisateur;
+                            const matchesStatus = filtreStatutUtilisateur === 'tous' || (filtreStatutUtilisateur === 'actif' ? u.estActif : !u.estActif);
+                            return matchesSearch && matchesRole && matchesStatus;
+                          })
+                          .map((u) => (
+                            <tr key={u.id} className="hover:bg-gray-50/50 transition">
+                              <td className="py-3.5 px-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-9 h-9 rounded-full bg-[#14151C] text-white flex items-center justify-center font-bold text-xs uppercase font-heading">
+                                    {u.name.substring(0, 2)}
+                                  </div>
+                                  <div>
+                                    <div className="font-bold text-[#14151C] flex items-center gap-1.5">
+                                      {u.name}
+                                      {u.id === 1 && (
+                                        <span className="text-[10px] px-1.5 py-0.2 bg-gray-100 text-gray-600 rounded font-normal">
+                                          You
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="font-mono text-xs text-gray-500">{u.email}</div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td className="py-3.5 px-4">
+                                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${
+                                  u.role === 'super_admin'
+                                    ? 'bg-purple-100 text-purple-800 border-purple-200'
+                                    : u.role === 'administrateur'
+                                    ? 'bg-red-100 text-red-800 border-red-200'
+                                    : u.role === 'redacteur_en_chef'
+                                    ? 'bg-blue-100 text-blue-800 border-blue-200'
+                                    : u.role === 'journaliste'
+                                    ? 'bg-sky-100 text-sky-800 border-sky-200'
+                                    : u.role === 'abonne'
+                                    ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                                    : 'bg-gray-100 text-gray-700 border-gray-200'
+                                }`}>
+                                  {u.role.replace('_', ' ').toUpperCase()}
+                                </span>
+                              </td>
+
+                              <td className="py-3.5 px-4 text-xs font-mono text-gray-600">
+                                {u.telephone || <span className="text-gray-400 italic">—</span>}
+                              </td>
+
+                              <td className="py-3.5 px-4">
+                                <div className="flex items-center gap-2">
+                                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-bold ${
+                                    u.estActif 
+                                      ? 'bg-emerald-100 text-emerald-800' 
+                                      : 'bg-gray-200 text-gray-700'
+                                  }`}>
+                                    {u.estActif ? <Check className="w-3 h-3 text-emerald-600" /> : <X className="w-3 h-3 text-gray-500" />}
+                                    {u.estActif ? 'Active' : 'Deactivated'}
+                                  </span>
+
+                                  <button
+                                    onClick={() => basculerStatutUtilisateur(u.id)}
+                                    disabled={u.id === 1}
+                                    title={u.id === 1 ? 'Cannot deactivate self' : u.estActif ? 'Deactivate user' : 'Activate user'}
+                                    className={`text-[11px] px-2 py-0.5 rounded font-bold transition flex items-center gap-1 border ${
+                                      u.id === 1
+                                        ? 'opacity-40 cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400'
+                                        : u.estActif
+                                        ? 'border-amber-300 text-amber-800 hover:bg-amber-50'
+                                        : 'border-emerald-300 text-emerald-800 hover:bg-emerald-50'
+                                    }`}
+                                  >
+                                    <Power className="w-3 h-3" />
+                                    {u.estActif ? 'Deactivate' : 'Activate'}
+                                  </button>
+                                </div>
+                              </td>
+
+                              <td className="py-3.5 px-4 text-xs text-gray-500">
+                                {u.derniereConnexion}
+                              </td>
+
+                              <td className="py-3.5 px-4 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <button
+                                    onClick={() => setUtilisateurEnEdition(u)}
+                                    className="p-1.5 text-gray-600 hover:text-[#D4201A] hover:bg-gray-100 rounded transition"
+                                    title="Edit user details"
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </button>
+
+                                  <button
+                                    onClick={() => supprimerUtilisateur(u.id)}
+                                    disabled={u.id === 1}
+                                    className={`p-1.5 rounded transition ${
+                                      u.id === 1
+                                        ? 'text-gray-300 cursor-not-allowed'
+                                        : 'text-gray-500 hover:text-red-700 hover:bg-red-50'
+                                    }`}
+                                    title={u.id === 1 ? 'Cannot delete your own account' : 'Soft delete user'}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* ARCHITECTURE & AUDIT CARD */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                  <div>
+                    <span className="text-gray-400 block font-medium">Laravel Controller:</span>
+                    <strong className="text-gray-800 font-mono">UtilisateurAdminControleur</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block font-medium">Deactivation Enforcement:</span>
+                    <strong className="text-emerald-700 font-medium">LoginRequest.php lockout</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block font-medium">Integrity Protection:</span>
+                    <strong className="text-gray-800 font-mono">SoftDeletes (User.php)</strong>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block font-medium">Activity Log:</span>
+                    <strong className="text-[#D4201A] font-mono">JournalActivite</strong>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: EDITORIAL CATEGORIES & BANNERS */}
+            {ongletAdmin === 'categories' && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-lg border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-black uppercase text-[#D4201A] tracking-wider font-heading">
+                      Administrative Console
+                    </span>
+                    <h1 className="text-2xl font-heading font-black text-[#14151C] mt-1">
+                      Editorial Sections & Background Banner Management
+                    </h1>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Upload custom background images per freight rubric and configure dark scrim contrast settings.
+                    </p>
+                  </div>
+
+                  <div className="text-xs font-bold text-gray-700 bg-gray-50 px-3 py-2 rounded border border-gray-200">
+                    Total Active Sections: <strong className="text-[#14151C]">{categories.length}</strong>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-gray-700 font-heading">
+                      Configured Logistics Rubrics
+                    </h2>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-sm">
+                      <thead>
+                        <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                          <th className="py-3 px-4">Order</th>
+                          <th className="py-3 px-4">Section / Slug</th>
+                          <th className="py-3 px-4">Header Background Banner</th>
+                          <th className="py-3 px-4">Contrast Protection</th>
+                          <th className="py-3 px-4 text-center">Menu Status</th>
+                          <th className="py-3 px-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {categories.map((cat) => (
+                          <tr key={cat.id} className="hover:bg-gray-50/50 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-gray-500">
+                              #{cat.ordreAffichage}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <div className="font-bold text-[#14151C]">{cat.nom}</div>
+                              <div className="font-mono text-xs text-gray-400">/rubriques/{cat.slug}</div>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              {cat.imageFond ? (
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-16 h-10 rounded border border-gray-300 overflow-hidden relative shadow-sm bg-[#14151C]">
+                                    <img src={cat.imageFond} alt={cat.nom} className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-black/40"></div>
+                                  </div>
+                                  <span className="text-xs text-gray-500 truncate max-w-[140px] font-mono">
+                                    {cat.imageFond.substring(0, 30)}...
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-xs text-gray-400 italic">No image (Default Dark)</span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-800 border border-gray-200 font-mono">
+                                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                                {cat.opaciteOverlay}% Dark Scrim
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 text-center">
+                              <button
+                                onClick={() => {
+                                  setCategories(prev => prev.map(c => c.id === cat.id ? { ...c, afficherDansMenu: !c.afficherDansMenu } : c));
+                                }}
+                                className={`text-xs px-2.5 py-1 rounded font-bold uppercase tracking-wider transition ${
+                                  cat.afficherDansMenu ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'
+                                }`}
+                              >
+                                {cat.afficherDansMenu ? 'In Header' : 'Hidden'}
+                              </button>
+                            </td>
+                            <td className="py-3.5 px-4 text-right">
+                              <button
+                                onClick={() => {
+                                  setCategorieSelectionneeId(cat.id);
+                                  setVueActive('rubrique');
+                                }}
+                                className="text-xs font-bold bg-[#D4201A] text-white px-3 py-1.5 rounded hover:bg-red-700 transition"
+                              >
+                                Preview Banner
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1547,6 +2827,66 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <span><strong>Automated Testing:</strong> <code>ConversionImageWebpTest.php</code> verifying dimensions, WebP generation, and fallback.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Feature 6 Summary (NEW - User Administration & RBAC) */}
+              <div className="bg-white p-6 rounded-lg border-2 border-red-500 space-y-3 shadow-sm">
+                <div className="flex items-center gap-2 text-white font-heading font-bold text-base bg-[#D4201A] p-2 rounded">
+                  <Users className="w-5 h-5 shrink-0 text-white" />
+                  <span>6. User Management & Security (/admin/utilisateurs)</span>
+                </div>
+                <ul className="text-xs space-y-2 text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Controller:</strong> <code>UtilisateurAdminControleur.php</code> handling <code>index()</code>, <code>store()</code>, <code>update()</code>, <code>basculerStatut()</code>, and <code>destroy()</code>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Security Safeguards:</strong> Hard-blocked self-deactivation, self-deletion, and demotion of the last remaining <code>super_admin</code>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Login Enforcer:</strong> <code>LoginRequest.php</code> validates <code>est_actif</code> on sign-in and rejects deactivated accounts immediately.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Soft Deletes & Audit:</strong> Deletions use Laravel <code>SoftDeletes</code> to preserve article author links and log all actions in <code>JournalActivite</code>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Modular Blade:</strong> <code>index.blade.php</code>, <code>formulaire-creation.blade.php</code>, and <code>boite-actions.blade.php</code> (&lt;250 lines).</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Feature 7 Summary (NEW - Subscription Plans CRUD & Purchasing Controls) */}
+              <div className="bg-white p-6 rounded-lg border-2 border-amber-500 space-y-3 shadow-sm">
+                <div className="flex items-center gap-2 text-white font-heading font-bold text-base bg-[#14151C] p-2 rounded">
+                  <CreditCard className="w-5 h-5 shrink-0 text-[#FFC93C]" />
+                  <span>7. Subscription Plans & Sign-Up Controls (/admin/abonnements)</span>
+                </div>
+                <ul className="text-xs space-y-2 text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Full Formula CRUD:</strong> <code>AbonnementAdminControleur.php</code> with <code>storeFormule()</code>, <code>updateFormule()</code>, and <code>destroyFormule()</code>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Relational Integrity Guard:</strong> Deletion is strictly prevented if subscribers are attached (<code>abonnements_count &gt; 0</code>), recommending deactivation instead.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Deactivate Subscribing:</strong> Dual control via individual plan <code>est_actif</code> switch + global <code>souscriptions_actives</code> toggle in <code>ConfigurationSysteme</code>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Frontend & Backend Enforced:</strong> Pricing page disabled button + backend blocking in <code>AbonnementControleur::souscrire()</code>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Modular Blade Architecture:</strong> <code>index.blade.php</code>, <code>carte-formule.blade.php</code>, and <code>formulaire-formule.blade.php</code> (&lt;250 lines).</span>
                   </li>
                 </ul>
               </div>
