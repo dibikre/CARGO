@@ -62,14 +62,14 @@
                                 {{ $contact->email }}
                             </td>
                             <td class="py-3.5 px-4">
-                                <div class="font-bold text-gray-800">{{ $contact->nom ?? 'Lecteur' }}</div>
+                                <div class="font-bold text-gray-800">{{ $contact->nom_complet ?? $contact->nom ?? 'Lecteur' }}</div>
                                 <div class="text-xs text-gray-500">{{ $contact->entreprise ?? 'Abonné individuel' }}</div>
                             </td>
                             <td class="py-3.5 px-4 text-xs font-semibold text-gray-600 uppercase">
                                 {{ $contact->frequence ?? 'Hebdomadaire' }}
                             </td>
                             <td class="py-3.5 px-4 text-center">
-                                @if($contact->confirme_a)
+                                @if($contact->est_confirme || $contact->date_confirmation || $contact->confirme_a)
                                     <span class="bg-emerald-100 text-emerald-800 text-[11px] px-2 py-0.5 rounded font-bold uppercase">Confirmé</span>
                                 @else
                                     <span class="bg-amber-100 text-amber-800 text-[11px] px-2 py-0.5 rounded font-bold uppercase">En attente</span>

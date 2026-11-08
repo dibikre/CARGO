@@ -58,4 +58,50 @@ class AbonneNewsletter extends Model
     {
         return $query->where('est_actif', true)->where('est_verifie', true);
     }
+
+    /**
+     * Portée pour les abonnés ayant validé leur confirmation (Double Opt-In).
+     */
+    public function scopeConfirme(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->whereNotNull('date_confirmation')
+              ->orWhere('est_verifie', true);
+        });
+    }
+
+    /**
+     * Portée pour les abonnés en attente de confirmation.
+     */
+    public function scopeEnAttente(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->whereNull('date_confirmation')
+              ->where('est_verifie', false);
+        });
+    }
+
+    /**
+     * Accesseur de compatibilité pour confirme_a (date_confirmation).
+     */
+    public function getConfirmeAAttribute()
+    {
+        return $this->date_confirmation;
+    }
+
+    /**
+     * Accesseur de compatibilité pour nom (nom_complet).
+     */
+    public function getNomAttribute(): ?string
+    {
+        return $this->nom_complet;
+    }
+
+    /**
+     * Indique si l'abonné a validé son adresse e-mail.
+     */
+    public function getEstConfirmeAttribute(): bool
+    {
+        return $this->est_verifie || ! is_null($this->date_confirmation);
+    }
 }

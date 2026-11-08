@@ -25,15 +25,15 @@ class NewsletterAdminControleur extends Controller
         if (! empty($recherche)) {
             $requeteAbonnes->where(function ($q) use ($recherche) {
                 $q->where('email', 'like', "%{$recherche}%")
-                  ->orWhere('nom', 'like', "%{$recherche}%")
+                  ->orWhere('nom_complet', 'like', "%{$recherche}%")
                   ->orWhere('entreprise', 'like', "%{$recherche}%");
             });
         }
 
         if ($statut === 'confirme') {
-            $requeteAbonnes->whereNotNull('confirme_a');
+            $requeteAbonnes->confirme();
         } elseif ($statut === 'en_attente') {
-            $requeteAbonnes->whereNull('confirme_a');
+            $requeteAbonnes->enAttente();
         }
 
         $abonnes = $requeteAbonnes->paginate(20)->withQueryString();
@@ -41,7 +41,7 @@ class NewsletterAdminControleur extends Controller
         $metriques = [
             'total' => AbonneNewsletter::count(),
             'actifs' => AbonneNewsletter::where('est_actif', true)->count(),
-            'confirmes' => AbonneNewsletter::whereNotNull('confirme_a')->count(),
+            'confirmes' => AbonneNewsletter::confirme()->count(),
         ];
 
         return view('administration.newsletter.index', compact('abonnes', 'metriques', 'recherche', 'statut'));
