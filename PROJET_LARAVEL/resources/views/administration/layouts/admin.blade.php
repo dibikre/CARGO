@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,21 +31,36 @@
         }
     </script>
 </head>
-<body class="bg-gray-100 text-gray-900 font-sans antialiased min-h-screen flex flex-col md:flex-row">
+<body class="bg-gray-100 text-gray-900 font-sans antialiased h-full overflow-hidden flex flex-col md:flex-row">
 
-    {{-- Menu Latéral (Sidebar) en 3 Groupes Fonctionnels --}}
-    <aside class="w-full md:w-64 bg-cargo-dark text-white shrink-0 flex flex-col justify-between border-r border-gray-800 z-40 md:min-h-screen">
-        <div>
+    {{-- Barre supérieure sur mobile avec bouton hamburger --}}
+    <header class="md:hidden bg-cargo-dark text-white px-4 py-3 flex items-center justify-between border-b border-gray-800 shrink-0 z-30">
+        <a href="{{ route('admin.tableau-bord') }}" class="flex items-center gap-2">
+            <span class="bg-cargo-red text-white font-heading font-black tracking-wider text-base px-2 py-0.5">CARGO</span>
+            <span class="text-[11px] uppercase tracking-wider text-gray-300 font-semibold border-l border-gray-700 pl-2">Admin</span>
+        </a>
+        <button id="boutonMenuMobile" type="button" class="p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded focus:outline-none" aria-label="Ouvrir le menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+    </header>
+
+    {{-- Voile d'ombrage pour le menu mobile --}}
+    <div id="voileMenuMobile" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden transition-opacity opacity-0" aria-hidden="true"></div>
+
+    {{-- Menu Latéral (Sidebar) figé (fixed) au scroll avec tiroir mobile de gauche à droite --}}
+    <aside id="barreLaterale" class="fixed inset-y-0 left-0 z-50 w-64 bg-cargo-dark text-white flex flex-col justify-between border-r border-gray-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out h-full overflow-hidden">
+        {{-- Partie haute déroulable si l'écran vertical est court --}}
+        <div class="flex-1 overflow-y-auto">
             {{-- En-tête de la Sidebar --}}
             <div class="p-4 border-b border-gray-800 flex items-center justify-between">
                 <a href="{{ route('admin.tableau-bord') }}" class="flex items-center gap-2">
                     <span class="bg-cargo-red text-white font-heading font-black tracking-wider text-lg px-2 py-0.5">CARGO</span>
                     <span class="text-xs uppercase tracking-wider text-gray-300 font-semibold border-l border-gray-700 pl-2">Rédaction</span>
                 </a>
-                <a href="{{ route('accueil') }}" target="_blank" class="text-xs font-semibold text-gray-400 hover:text-white flex items-center gap-1 bg-gray-800 px-2 py-1 rounded border border-gray-700" title="Ouvrir le portail public dans un nouvel onglet">
-                    <svg class="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    <span>Voir le site</span>
-                </a>
+                {{-- Bouton fermer sur mobile --}}
+                <button id="boutonFermerMobile" type="button" class="md:hidden text-gray-400 hover:text-white p-1 rounded hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
             </div>
 
             {{-- Lien Tableau de Bord Général --}}
@@ -56,7 +71,7 @@
                 </a>
             </div>
 
-            {{-- Navigation Groupée --}}
+            {{-- Navigation Groupée en 3 Groupes --}}
             <nav class="px-3 py-2 space-y-4 text-xs">
                 {{-- Groupe 1 : Contenu --}}
                 <div>
@@ -125,42 +140,52 @@
             </nav>
         </div>
 
-        {{-- Bas de la Sidebar : Profil Utilisateur & Indicateur de Sécurité Discret --}}
-        <div class="p-3 border-t border-gray-800 bg-cargo-surface">
-            @php
-                $roleLabel = match(Auth::user()->role ?? '') {
-                    'super_admin', 'SUPER_ADMIN' => 'Super Administrateur',
-                    'administrateur', 'admin' => 'Administrateur',
-                    'redacteur_en_chef' => 'Rédacteur en Chef',
-                    'journaliste' => 'Journaliste',
-                    'redacteur' => 'Rédacteur',
-                    'abonne' => 'Abonné PRO',
-                    default => 'Membre Rédaction'
-                };
-            @endphp
-            <div class="flex items-center justify-between gap-2">
-                <div class="min-w-0 flex-1">
-                    <div class="text-xs font-bold text-white truncate">{{ Auth::user()->name ?? 'Administrateur' }}</div>
-                    <div class="text-[10px] text-cargo-yellow font-semibold truncate">{{ $roleLabel }}</div>
-                    {{-- Petit indicateur discret de sécurité (remplace le bandeau jaune permanent) --}}
-                    <div class="flex items-center gap-1.5 mt-1 text-[10px] text-emerald-400">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="truncate">Session sécurisée</span>
-                    </div>
-                </div>
+        {{-- Bas de la Sidebar : Bouton "Voir le site", Profil Utilisateur & Déconnexion --}}
+        <div class="border-t border-gray-800 bg-cargo-surface shrink-0">
+            {{-- Bouton "Voir le site" positionné en bas, juste au-dessus du profil et de la déconnexion --}}
+            <div class="p-3 border-b border-gray-800/80">
+                <a href="{{ route('accueil') }}" target="_blank" class="w-full text-xs font-semibold text-gray-200 hover:text-white flex items-center justify-center gap-2 bg-gray-800/90 hover:bg-gray-700/90 py-2 px-3 rounded border border-gray-700 transition" title="Ouvrir le portail public dans un nouvel onglet">
+                    <svg class="w-3.5 h-3.5 text-cargo-yellow shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    <span>Voir le site</span>
+                </a>
+            </div>
 
-                <form action="{{ route('admin.deconnexion') }}" method="POST" class="shrink-0">
-                    @csrf
-                    <button type="submit" class="bg-gray-800 hover:bg-cargo-red text-white p-2 rounded transition" title="Se déconnecter">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                    </button>
-                </form>
+            {{-- Carte Profil Utilisateur & Déconnexion --}}
+            <div class="p-3">
+                @php
+                    $roleLabel = match(Auth::user()->role ?? '') {
+                        'super_admin', 'SUPER_ADMIN' => 'Super Administrateur',
+                        'administrateur', 'admin' => 'Administrateur',
+                        'redacteur_en_chef' => 'Rédacteur en Chef',
+                        'journaliste' => 'Journaliste',
+                        'redacteur' => 'Rédacteur',
+                        'abonne' => 'Abonné PRO',
+                        default => 'Membre Rédaction'
+                    };
+                @endphp
+                <div class="flex items-center justify-between gap-2">
+                    <div class="min-w-0 flex-1">
+                        <div class="text-xs font-bold text-white truncate">{{ Auth::user()->name ?? 'Administrateur' }}</div>
+                        <div class="text-[10px] text-cargo-yellow font-semibold truncate">{{ $roleLabel }}</div>
+                        <div class="flex items-center gap-1.5 mt-0.5 text-[10px] text-emerald-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="truncate">Session sécurisée</span>
+                        </div>
+                    </div>
+
+                    <form action="{{ route('admin.deconnexion') }}" method="POST" class="shrink-0">
+                        @csrf
+                        <button type="submit" class="bg-gray-800 hover:bg-cargo-red text-white p-2 rounded transition" title="Se déconnecter">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </aside>
 
-    {{-- Zone Principale de Contenu --}}
-    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    {{-- Zone Principale de Contenu avec marge gauche sur desktop (md:pl-64) pour compenser la sidebar fixed --}}
+    <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto md:pl-64">
         <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1">
             {{-- Notifications Flash --}}
             @if (session('succes'))
@@ -179,7 +204,7 @@
         </main>
 
         {{-- Pied de Page sobre et francisé --}}
-        <footer class="bg-white border-t border-gray-200 py-3 text-xs text-gray-500">
+        <footer class="bg-white border-t border-gray-200 py-3 text-xs text-gray-500 mt-auto">
             <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
                 <div>CARGO Média Logistique & Fret International — Console d'Administration</div>
                 <div>Session sécurisée &bull; Journalisation d'audit active</div>
@@ -187,8 +212,40 @@
         </footer>
     </div>
 
-</body>
-</html>
+    {{-- Script JavaScript de contrôle du menu hamburger mobile (ouverture tiroir de gauche à droite) --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const boutonOuvrir = document.getElementById('boutonMenuMobile');
+            const boutonFermer = document.getElementById('boutonFermerMobile');
+            const voile = document.getElementById('voileMenuMobile');
+            const barreLaterale = document.getElementById('barreLaterale');
 
+            function ouvrirMenu() {
+                if (barreLaterale && voile) {
+                    barreLaterale.classList.remove('-translate-x-full');
+                    voile.classList.remove('hidden');
+                    setTimeout(() => {
+                        voile.classList.remove('opacity-0');
+                        voile.classList.add('opacity-100');
+                    }, 10);
+                }
+            }
+
+            function fermerMenu() {
+                if (barreLaterale && voile) {
+                    barreLaterale.classList.add('-translate-x-full');
+                    voile.classList.remove('opacity-100');
+                    voile.classList.add('opacity-0');
+                    setTimeout(() => {
+                        voile.classList.add('hidden');
+                    }, 300);
+                }
+            }
+
+            if (boutonOuvrir) boutonOuvrir.addEventListener('click', ouvrirMenu);
+            if (boutonFermer) boutonFermer.addEventListener('click', fermerMenu);
+            if (voile) voile.addEventListener('click', fermerMenu);
+        });
+    </script>
 </body>
 </html>

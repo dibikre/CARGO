@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MatierePremiereFormRequest;
 use App\Models\MatierePremiere;
 use App\Services\ServiceMatierePremiere;
 use Illuminate\Http\RedirectResponse;
@@ -49,7 +50,7 @@ class MatierePremiereAdminControleur extends Controller
         if (MatierePremiere::count() >= MatierePremiere::NOMBRE_MAX_PRODUITS) {
             return redirect()
                 ->route('admin.matieres-premieres.index')
-                ->with('erreur', 'The maximum limit of 20 commodities has been reached.');
+                ->with('erreur', 'La limite maximale de 20 matières premières est atteinte.');
         }
 
         $nouvelOrdre = (int) MatierePremiere::max('ordre_affichage') + 1;
@@ -71,27 +72,16 @@ class MatierePremiereAdminControleur extends Controller
     /**
      * Enregistre une nouvelle matiere premiere.
      */
-    public function store(Request $requete): RedirectResponse
+    public function store(MatierePremiereFormRequest $requete): RedirectResponse
     {
-        $regles = [
-            'nom' => 'required|string|max:100',
-            'code_symbole' => 'required|string|max:20|unique:matieres_premieres,code_symbole',
-            'devise' => 'required|string|max:10',
-            'unite_mesure' => 'required|string|max:50',
-            'ordre_affichage' => 'required|integer|min:0',
-            'est_actif' => 'sometimes|boolean',
-            'image_png' => 'required|file|mimetypes:image/png,image/x-png|mimes:png|max:4096',
-            'donnees_courbe_json' => 'required|string',
-        ];
-
-        $donneesValidees = $requete->validate($regles);
+        $donneesValidees = $requete->validated();
 
         try {
             $this->serviceMatiere->creerMatierePremiere($donneesValidees, $requete->file('image_png'));
 
             return redirect()
                 ->route('admin.matieres-premieres.index')
-                ->with('succes', 'Commodity successfully added to the ticker bar.');
+                ->with('succes', 'Matière première ajoutée avec succès au bandeau de cours.');
         } catch (\InvalidArgumentException $e) {
             return back()
                 ->withInput()
@@ -99,7 +89,7 @@ class MatierePremiereAdminControleur extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('erreur', 'An error occurred while creating the commodity: ' . $e->getMessage());
+                ->with('erreur', "Une erreur est survenue lors de l'enregistrement : " . $e->getMessage());
         }
     }
 
@@ -119,29 +109,17 @@ class MatierePremiereAdminControleur extends Controller
     /**
      * Met a jour une matiere premiere existante.
      */
-    public function update(Request $requete, int $id): RedirectResponse
+    public function update(MatierePremiereFormRequest $requete, int $id): RedirectResponse
     {
         $matiere = MatierePremiere::findOrFail($id);
-
-        $regles = [
-            'nom' => 'required|string|max:100',
-            'code_symbole' => 'required|string|max:20|unique:matieres_premieres,code_symbole,' . $matiere->id,
-            'devise' => 'required|string|max:10',
-            'unite_mesure' => 'required|string|max:50',
-            'ordre_affichage' => 'required|integer|min:0',
-            'est_actif' => 'sometimes|boolean',
-            'image_png' => 'nullable|file|mimetypes:image/png,image/x-png|mimes:png|max:4096',
-            'donnees_courbe_json' => 'required|string',
-        ];
-
-        $donneesValidees = $requete->validate($regles);
+        $donneesValidees = $requete->validated();
 
         try {
             $this->serviceMatiere->mettreAJourMatierePremiere($matiere, $donneesValidees, $requete->file('image_png'));
 
             return redirect()
                 ->route('admin.matieres-premieres.index')
-                ->with('succes', 'Commodity successfully updated.');
+                ->with('succes', 'Matière première mise à jour avec succès.');
         } catch (\InvalidArgumentException $e) {
             return back()
                 ->withInput()
@@ -149,7 +127,7 @@ class MatierePremiereAdminControleur extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('erreur', 'An error occurred while updating: ' . $e->getMessage());
+                ->with('erreur', "Une erreur est survenue lors de la mise à jour : " . $e->getMessage());
         }
     }
 
@@ -162,6 +140,8 @@ class MatierePremiereAdminControleur extends Controller
 
         $requete->validate([
             'donnees_courbe_json' => 'required|string',
+        ], [
+            'donnees_courbe_json.required' => 'Les coordonnées de courbe sont requises.',
         ]);
 
         try {
@@ -169,7 +149,7 @@ class MatierePremiereAdminControleur extends Controller
 
             return redirect()
                 ->route('admin.matieres-premieres.index')
-                ->with('succes', 'Curve values and exit rate updated for ' . $matiere->nom);
+                ->with('succes', 'Cours et variation actualisés pour ' . $matiere->nom);
         } catch (\InvalidArgumentException $e) {
             return back()->withErrors(['donnees_courbe_json' => $e->getMessage()]);
         }
@@ -187,6 +167,7 @@ class MatierePremiereAdminControleur extends Controller
 
         return redirect()
             ->route('admin.matieres-premieres.index')
-            ->with('succes', "Commodity '{$nom}' deleted successfully.");
+            ->with('succes', "Matière première '{$nom}' supprimée avec succès.");
     }
 }
+
