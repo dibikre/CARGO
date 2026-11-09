@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Categorie;
 use App\Models\StatistiqueArticle;
+use App\Services\ServiceStatistiquesHebdomadaires;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,16 @@ use Illuminate\View\View;
 
 class StatistiqueRedactionControleur extends Controller
 {
+    /**
+     * Service dédié aux calculs statistiques hebdomadaires.
+     */
+    protected ServiceStatistiquesHebdomadaires $serviceStatistiquesHebdo;
+
+    public function __construct(ServiceStatistiquesHebdomadaires $serviceStatistiquesHebdo)
+    {
+        $this->serviceStatistiquesHebdo = $serviceStatistiquesHebdo;
+    }
+
     /**
      * Tableau de bord des statistiques d'audience et de publications pour la rédaction.
      */
@@ -109,7 +120,10 @@ class StatistiqueRedactionControleur extends Controller
             ->limit(10)
             ->get();
 
-        // 5. Préparation des séries JSON pour les graphiques SVG / Canvas
+        // 5. Nouvelles métriques de la semaine courante (lundi au dimanche)
+        $statistiquesSemaine = $this->serviceStatistiquesHebdo->calculerStatistiquesSemaineCourante();
+
+        // 6. Préparation des séries JSON pour les graphiques SVG / Canvas
         $labelsGraphique = array_column($donneesJours, 'label');
         $vuesGraphique = array_column($donneesJours, 'vues');
         $pubsGraphique = array_column($donneesJours, 'publications');
@@ -128,7 +142,8 @@ class StatistiqueRedactionControleur extends Controller
             'vuesGraphique',
             'pubsGraphique',
             'categoriesStats',
-            'topArticles'
+            'topArticles',
+            'statistiquesSemaine'
         ));
     }
 }
