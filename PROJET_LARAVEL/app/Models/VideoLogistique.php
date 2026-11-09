@@ -47,23 +47,48 @@ class VideoLogistique extends Model
     }
 
     /**
+     * Identifie la plateforme d'hébergement de la vidéo.
+     */
+    public function getPlateformeAttribute(): string
+    {
+        $chaine = (string) $this->url_embed;
+        if (preg_match('/(?:youtube\.com|youtu\.be)/i', $chaine)) {
+            return 'youtube';
+        }
+        if (preg_match('/vimeo\.com/i', $chaine)) {
+            return 'vimeo';
+        }
+        return 'autre';
+    }
+
+    /**
+     * Récupère l'URL de la miniature d'aperçu pour éviter d'instancier un lecteur iframe lourd.
+     */
+    public function getUrlMiniatureAttribute(): ?string
+    {
+        $chaine = (string) $this->url_embed;
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i', $chaine, $matches)) {
+            return 'https://img.youtube.com/vi/' . $matches[1] . '/hqdefault.jpg';
+        }
+
+        return null;
+    }
+
+    /**
      * Convertir intelligemment l'URL fournie en URL d'intégration iframe valide.
      */
     public function getUrlIframeFormatteeAttribute(): string
     {
         $chaine = trim($this->url_embed);
 
-        // Si l'utilisateur a collé un code iframe complet
         if (preg_match('/src=["\']([^"\']+)["\']/', $chaine, $matches)) {
             return $matches[1];
         }
 
-        // Détection et conversion YouTube classique
         if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i', $chaine, $matches)) {
             return 'https://www.youtube-nocookie.com/embed/' . $matches[1];
         }
 
-        // Détection et conversion Vimeo
         if (preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)/i', $chaine, $matches)) {
             $idVimeo = end($matches);
             return 'https://player.vimeo.com/video/' . $idVimeo;
@@ -71,4 +96,77 @@ class VideoLogistique extends Model
 
         return $chaine;
     }
+
+    /**
+     * Génère le fragment HTML d'intégration prêt à être copié dans un article.
+     */
+    public function getCodeIframeAttribute(): string
+    {
+        return sprintf(
+            '<div class="cargo-video-embed" style="position:relative;padding-top:56.25%%;overflow:hidden;"><iframe src="%s" title="%s" style="position:absolute;top:0;left:0;width:100%%;height:100%%;border:0;" allowfullscreen loading="lazy"></iframe></div>',
+            e($this->url_iframe_formattee),
+            e($this->titre)
+        );
+    }
+
+    /**
+     * Scope de recherche plein texte sur le titre, la source ou la description.
+     */
+    public function scopeRecherche($query, ?string $terme)
+    {
+        if (empty($terme)) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($terme) {
+            $q->where('titre', 'like', "%{$terme}%")
+              ->orWhere('source', 'like', "%{$terme}%")
+              ->orWhere('description', 'like', "%{$terme}%");
+        });
+    }
+
+    /**
+     * Scope de filtrage selon la plateforme vidéo.
+     */
+    public function scopePlateforme($query, ?string $plateforme)
+    {
+        if (empty($plateforme) || $plateforme === 'toutes') {
+            return $query;
+        }
+
+        if ($plateforme === 'youtube') {
+            return $query->where(function ($q) {
+                $q->where('url_embed', 'like', '%youtube%')
+                  ->orWhere('url_embed', 'like', '%youtu.be%');
+            });
+        }
+
+        if ($plateforme === 'vimeo') {
+            return $query->where('url_embed', 'like', '%vimeo%');
+        }
+
+        if ($plateforme === 'autre') {
+            return $query->where('url_embed', 'not like', '%youtube%')
+                         ->where('url_embed', 'not like', '%youtu.be%')
+                         ->where('url_embed', 'not like', '%vimeo%');
+        }
+
+        return $query;
+    }
+
+    /**
+     * Scope de filtrage par état de publication.
+     */
+    public function scopeStatut($query, ?string $statut)
+    {
+        if ($statut === 'actif') {
+            return $query->where('est_actif', true);
+        }
+        if ($statut === 'inactif') {
+            return $query->where('est_actif', false);
+        }
+
+        return $query;
+    }
 }
+

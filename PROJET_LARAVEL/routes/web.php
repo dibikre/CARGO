@@ -27,6 +27,7 @@ use App\Http\Controllers\Redaction\ConnexionRedactionControleur;
 use App\Http\Controllers\Redaction\ModerationCommentaireControleur;
 use App\Http\Controllers\Redaction\StatistiqueApiRedactionControleur;
 use App\Http\Controllers\Redaction\StatistiqueRedactionControleur;
+use App\Http\Controllers\Redaction\VideoApiRedactionControleur;
 use App\Http\Controllers\Redaction\VideoRedactionControleur;
 use App\Http\Middleware\VerifierAccesAdmin;
 use App\Http\Middleware\VerifierAccesRedaction;
@@ -35,24 +36,18 @@ use Illuminate\Support\Facades\Route;
 
 // --- Pages Publiques du Journal ---
 Route::get('/', [AccueilControleur::class, 'index'])->name('accueil');
-
 Route::redirect('/connexion', '/admin/connexion')->name('login');
-
-// Moteur de recherche
 Route::get('/recherche', [RechercheControleur::class, 'rechercher'])->name('recherche');
 
-// Articles et flux thématiques
 Route::prefix('articles')->name('articles.')->group(function () {
     Route::get('/', [ArticleControleur::class, 'index'])->name('index');
     Route::get('/{slug}', [ArticleControleur::class, 'show'])->name('show');
 });
-
 Route::get('/rubriques/{slug}', [ArticleControleur::class, 'parCategorie'])->name('categories.articles');
 Route::get('/tags/{slug}', [ArticleControleur::class, 'parTag'])->name('tags.articles');
 Route::get('/corridors/{slug}', [ArticleControleur::class, 'parCorridor'])->name('corridors.articles');
 Route::get('/zones/{slug}', [ArticleControleur::class, 'parZone'])->name('zones.articles');
 
-// Dossiers thématiques & grandes enquêtes
 Route::prefix('dossiers')->name('dossiers.')->group(function () {
     Route::get('/', [DossierThematiqueControleur::class, 'index'])->name('index');
     Route::get('/{slug}', [DossierThematiqueControleur::class, 'show'])->name('show');
@@ -108,12 +103,8 @@ Route::prefix('redaction')->name('redaction.')->group(function () {
 
         // Statistiques d'audience et de publications pour la rédaction
         Route::get('/statistiques', [StatistiqueRedactionControleur::class, 'index'])->name('statistiques.index');
-        Route::get('/statistiques/api', [StatistiqueApiRedactionControleur::class, 'donnees'])
-            ->middleware(VerifierJetonApiRedaction::class)
-            ->name('statistiques.api');
-        Route::get('/statistiques/api/{jeton}', [StatistiqueApiRedactionControleur::class, 'donnees'])
-            ->middleware(VerifierJetonApiRedaction::class)
-            ->name('statistiques.api.avec_jeton');
+        Route::get('/statistiques/api/{jeton?}', [StatistiqueApiRedactionControleur::class, 'donnees'])
+            ->middleware(VerifierJetonApiRedaction::class)->name('statistiques.api');
 
         // Modération des commentaires
         Route::prefix('commentaires')->name('commentaires.')->group(function () {
@@ -124,11 +115,18 @@ Route::prefix('redaction')->name('redaction.')->group(function () {
             Route::delete('/{id}', [ModerationCommentaireControleur::class, 'destroy'])->name('destroy');
         });
 
-        // Gestion des vidéos logistiques embarquées (embeds)
+        // Vidéothèque embarquée et API sécurisée JWT pour navigation fluide
         Route::prefix('videos')->name('videos.')->group(function () {
             Route::get('/', [VideoRedactionControleur::class, 'index'])->name('index');
             Route::post('/', [VideoRedactionControleur::class, 'store'])->name('store');
             Route::delete('/{id}', [VideoRedactionControleur::class, 'destroy'])->name('destroy');
+            Route::prefix('api')->middleware(VerifierJetonApiRedaction::class)->name('api.')->group(function () {
+                Route::get('/{jeton?}', [VideoApiRedactionControleur::class, 'donnees'])->name('donnees');
+                Route::post('/{jeton}', [VideoApiRedactionControleur::class, 'store'])->name('store');
+                Route::post('/{jeton}/supprimer-lot', [VideoApiRedactionControleur::class, 'destroyLot'])->name('supprimer-lot');
+                Route::post('/{jeton}/{id}/basculer', [VideoApiRedactionControleur::class, 'toggleStatut'])->name('basculer');
+                Route::delete('/{jeton}/{id}', [VideoApiRedactionControleur::class, 'destroy'])->name('destroy');
+            });
         });
     });
 });

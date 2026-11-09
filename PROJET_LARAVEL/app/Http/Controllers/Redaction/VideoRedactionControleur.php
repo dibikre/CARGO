@@ -3,26 +3,48 @@
 namespace App\Http\Controllers\Redaction;
 
 use App\Http\Controllers\Controller;
-use App\Models\VideoLogistique;
+use App\Services\ServiceJetonSecuriteRedacteur;
+use App\Services\ServiceVideoLogistique;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class VideoRedactionControleur extends Controller
 {
-    /**
-     * Liste des vidéos logistiques pour l'équipe de rédaction.
-     */
-    public function index(): View
-    {
-        $videos = VideoLogistique::with('auteur')->latest()->paginate(15);
+    protected ServiceVideoLogistique $serviceVideo;
+    protected ServiceJetonSecuriteRedacteur $serviceJeton;
 
-        return view('redaction.videos.index', compact('videos'));
+    public function __construct(
+        ServiceVideoLogistique $serviceVideo,
+        ServiceJetonSecuriteRedacteur $serviceJeton
+    ) {
+        $this->serviceVideo = $serviceVideo;
+        $this->serviceJeton = $serviceJeton;
     }
 
     /**
-     * Enregistrer une nouvelle vidéo embarquée par un publicateur.
+     * Interface principale de gestion de la vidéothèque embarquée avec navigation dynamique.
+     */
+    public function index(Request $request): View
+    {
+        $utilisateur = $request->user();
+        $jetonSecurite = $this->serviceJeton->genererJeton($utilisateur, $request, 3600);
+
+        $criteres = [
+            'recherche' => $request->query('recherche'),
+            'plateforme' => $request->query('plateforme'),
+            'statut' => $request->query('statut'),
+            'tri' => $request->query('tri', 'recent'),
+        ];
+
+        $videos = $this->serviceVideo->recupererVideosFiltrees($criteres, 12);
+        $indicateurs = $this->serviceVideo->recupererIndicateurs();
+
+        return view('redaction.videos.index', compact('videos', 'indicateurs', 'jetonSecurite', 'criteres'));
+    }
+
+    /**
+     * Enregistrement classique en fallback si le client n'utilise pas l'API dynamique.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -35,36 +57,18 @@ class VideoRedactionControleur extends Controller
             'ordre_affichage' => 'nullable|integer|min:0|max:999',
         ]);
 
-        $slugBase = Str::slug($donnees['titre']);
-        $slug = $slugBase;
-        $compteur = 1;
-        while (VideoLogistique::where('slug', $slug)->exists()) {
-            $slug = $slugBase . '-' . $compteur++;
-        }
+        $this->serviceVideo->creerVideo($donnees, $request->user()->id);
 
-        VideoLogistique::create([
-            'user_id' => auth()->id(),
-            'titre' => $donnees['titre'],
-            'slug' => $slug,
-            'url_embed' => $donnees['url_embed'],
-            'source' => $donnees['source'] ?? 'Rédaction CARGO',
-            'duree' => $donnees['duree'] ?? null,
-            'description' => $donnees['description'] ?? null,
-            'est_actif' => true,
-            'ordre_affichage' => (int) ($donnees['ordre_affichage'] ?? 0),
-        ]);
-
-        return back()->with('succes', 'Vidéo logistique enregistrée avec succès et visible sur le journal.');
+        return back()->with('succes', 'Video embed successfully saved.');
     }
 
     /**
-     * Supprimer une vidéo logistique.
+     * Suppression classique en fallback si le client n'utilise pas l'API dynamique.
      */
     public function destroy(int $id): RedirectResponse
     {
-        $video = VideoLogistique::findOrFail($id);
-        $video->delete();
+        $this->serviceVideo->supprimerVideo($id);
 
-        return back()->with('succes', 'La vidéo a été retirée du journal.');
+        return back()->with('succes', 'Video embed removed.');
     }
 }

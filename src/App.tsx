@@ -5,9 +5,10 @@ import {
   Heading1, Heading2, Heading3, Bold, Italic, Underline, List, ListOrdered,
   PlusCircle, RefreshCw, ExternalLink, Settings, Layout, Lock, Unlock, Globe,
   Play, Pause, ChevronLeft, ChevronRight, Clock,
-  Users, UserPlus, Edit, Trash2, Power, Search, Check, X, CreditCard, PieChart
+  Users, UserPlus, Edit, Trash2, Power, Search, Check, X, CreditCard, PieChart, Video
 } from 'lucide-react';
 import VueStatistiquesRedaction from './composants/VueStatistiquesRedaction';
+import VueVideosRedaction from './composants/VueVideosRedaction';
 
 interface CategorieLogistique {
   id: number;
@@ -252,7 +253,7 @@ const FORMULES_INITIALES: FormulePlan[] = [
 ];
 
 export default function App() {
-  const [vueActive, setVueActive] = useState<'accueil' | 'rubrique' | 'editeur' | 'admin' | 'architecture' | 'redaction'>('redaction');
+  const [vueActive, setVueActive] = useState<'accueil' | 'rubrique' | 'editeur' | 'admin' | 'architecture' | 'redaction' | 'videos'>('videos');
   const [categories, setCategories] = useState<CategorieLogistique[]>(CATEGORIES_INITIALES);
   const [categorieSelectionneeId, setCategorieSelectionneeId] = useState<number>(1);
   const [abonnementsActifs, setAbonnementsActifs] = useState<boolean>(true);
@@ -685,6 +686,16 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
             >
               <PieChart className="w-3.5 h-3.5 text-[#FFC93C]" />
               Editorial Analytics (/redaction/statistiques)
+            </button>
+
+            <button
+              onClick={() => setVueActive('videos')}
+              className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5 ${
+                vueActive === 'videos' ? 'bg-[#D4201A] text-white shadow' : 'text-gray-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <Video className="w-3.5 h-3.5 text-[#FFC93C]" />
+              Video Embeds (/redaction/videos)
             </button>
 
             <button
@@ -2907,6 +2918,10 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
 
         {vueActive === 'redaction' && (
           <VueStatistiquesRedaction />
+        )}
+
+        {vueActive === 'videos' && (
+          <VueVideosRedaction />
         )}
       </main>
 
