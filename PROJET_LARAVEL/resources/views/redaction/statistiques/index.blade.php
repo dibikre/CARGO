@@ -4,42 +4,41 @@
 
 @section('contenu')
 <div id="conteneurStatistiques" class="space-y-6" data-jeton="{{ $jetonSecurite }}" data-url-api="{{ route('redaction.statistiques.api') }}">
-    {{-- Bannière d'alerte sécurité en cas de jeton invalide ou d'appareil non conforme --}}
-    <div id="banniereAlerteSecurite" class="hidden bg-red-50 border border-red-300 text-red-800 p-4 rounded text-xs flex items-center justify-between shadow-xs">
+    {{-- Bannière d'alerte sécurité épurée --}}
+    <div id="banniereAlerteSecurite" class="hidden bg-white border-2 border-cargo-dark text-gray-900 p-4 rounded text-xs flex items-center justify-between shadow-xs">
         <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-            <span id="messageAlerteSecurite" class="font-semibold">Security token is invalid, expired, or bound to a different device.</span>
+            <svg class="w-4 h-4 text-cargo-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span id="messageAlerteSecurite" class="font-bold">Security token is invalid, expired, or bound to a different device.</span>
         </div>
-        <button type="button" onclick="document.getElementById('banniereAlerteSecurite').classList.add('hidden')" class="text-red-700 hover:text-red-900 font-bold">&times;</button>
+        <button type="button" onclick="document.getElementById('banniereAlerteSecurite').classList.add('hidden')" class="text-gray-500 hover:text-gray-900 font-bold text-sm">&times;</button>
     </div>
 
-    {{-- En-tête avec sélecteur de période dynamique (sans rechargement de page) --}}
+    {{-- En-tête avec sélecteur de période dynamique (style identique à /redaction/articles) --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
         <div>
             <div class="flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
-                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Editorial Performance & Readership</span>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Newsroom Desk &bull; Audience &amp; Publications</span>
             </div>
             <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1 flex items-center gap-3">
-                <span>Audience & Publications Analytics</span>
-                {{-- Indicateur de chargement discret lors des requêtes AJAX --}}
-                <span id="indicateurChargement" class="hidden inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold rounded-full">
-                    <svg class="w-3 h-3 animate-spin text-amber-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                <span>Audience &amp; Publications Analytics</span>
+                {{-- Indicateur de chargement sobre --}}
+                <span id="indicateurChargement" class="hidden inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-gray-100 text-gray-800 border border-gray-300 text-xs font-bold rounded">
+                    <svg class="w-3 h-3 animate-spin text-gray-700" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
                     <span>Refreshing...</span>
                 </span>
             </h1>
         </div>
 
-        {{-- Commutateur de période sans rechargement de page --}}
-        <div class="flex items-center bg-white border border-gray-300 rounded p-1 shadow-xs">
-            <span class="text-xs font-semibold text-gray-500 px-3 uppercase">Period:</span>
-            <a href="{{ route('redaction.statistiques.index', ['periode' => '7']) }}" data-periode="7" class="bouton-periode px-3 py-1.5 text-xs font-bold rounded {{ $periode === '7' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }} transition">Last 7 Days</a>
-            <a href="{{ route('redaction.statistiques.index', ['periode' => '30']) }}" data-periode="30" class="bouton-periode px-3 py-1.5 text-xs font-bold rounded {{ $periode === '30' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }} transition">Last 30 Days</a>
-            <a href="{{ route('redaction.statistiques.index', ['periode' => '90']) }}" data-periode="90" class="bouton-periode px-3 py-1.5 text-xs font-bold rounded {{ $periode === '90' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }} transition">Last 90 Days</a>
+        {{-- Filtres de période calqués sur les filtres de /redaction/articles --}}
+        <div class="flex items-center gap-2 flex-wrap">
+            <a href="{{ route('redaction.statistiques.index', ['periode' => '7']) }}" data-periode="7" class="bouton-periode px-4 py-2 font-bold text-xs uppercase tracking-wider transition {{ $periode === '7' ? 'bg-cargo-dark text-white' : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-50' }}">Last 7 Days</a>
+            <a href="{{ route('redaction.statistiques.index', ['periode' => '30']) }}" data-periode="30" class="bouton-periode px-4 py-2 font-bold text-xs uppercase tracking-wider transition {{ $periode === '30' ? 'bg-cargo-dark text-white' : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-50' }}">Last 30 Days</a>
+            <a href="{{ route('redaction.statistiques.index', ['periode' => '90']) }}" data-periode="90" class="bouton-periode px-4 py-2 font-bold text-xs uppercase tracking-wider transition {{ $periode === '90' ? 'bg-cargo-dark text-white' : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-50' }}">Last 90 Days</a>
         </div>
     </div>
 
-    {{-- 1. Cartes des métriques clés (mises à jour dynamiquement) --}}
+    {{-- 1. Cartes des métriques clés --}}
     @include('redaction.statistiques.composants.kpis-principaux')
 
     {{-- 2. Diagrammes circulaires hebdomadaires (depuis lundi) : Volume de publication & Nombre de vues --}}

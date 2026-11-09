@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const banniereAlerte = document.getElementById('banniereAlerteSecurite');
     const messageAlerte = document.getElementById('messageAlerteSecurite');
 
-    // 1. Initialisation des graphiques Chart.js
     const labelsHebdo = @json($statistiquesSemaine['labels_jours']);
     const couleursHebdo = @json($statistiquesSemaine['couleurs_jours']);
     const donneesPubsHebdo = @json($statistiquesSemaine['donnees_publications']);
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const donneesVuesEvolution = @json($vuesGraphique);
     const donneesPubsEvolution = @json($pubsGraphique);
 
-    // Diagramme circulaire 1 : Publications hebdomadaires
+    // 1. Initialisation des diagrammes circulaires
     let chartCirculairePubs = null;
     const ctxCirculairePubs = document.getElementById('graphiqueCirculairePublications');
     if (ctxCirculairePubs) {
@@ -64,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Diagramme circulaire 2 : Vues hebdomadaires
     let chartCirculaireVues = null;
     const ctxCirculaireVues = document.getElementById('graphiqueCirculaireVues');
     if (ctxCirculaireVues) {
@@ -104,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Graphique linéaire d'évolution des vues
+    // 2. Initialisation des courbes d'évolution temporelle
     let chartEvolutionVues = null;
     const ctxVues = document.getElementById('graphiqueVues');
     if (ctxVues) {
@@ -115,15 +113,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     label: 'Unique Views',
                     data: donneesVuesEvolution,
-                    borderColor: '#FFC93C',
-                    backgroundColor: 'rgba(255, 201, 60, 0.15)',
-                    borderWidth: 2.5,
+                    borderColor: '#14151C',
+                    backgroundColor: 'rgba(20, 21, 28, 0.05)',
+                    borderWidth: 2,
                     fill: true,
-                    tension: 0.35,
+                    tension: 0.3,
                     pointBackgroundColor: '#14151C',
-                    pointBorderColor: '#FFC93C',
-                    pointBorderWidth: 2,
-                    pointRadius: 3
+                    pointRadius: 2.5
                 }]
             },
             options: {
@@ -131,14 +127,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45 } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
                     y: { beginAtZero: true, grid: { color: '#F1F3F5' }, ticks: { precision: 0, font: { size: 10 } } }
                 }
             }
         });
     }
 
-    // Graphique histogramme des publications
     let chartEvolutionPubs = null;
     const ctxPubs = document.getElementById('graphiquePublications');
     if (ctxPubs) {
@@ -150,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     label: 'Articles Published',
                     data: donneesPubsEvolution,
                     backgroundColor: '#D4201A',
-                    borderRadius: 3
+                    borderRadius: 2
                 }]
             },
             options: {
@@ -158,37 +153,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45 } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
                     y: { beginAtZero: true, grid: { color: '#F1F3F5' }, ticks: { precision: 0, font: { size: 10 } } }
                 }
             }
         });
     }
 
-    // 2. Gestionnaire de navigation dynamique sans rechargement
+    // 3. Navigation dynamique sans rechargement de page
     async function chargerDonneesPeriode(periode, majHistorique = true) {
         if (indicateurChargement) indicateurChargement.classList.remove('hidden');
         if (banniereAlerte) banniereAlerte.classList.add('hidden');
 
-        // Mettre à jour l'apparence des boutons de période
         document.querySelectorAll('.bouton-periode').forEach(btn => {
             if (btn.dataset.periode === String(periode)) {
-                btn.className = 'bouton-periode px-3 py-1.5 text-xs font-bold rounded bg-cargo-dark text-white transition';
+                btn.className = 'bouton-periode px-4 py-2 font-bold text-xs uppercase tracking-wider transition bg-cargo-dark text-white';
             } else {
-                btn.className = 'bouton-periode px-3 py-1.5 text-xs font-bold rounded text-gray-700 hover:bg-gray-100 transition';
+                btn.className = 'bouton-periode px-4 py-2 font-bold text-xs uppercase tracking-wider transition bg-white text-gray-800 border border-gray-300 hover:bg-gray-50';
             }
         });
 
         try {
-            // URL sécurisée avec le secret JWT en paramètre
             const urlRequete = `${urlApiBase}?periode=${encodeURIComponent(periode)}&jeton_securite=${encodeURIComponent(jetonSecurite)}`;
-            
             const reponse = await fetch(urlRequete, {
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
             });
 
             if (!reponse.ok) {
@@ -197,17 +186,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const donnees = await reponse.json();
-            if (!donnees.succes) {
-                throw new Error(donnees.erreur || 'Failed to retrieve editorial statistics.');
-            }
+            if (!donnees.succes) throw new Error(donnees.erreur || 'Failed to retrieve stats.');
 
-            // Rafraîchir le jeton de sécurité pour les appels suivants
             if (donnees.jeton_securite) {
                 jetonSecurite = donnees.jeton_securite;
                 conteneur.dataset.jeton = jetonSecurite;
             }
 
-            // Mettre à jour les indicateurs KPIs
             const elVues = document.getElementById('kpiTotalVues');
             if (elVues && donnees.kpis) elVues.textContent = Number(donnees.kpis.total_vues).toLocaleString();
 
@@ -217,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const elJoursLib = document.getElementById('kpiJoursLibelle');
             if (elJoursLib) elJoursLib.textContent = `Articles published in past ${periode} days`;
 
-            // Mettre à jour les courbes d'évolution temporelle
             if (chartEvolutionVues && donnees.evolution) {
                 chartEvolutionVues.data.labels = donnees.evolution.labels;
                 chartEvolutionVues.data.datasets[0].data = donnees.evolution.vues;
@@ -230,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 chartEvolutionPubs.update();
             }
 
-            // Mettre à jour l'historique du navigateur sans rechargement
             if (majHistorique) {
                 const nouvelleUrl = new URL(window.location.href);
                 nouvelleUrl.searchParams.set('periode', periode);
@@ -247,20 +230,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Interception des clics sur les filtres de période
     document.querySelectorAll('.bouton-periode').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
-            const periode = this.dataset.periode;
-            chargerDonneesPeriode(periode, true);
+            chargerDonneesPeriode(this.dataset.periode, true);
         });
     });
 
-    // Prise en charge du bouton Précédent/Suivant du navigateur sans rechargement
-    window.addEventListener('popstate', function (e) {
+    window.addEventListener('popstate', function () {
         const params = new URLSearchParams(window.location.search);
-        const periode = params.get('periode') || '30';
-        chargerDonneesPeriode(periode, false);
+        chargerDonneesPeriode(params.get('periode') || '30', false);
     });
 });
 </script>

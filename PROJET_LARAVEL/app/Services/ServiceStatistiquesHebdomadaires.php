@@ -14,13 +14,13 @@ class ServiceStatistiquesHebdomadaires
      * Palette de couleurs éditoriales harmonisées pour les 7 jours de la semaine.
      */
     public const COULEURS_JOURS = [
-        '#D4201A', // Lundi : Rouge CARGO
-        '#E0534E', // Mardi : Rouge corail
-        '#FFC93C', // Mercredi : Or ambré
-        '#14151C', // Jeudi : Anthracite profond
-        '#2563EB', // Vendredi : Bleu royal
-        '#059669', // Samedi : Émeraude
-        '#7C3AED', // Dimanche : Violet éditorial
+        '#14151C', // Lundi : Anthracite profond CARGO
+        '#D4201A', // Mardi : Rouge CARGO
+        '#2B2E3A', // Mercredi : Ardoise foncée
+        '#4B505C', // Jeudi : Gris graphite
+        '#6B7280', // Vendredi : Gris acier
+        '#8E95A5', // Samedi : Ardoise moyenne
+        '#B8BDC8', // Dimanche : Gris clair éditorial
     ];
 
     /**
