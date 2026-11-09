@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Categorie;
 use App\Models\StatistiqueArticle;
+use App\Services\ServiceJetonSecuriteRedacteur;
 use App\Services\ServiceStatistiquesHebdomadaires;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,9 +20,17 @@ class StatistiqueRedactionControleur extends Controller
      */
     protected ServiceStatistiquesHebdomadaires $serviceStatistiquesHebdo;
 
-    public function __construct(ServiceStatistiquesHebdomadaires $serviceStatistiquesHebdo)
-    {
+    /**
+     * Service de jetons JWT sécurisés basés sur le login et l'appareil.
+     */
+    protected ServiceJetonSecuriteRedacteur $serviceJeton;
+
+    public function __construct(
+        ServiceStatistiquesHebdomadaires $serviceStatistiquesHebdo,
+        ServiceJetonSecuriteRedacteur $serviceJeton
+    ) {
         $this->serviceStatistiquesHebdo = $serviceStatistiquesHebdo;
+        $this->serviceJeton = $serviceJeton;
     }
 
     /**
@@ -128,6 +137,10 @@ class StatistiqueRedactionControleur extends Controller
         $vuesGraphique = array_column($donneesJours, 'vues');
         $pubsGraphique = array_column($donneesJours, 'publications');
 
+        // 7. Jeton JWT sécurisé lié au login et à l'appareil pour navigation sans rechargement
+        $utilisateur = $request->user();
+        $jetonSecurite = $utilisateur ? $this->serviceJeton->genererJeton($utilisateur, $request) : '';
+
         return view('redaction.statistiques.index', compact(
             'periode',
             'jours',
@@ -143,7 +156,8 @@ class StatistiqueRedactionControleur extends Controller
             'pubsGraphique',
             'categoriesStats',
             'topArticles',
-            'statistiquesSemaine'
+            'statistiquesSemaine',
+            'jetonSecurite'
         ));
     }
 }

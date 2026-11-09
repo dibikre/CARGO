@@ -3,27 +3,43 @@
 @section('titre', 'Audience & Publication Analytics — CARGO Editorial')
 
 @section('contenu')
-<div class="space-y-6">
-    {{-- En-tête avec sélecteur de période --}}
+<div id="conteneurStatistiques" class="space-y-6" data-jeton="{{ $jetonSecurite }}" data-url-api="{{ route('redaction.statistiques.api') }}">
+    {{-- Bannière d'alerte sécurité en cas de jeton invalide ou d'appareil non conforme --}}
+    <div id="banniereAlerteSecurite" class="hidden bg-red-50 border border-red-300 text-red-800 p-4 rounded text-xs flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span id="messageAlerteSecurite" class="font-semibold">Security token is invalid, expired, or bound to a different device.</span>
+        </div>
+        <button type="button" onclick="document.getElementById('banniereAlerteSecurite').classList.add('hidden')" class="text-red-700 hover:text-red-900 font-bold">&times;</button>
+    </div>
+
+    {{-- En-tête avec sélecteur de période dynamique (sans rechargement de page) --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
         <div>
             <div class="flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
                 <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Editorial Performance & Readership</span>
             </div>
-            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1">Audience & Publications Analytics</h1>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1 flex items-center gap-3">
+                <span>Audience & Publications Analytics</span>
+                {{-- Indicateur de chargement discret lors des requêtes AJAX --}}
+                <span id="indicateurChargement" class="hidden inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold rounded-full">
+                    <svg class="w-3 h-3 animate-spin text-amber-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                    <span>Refreshing...</span>
+                </span>
+            </h1>
         </div>
 
-        {{-- Commutateur de période d'analyse --}}
-        <div class="flex items-center bg-white border border-gray-300 rounded p-1 shadow-sm">
+        {{-- Commutateur de période sans rechargement de page --}}
+        <div class="flex items-center bg-white border border-gray-300 rounded p-1 shadow-xs">
             <span class="text-xs font-semibold text-gray-500 px-3 uppercase">Period:</span>
-            <a href="{{ route('redaction.statistiques.index', ['periode' => '7']) }}" class="px-3 py-1.5 text-xs font-bold rounded {{ $periode === '7' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }}">Last 7 Days</a>
-            <a href="{{ route('redaction.statistiques.index', ['periode' => '30']) }}" class="px-3 py-1.5 text-xs font-bold rounded {{ $periode === '30' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }}">Last 30 Days</a>
-            <a href="{{ route('redaction.statistiques.index', ['periode' => '90']) }}" class="px-3 py-1.5 text-xs font-bold rounded {{ $periode === '90' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }}">Last 90 Days</a>
+            <a href="{{ route('redaction.statistiques.index', ['periode' => '7']) }}" data-periode="7" class="bouton-periode px-3 py-1.5 text-xs font-bold rounded {{ $periode === '7' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }} transition">Last 7 Days</a>
+            <a href="{{ route('redaction.statistiques.index', ['periode' => '30']) }}" data-periode="30" class="bouton-periode px-3 py-1.5 text-xs font-bold rounded {{ $periode === '30' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }} transition">Last 30 Days</a>
+            <a href="{{ route('redaction.statistiques.index', ['periode' => '90']) }}" data-periode="90" class="bouton-periode px-3 py-1.5 text-xs font-bold rounded {{ $periode === '90' ? 'bg-cargo-dark text-white' : 'text-gray-700 hover:bg-gray-100' }} transition">Last 90 Days</a>
         </div>
     </div>
 
-    {{-- 1. Cartes des métriques clés --}}
+    {{-- 1. Cartes des métriques clés (mises à jour dynamiquement) --}}
     @include('redaction.statistiques.composants.kpis-principaux')
 
     {{-- 2. Diagrammes circulaires hebdomadaires (depuis lundi) : Volume de publication & Nombre de vues --}}
@@ -41,188 +57,6 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Données globales d'évolution
-        const labelsEvolution = @json($labelsGraphique);
-        const donneesVuesEvolution = @json($vuesGraphique);
-        const donneesPubsEvolution = @json($pubsGraphique);
-
-        // Données hebdomadaires de la semaine courante (du lundi au dimanche)
-        const labelsHebdo = @json($statistiquesSemaine['labels_jours']);
-        const couleursHebdo = @json($statistiquesSemaine['couleurs_jours']);
-        const donneesPubsHebdo = @json($statistiquesSemaine['donnees_publications']);
-        const donneesVuesHebdo = @json($statistiquesSemaine['donnees_vues']);
-
-        // 1. Diagramme circulaire : Volume de publication hebdomadaire par jour
-        const ctxCirculairePubs = document.getElementById('graphiqueCirculairePublications');
-        if (ctxCirculairePubs) {
-            new Chart(ctxCirculairePubs, {
-                type: 'doughnut',
-                data: {
-                    labels: labelsHebdo,
-                    datasets: [{
-                        data: donneesPubsHebdo,
-                        backgroundColor: couleursHebdo,
-                        borderWidth: 2,
-                        borderColor: '#FFFFFF',
-                        hoverOffset: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '72%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#14151C',
-                            titleFont: { size: 12, weight: 'bold' },
-                            bodyFont: { size: 12 },
-                            padding: 10,
-                            callbacks: {
-                                label: function(context) {
-                                    const valeur = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const pct = total > 0 ? Math.round((valeur / total) * 100) : 0;
-                                    return ` ${valeur} articles (${pct}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // 2. Diagramme circulaire : Nombre de vues hebdomadaire par jour
-        const ctxCirculaireVues = document.getElementById('graphiqueCirculaireVues');
-        if (ctxCirculaireVues) {
-            new Chart(ctxCirculaireVues, {
-                type: 'doughnut',
-                data: {
-                    labels: labelsHebdo,
-                    datasets: [{
-                        data: donneesVuesHebdo,
-                        backgroundColor: couleursHebdo,
-                        borderWidth: 2,
-                        borderColor: '#FFFFFF',
-                        hoverOffset: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '72%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#14151C',
-                            titleFont: { size: 12, weight: 'bold' },
-                            bodyFont: { size: 12 },
-                            padding: 10,
-                            callbacks: {
-                                label: function(context) {
-                                    const valeur = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const pct = total > 0 ? Math.round((valeur / total) * 100) : 0;
-                                    return ` ${valeur.toLocaleString()} views (${pct}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // 3. Graphique d'évolution : Courbe des vues uniques
-        const ctxVues = document.getElementById('graphiqueVues');
-        if (ctxVues) {
-            new Chart(ctxVues, {
-                type: 'line',
-                data: {
-                    labels: labelsEvolution,
-                    datasets: [{
-                        label: 'Unique Views',
-                        data: donneesVuesEvolution,
-                        borderColor: '#FFC93C',
-                        backgroundColor: 'rgba(255, 201, 60, 0.15)',
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.35,
-                        pointBackgroundColor: '#14151C',
-                        pointBorderColor: '#FFC93C',
-                        pointBorderWidth: 2,
-                        pointRadius: 3,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#14151C',
-                            padding: 10,
-                            displayColors: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { size: 10 }, maxRotation: 45 }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#F1F3F5' },
-                            ticks: { precision: 0, font: { size: 10 } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // 4. Graphique d'évolution : Rythme de publication quotidien
-        const ctxPubs = document.getElementById('graphiquePublications');
-        if (ctxPubs) {
-            new Chart(ctxPubs, {
-                type: 'bar',
-                data: {
-                    labels: labelsEvolution,
-                    datasets: [{
-                        label: 'Articles Published',
-                        data: donneesPubsEvolution,
-                        backgroundColor: '#D4201A',
-                        borderRadius: 3,
-                        hoverBackgroundColor: '#B3140F'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#14151C',
-                            padding: 10,
-                            displayColors: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { size: 10 }, maxRotation: 45 }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#F1F3F5' },
-                            ticks: { precision: 0, font: { size: 10 } }
-                        }
-                    }
-                }
-            });
-        }
-    });
-</script>
+    {{-- Script de navigation dynamique sans rechargement de page sécurisée par JWT --}}
+    @include('redaction.statistiques.composants.script-navigation-dynamique')
 @endpush

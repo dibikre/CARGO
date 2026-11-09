@@ -25,10 +25,12 @@ use App\Http\Controllers\Administration\UtilisateurAdminControleur;
 use App\Http\Controllers\Redaction\ArticleRedactionControleur;
 use App\Http\Controllers\Redaction\ConnexionRedactionControleur;
 use App\Http\Controllers\Redaction\ModerationCommentaireControleur;
+use App\Http\Controllers\Redaction\StatistiqueApiRedactionControleur;
 use App\Http\Controllers\Redaction\StatistiqueRedactionControleur;
 use App\Http\Controllers\Redaction\VideoRedactionControleur;
 use App\Http\Middleware\VerifierAccesAdmin;
 use App\Http\Middleware\VerifierAccesRedaction;
+use App\Http\Middleware\VerifierJetonApiRedaction;
 use Illuminate\Support\Facades\Route;
 
 // --- Pages Publiques du Journal ---
@@ -106,6 +108,12 @@ Route::prefix('redaction')->name('redaction.')->group(function () {
 
         // Statistiques d'audience et de publications pour la rédaction
         Route::get('/statistiques', [StatistiqueRedactionControleur::class, 'index'])->name('statistiques.index');
+        Route::get('/statistiques/api', [StatistiqueApiRedactionControleur::class, 'donnees'])
+            ->middleware(VerifierJetonApiRedaction::class)
+            ->name('statistiques.api');
+        Route::get('/statistiques/api/{jeton}', [StatistiqueApiRedactionControleur::class, 'donnees'])
+            ->middleware(VerifierJetonApiRedaction::class)
+            ->name('statistiques.api.avec_jeton');
 
         // Modération des commentaires
         Route::prefix('commentaires')->name('commentaires.')->group(function () {

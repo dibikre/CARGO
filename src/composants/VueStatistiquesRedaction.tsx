@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
   Eye, FileText, CheckCircle, TrendingUp, BarChart3, PieChart, 
-  Calendar, Award, ExternalLink, Edit3, ArrowUpRight, Flame, Clock, Sparkles
+  Calendar, Award, ExternalLink, Edit3, ArrowUpRight, Flame, Clock, Sparkles,
+  ShieldCheck, Lock, Laptop, Key, RefreshCw, AlertTriangle
 } from 'lucide-react';
 
 interface JourStatistique {
@@ -218,9 +219,24 @@ function DonutSvg({ data, centerValue, centerLabel }: DonutSvgProps) {
 export default function VueStatistiquesRedaction() {
   const [periode, setPeriode] = useState<'7' | '30' | '90'>('7');
   const [jourSurvole, setJourSurvole] = useState<string | null>(null);
+  const [estEnChargement, setEstEnChargement] = useState<boolean>(false);
+  const [modeAppareilInvalide, setModeAppareilInvalide] = useState<boolean>(false);
 
-  const totalPublications = STATS_SEMAINE_MOCK.reduce((acc, curr) => acc + curr.publications, 0);
-  const totalVues = STATS_SEMAINE_MOCK.reduce((acc, curr) => acc + curr.vues, 0);
+  // Simulation du jeton JWT cryptographique généré par le serveur
+  const jetonExemple = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImxvZ2luIjoiam91cm5hbGlzdGVAY2FyZ28tbG9naXN0aWNzLmNvbSIsImVtcHJlaW50ZSI6ImU5YWI4ZjJkY2E3MWI0MGU4MGY3YTEyOCIsImlhdCI6MTczMTE4NDAwMCwiZXhwIjoxNzMxMTg3NjAwfQ.s_H7yN_3eK9wJ1b8xXz';
+
+  const changerPeriode = (nouvellePeriode: '7' | '30' | '90') => {
+    if (nouvellePeriode === periode) return;
+    setEstEnChargement(true);
+    // Simulation de navigation fluide sans rechargement de page (AJAX / Fetch)
+    setTimeout(() => {
+      setPeriode(nouvellePeriode);
+      setEstEnChargement(false);
+    }, 280);
+  };
+
+  const totalPublications = periode === '7' ? 12 : (periode === '30' ? 44 : 118);
+  const totalVues = periode === '7' ? 5140 : (periode === '30' ? 18600 : 54200);
 
   const donneesDonutPubs = STATS_SEMAINE_MOCK.map((j) => ({
     label: j.nomComplet,
@@ -236,7 +252,58 @@ export default function VueStatistiquesRedaction() {
 
   return (
     <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-6 space-y-6">
-      {/* Header and Period Switcher */}
+      {/* Security Gateway Badge: Device-Bound JWT Secret */}
+      <div className="bg-[#14151C] text-white p-4 rounded-lg border border-gray-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Device-Bound JWT Security Gateway Active
+            </span>
+            <span className="text-[10px] bg-white/10 text-gray-300 px-2 py-0.5 rounded font-mono">
+              Zero Page Reload (SPA / AJAX)
+            </span>
+          </div>
+          <p className="text-xs text-gray-300">
+            Authenticated as <strong className="text-white">journaliste@cargo-logistics.com</strong> · Bound to device fingerprint:
+            <code className="ml-1 px-1.5 py-0.5 bg-black/50 text-[#FFC93C] rounded font-mono text-[11px]">sha256(UserAgent+IP+Sec-CH-UA)</code>
+          </p>
+          <div className="text-[11px] text-gray-400 font-mono truncate max-w-2xl">
+            API URL with Device Secret: <span className="text-emerald-400">/redaction/statistiques/api?periode={periode}&amp;jeton_securite={jetonExemple.slice(0, 32)}...</span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setModeAppareilInvalide(!modeAppareilInvalide)}
+          className={`shrink-0 px-3 py-1.5 text-xs font-bold rounded border transition flex items-center gap-1.5 ${
+            modeAppareilInvalide
+              ? 'bg-red-600 border-red-500 text-white'
+              : 'bg-white/10 hover:bg-white/20 border-white/20 text-gray-200'
+          }`}
+          title="Simulate calling the API from an unauthorized device to test security barrier"
+        >
+          <Lock className="w-3.5 h-3.5" />
+          {modeAppareilInvalide ? 'Device Fingerprint Mismatch (Blocked)' : 'Simulate Untrusted Device Attempt'}
+        </button>
+      </div>
+
+      {/* Security alert if untrusted device is simulated */}
+      {modeAppareilInvalide && (
+        <div className="bg-red-50 border border-red-300 text-red-900 p-4 rounded-lg text-xs flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+            <span>
+              <strong>HTTP 403 Forbidden:</strong> The security token provided in the URL does not match this device&apos;s digital fingerprint. Access blocked without credential reproduction capability.
+            </span>
+          </div>
+          <button onClick={() => setModeAppareilInvalide(false)} className="text-red-700 hover:text-red-900 font-bold ml-4">
+            Reset
+          </button>
+        </div>
+      )}
+
+      {/* Header and Period Switcher with AJAX simulation */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
         <div>
           <div className="flex items-center gap-2">
@@ -245,20 +312,27 @@ export default function VueStatistiquesRedaction() {
               Editorial Desk Analytics
             </span>
           </div>
-          <h1 className="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1">
-            Audience & Publications Analytics
+          <h1 className="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1 flex items-center gap-3">
+            <span>Audience &amp; Publications Analytics</span>
+            {estEnChargement && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold rounded-full">
+                <RefreshCw className="w-3 h-3 animate-spin text-amber-600" />
+                <span>Refreshing...</span>
+              </span>
+            )}
           </h1>
         </div>
 
-        {/* Period Selector */}
+        {/* Period Selector (Zero Reload) */}
         <div className="flex items-center bg-white border border-gray-300 rounded p-1 shadow-xs">
           <span className="text-xs font-semibold text-gray-500 px-3 uppercase">Period:</span>
           {(['7', '30', '90'] as const).map((p) => (
             <button
               key={p}
-              onClick={() => setPeriode(p)}
+              onClick={() => changerPeriode(p)}
+              disabled={estEnChargement}
               className={`px-3 py-1.5 text-xs font-bold rounded transition ${
-                periode === p ? 'bg-[#14151C] text-white' : 'text-gray-700 hover:bg-gray-100'
+                periode === p ? 'bg-[#14151C] text-white shadow-xs' : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
               Last {p} Days
