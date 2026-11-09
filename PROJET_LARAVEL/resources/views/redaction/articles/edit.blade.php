@@ -1,16 +1,33 @@
-@extends('layouts.journal')
+@extends('redaction.layouts.redaction')
 
-@section('titre', 'Edit Article #' . $article->id . ' — CARGO Editorial')
+@section('titre', 'Edit Article #' . $article->id . ' — CARGO Newsroom')
 
 @section('contenu')
-<div style="background:var(--dark); color:#fff; padding:40px 0 28px;">
-    <div class="wrap">
-        <span class="kick" style="color:var(--yellow);">Logistics Journalism & HTML Publishing</span>
-        <h1 class="dsp" style="margin:8px 0 0; font-size:38px; font-weight:900;">Edit Article: {{ Str::limit($article->titre, 40) }}</h1>
+<div class="space-y-6">
+    {{-- Header --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
+        <div>
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Newsroom Desk &bull; Article Editing</span>
+            </div>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1">Edit Article #{{ $article->id }}</h1>
+        </div>
+        <div class="flex items-center gap-2">
+            @if($article->statut === 'publie')
+                <a href="{{ route('articles.show', $article->slug) }}" target="_blank" class="bg-white hover:bg-gray-50 text-blue-600 font-bold text-xs uppercase tracking-wider px-3.5 py-2.5 rounded border border-gray-300 shadow-sm transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    <span>View Live</span>
+                </a>
+            @endif
+            <a href="{{ route('redaction.articles.index') }}" class="bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs uppercase tracking-wider px-3.5 py-2.5 rounded border border-gray-300 shadow-sm transition flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                <span>Back to Articles</span>
+            </a>
+        </div>
     </div>
-</div>
 
-<div class="wrap" style="max-width:920px; padding-top:36px; padding-bottom:64px;">
+    <div class="max-w-4xl">
     <form action="{{ route('redaction.articles.update', $article->id) }}" method="POST" enctype="multipart/form-data" style="background:#fff; padding:36px; display:flex; flex-direction:column; gap:22px; border:1px solid #E2E5EB;">
         @csrf
         @method('PUT')
@@ -201,4 +218,6 @@
         updateTags();
     });
 </script>
+    </div>
+</div>
 @endsection

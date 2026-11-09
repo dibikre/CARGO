@@ -1,46 +1,130 @@
-@extends('layouts.journal')
+@extends('redaction.layouts.redaction')
 
-@section('titre', 'Editorial Desk — Article Management — CARGO')
+@section('titre', 'Articles Management — CARGO Newsroom')
 
 @section('contenu')
-<div style="background:var(--dark); color:#fff; padding:40px 0 28px;">
-    <div class="wrap" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+<div class="space-y-6">
+    {{-- Header --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
         <div>
-            <span class="kick" style="color:var(--yellow);">Editorial Desk & HTML Content Management</span>
-            <h1 class="dsp" style="margin:8px 0 0; font-size:38px; font-weight:900;">Articles Management</h1>
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Newsroom Desk &bull; Editorial Content</span>
+            </div>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1">Articles Management</h1>
         </div>
-        <div style="display:flex; gap:12px; align-items:center;">
-            <a href="{{ route('redaction.videos.index') }}" style="background:#2B2E3A; color:#fff; font-weight:700; font-size:13px; padding:12px 18px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; font-family:var(--police-titre); display:inline-flex; align-items:center; gap:6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="6" rx="2"/><polygon points="10 9 15 12 10 15 10 9"/></svg>
-                Manage Videos
+        <div class="flex items-center gap-2">
+            <a href="{{ route('redaction.statistiques.index') }}" class="bg-white hover:bg-gray-50 text-gray-800 font-bold text-xs uppercase tracking-wider px-3.5 py-2.5 rounded border border-gray-300 shadow-sm transition flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-cargo-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <span>Audience & Stats</span>
             </a>
-            <a href="{{ route('redaction.articles.create') }}" style="background:var(--accent); color:#fff; font-weight:700; font-size:13px; padding:12px 20px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; font-family:var(--police-titre); display:inline-flex; align-items:center; gap:6px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                Write New Article
+            <a href="{{ route('redaction.articles.create') }}" class="bg-cargo-accent hover:bg-cargo-accentDark text-white font-heading font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded shadow-sm transition flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                <span>Write Article</span>
             </a>
         </div>
     </div>
-</div>
+    {{-- Filter by Status & Search Bar --}}
+    <div style="display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <a href="{{ route('redaction.articles.index', array_filter(['recherche' => $recherche, 'tri' => $tri, 'direction' => $direction])) }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; text-decoration:none; {{ empty($statut) ? 'background:var(--dark); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">All</a>
+            <a href="{{ route('redaction.articles.index', array_filter(['statut' => 'brouillon', 'recherche' => $recherche, 'tri' => $tri, 'direction' => $direction])) }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; text-decoration:none; {{ $statut === 'brouillon' ? 'background:var(--accent); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">Drafts</a>
+            <a href="{{ route('redaction.articles.index', array_filter(['statut' => 'en_relecture', 'recherche' => $recherche, 'tri' => $tri, 'direction' => $direction])) }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; text-decoration:none; {{ $statut === 'en_relecture' ? 'background:var(--accent); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">Under Review</a>
+            <a href="{{ route('redaction.articles.index', array_filter(['statut' => 'publie', 'recherche' => $recherche, 'tri' => $tri, 'direction' => $direction])) }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; text-decoration:none; {{ $statut === 'publie' ? 'background:var(--accent); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">Published</a>
+        </div>
 
-<div class="wrap" style="padding-top:36px; padding-bottom:64px;">
-    {{-- Filter by Status --}}
-    <div style="display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap;">
-        <a href="{{ route('redaction.articles.index') }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; {{ empty($statut) ? 'background:var(--dark); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">All</a>
-        <a href="{{ route('redaction.articles.index', ['statut' => 'brouillon']) }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; {{ $statut === 'brouillon' ? 'background:var(--accent); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">Drafts</a>
-        <a href="{{ route('redaction.articles.index', ['statut' => 'en_relecture']) }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; {{ $statut === 'en_relecture' ? 'background:var(--accent); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">Under Review</a>
-        <a href="{{ route('redaction.articles.index', ['statut' => 'publie']) }}" style="padding:8px 16px; font-weight:700; font-size:13px; text-transform:uppercase; {{ $statut === 'publie' ? 'background:var(--accent); color:#fff;' : 'background:#fff; color:var(--dark); border:1px solid #D5D8E0;' }}">Published</a>
+        {{-- Search Field on the far right --}}
+        <form method="GET" action="{{ route('redaction.articles.index') }}" style="display:flex; align-items:center; gap:0; margin-left:auto; min-width:280px; max-width:420px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+            @if(!empty($statut))
+                <input type="hidden" name="statut" value="{{ $statut }}">
+            @endif
+            @if(!empty($tri))
+                <input type="hidden" name="tri" value="{{ $tri }}">
+            @endif
+            @if(!empty($direction))
+                <input type="hidden" name="direction" value="{{ $direction }}">
+            @endif
+            <div style="position:relative; flex:1;">
+                <input type="text" name="recherche" value="{{ $recherche }}" placeholder="Search title, author, section..." style="width:100%; padding:9px 34px 9px 12px; font-size:13px; border:1px solid #D5D8E0; border-right:none; outline:none; background:#fff; font-family:var(--police-texte, sans-serif);">
+                @if(!empty($recherche))
+                    <a href="{{ route('redaction.articles.index', array_filter(['statut' => $statut, 'tri' => $tri, 'direction' => $direction])) }}" title="Clear search" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#9CA3AF; text-decoration:none; font-size:14px; line-height:1; font-weight:bold;">✕</a>
+                @endif
+            </div>
+            <button type="submit" style="background:var(--dark); color:#fff; border:none; padding:9px 18px; font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer; font-family:var(--police-titre, sans-serif); white-space:nowrap;">
+                Search
+            </button>
+        </form>
     </div>
+
+    {{-- Helper for column sorting url & arrow rendering --}}
+    @php
+        $lienTri = function(string $colonne) use ($statut, $recherche, $tri, $direction) {
+            $nouvelleDirection = ($tri === $colonne && $direction === 'asc') ? 'desc' : 'asc';
+            return route('redaction.articles.index', array_filter([
+                'statut' => $statut,
+                'recherche' => $recherche,
+                'tri' => $colonne,
+                'direction' => $nouvelleDirection,
+            ]));
+        };
+    @endphp
 
     {{-- Articles Table --}}
     <div style="background:#fff; overflow-x:auto; border:1px solid #E2E5EB;">
         <table style="width:100%; border-collapse:collapse; text-align:left; font-size:14px;">
             <thead>
                 <tr style="background:var(--dark); color:#fff; font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:0.06em;">
-                    <th style="padding:14px 16px;">Title / Format</th>
-                    <th style="padding:14px 16px;">Section</th>
-                    <th style="padding:14px 16px;">Author</th>
-                    <th style="padding:14px 16px;">Status</th>
-                    <th style="padding:14px 16px;">Views</th>
+                    {{-- Title / Format --}}
+                    <th style="padding:14px 16px;">
+                        <a href="{{ $lienTri('titre') }}" style="color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                            <span>Title / Format</span>
+                            <span style="display:inline-flex; flex-direction:column; line-height:1;">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'titre' && $direction === 'asc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block; margin-bottom:-2px;"><path d="M18 15l-6-6-6 6"/></svg>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'titre' && $direction === 'desc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block;"><path d="M6 9l6 6 6-6"/></svg>
+                            </span>
+                        </a>
+                    </th>
+                    {{-- Section --}}
+                    <th style="padding:14px 16px;">
+                        <a href="{{ $lienTri('categorie') }}" style="color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                            <span>Section</span>
+                            <span style="display:inline-flex; flex-direction:column; line-height:1;">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'categorie' && $direction === 'asc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block; margin-bottom:-2px;"><path d="M18 15l-6-6-6 6"/></svg>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'categorie' && $direction === 'desc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block;"><path d="M6 9l6 6 6-6"/></svg>
+                            </span>
+                        </a>
+                    </th>
+                    {{-- Author --}}
+                    <th style="padding:14px 16px;">
+                        <a href="{{ $lienTri('auteur') }}" style="color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                            <span>Author</span>
+                            <span style="display:inline-flex; flex-direction:column; line-height:1;">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'auteur' && $direction === 'asc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block; margin-bottom:-2px;"><path d="M18 15l-6-6-6 6"/></svg>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'auteur' && $direction === 'desc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block;"><path d="M6 9l6 6 6-6"/></svg>
+                            </span>
+                        </a>
+                    </th>
+                    {{-- Status --}}
+                    <th style="padding:14px 16px;">
+                        <a href="{{ $lienTri('statut') }}" style="color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                            <span>Status</span>
+                            <span style="display:inline-flex; flex-direction:column; line-height:1;">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'statut' && $direction === 'asc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block; margin-bottom:-2px;"><path d="M18 15l-6-6-6 6"/></svg>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'statut' && $direction === 'desc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block;"><path d="M6 9l6 6 6-6"/></svg>
+                            </span>
+                        </a>
+                    </th>
+                    {{-- Views --}}
+                    <th style="padding:14px 16px;">
+                        <a href="{{ $lienTri('vues') }}" style="color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                            <span>Views</span>
+                            <span style="display:inline-flex; flex-direction:column; line-height:1;">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'vues' && $direction === 'asc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block; margin-bottom:-2px;"><path d="M18 15l-6-6-6 6"/></svg>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="{{ $tri === 'vues' && $direction === 'desc' ? 'var(--yellow)' : '#6B7280' }}" stroke-width="3" style="display:block;"><path d="M6 9l6 6 6-6"/></svg>
+                            </span>
+                        </a>
+                    </th>
+                    {{-- Actions --}}
                     <th style="padding:14px 16px; text-align:right;">Actions</th>
                 </tr>
             </thead>
@@ -104,7 +188,7 @@
     </div>
 
     <div style="margin-top:32px; display:flex; justify-content:center;">
-        {{ $articles->links() }}
+        {{ $articles->links('composants.pagination-cargo') }}
     </div>
 </div>
 @endsection

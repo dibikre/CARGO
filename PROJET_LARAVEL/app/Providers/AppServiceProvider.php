@@ -28,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
         \Carbon\Carbon::setLocale('fr');
         setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'fr', 'fra', 'French');
 
+        // Vue de pagination personnalisée sans dépendance de taille SVG externe
+        \Illuminate\Pagination\Paginator::defaultView('composants.pagination-cargo');
+
         // Partager les rubriques actives du menu avec le layout et les vues du journal
         \Illuminate\Support\Facades\View::composer(['layouts.journal', 'journal.*'], function ($vue) {
             try {

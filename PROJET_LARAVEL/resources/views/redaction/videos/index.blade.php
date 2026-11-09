@@ -1,21 +1,25 @@
-@extends('layouts.journal')
+@extends('redaction.layouts.redaction')
 
-@section('titre', 'Editorial Desk — Video Embed Management — CARGO')
+@section('titre', 'Video Embeds Management — CARGO Newsroom')
 
 @section('contenu')
-<div style="background:var(--dark); color:#fff; padding:36px 0 24px;">
-    <div class="wrap" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+<div class="space-y-6">
+    {{-- Header --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
         <div>
-            <span class="kick" style="color:var(--yellow);">Editorial Desk · Multimodal Logistics Multimedia</span>
-            <h1 class="dsp" style="margin:8px 0 0; font-size:36px; font-weight:900;">Embedded Videos Management</h1>
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Newsroom Desk &bull; Multimedia Intelligence</span>
+            </div>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1">Embedded Videos Management</h1>
         </div>
-        <a href="{{ route('redaction.articles.index') }}" style="background:#2B2E3A; color:#fff; font-weight:700; font-size:13px; padding:10px 20px; text-decoration:none; text-transform:uppercase; letter-spacing:0.05em; font-family:var(--police-titre); display:inline-flex; align-items:center; gap:6px;">
-            Back to Articles
+        <a href="{{ route('redaction.articles.index') }}" class="bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs uppercase tracking-wider px-3.5 py-2.5 rounded border border-gray-300 shadow-sm transition flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span>Back to Articles</span>
         </a>
     </div>
-</div>
 
-<div class="wrap" style="padding-top:36px; padding-bottom:64px;">
+    <div>
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:36px; align-items:start;">
         
         {{-- Formulaire d'ajout rapide pour le publicateur --}}
@@ -98,10 +102,11 @@
             @endforelse
 
             <div style="margin-top:16px;">
-                {{ $videos->links() }}
+                {{ $videos->links('composants.pagination-cargo') }}
             </div>
         </div>
 
+    </div>
     </div>
 </div>
 @endsection

@@ -24,19 +24,50 @@ class ArticleRedactionControleur extends Controller
     ) {}
 
     /**
-     * Tableau de bord des articles pour la rédaction.
+     * Tableau de bord des articles pour la rédaction avec recherche et tri dynamique.
      */
     public function index(Request $request): View
     {
         $statut = $request->query('statut');
+        $recherche = $request->query('recherche');
+        $tri = $request->query('tri', 'date');
+        $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
 
-        $articles = Article::with(['auteur', 'categorie'])
-            ->when($statut, fn ($q) => $q->where('statut', $statut))
-            ->latest()
-            ->paginate(15)
-            ->withQueryString();
+        $requete = Article::with(['auteur', 'categorie']);
 
-        return view('redaction.articles.index', compact('articles', 'statut'));
+        // Filtrage par statut de publication
+        if (! empty($statut)) {
+            $requete->where('statut', $statut);
+        }
+
+        // Recherche textuelle (titre, chapeau, contenu, auteur ou catégorie)
+        if (! empty($recherche)) {
+            $requete->where(function ($q) use ($recherche) {
+                $q->where('titre', 'like', "%{$recherche}%")
+                  ->orWhere('chapeau', 'like', "%{$recherche}%")
+                  ->orWhere('contenu', 'like', "%{$recherche}%")
+                  ->orWhereHas('auteur', function ($qa) use ($recherche) {
+                      $qa->where('name', 'like', "%{$recherche}%");
+                  })
+                  ->orWhereHas('categorie', function ($qc) use ($recherche) {
+                      $qc->where('nom', 'like', "%{$recherche}%");
+                  });
+            });
+        }
+
+        // Tri dynamique selon la colonne sélectionnée
+        match ($tri) {
+            'titre' => $requete->orderBy('titre', $direction),
+            'statut' => $requete->orderBy('statut', $direction),
+            'vues' => $requete->orderBy('vues_compteur', $direction),
+            'categorie' => $requete->join('categories', 'articles.categorie_id', '=', 'categories.id')->orderBy('categories.nom', $direction)->select('articles.*'),
+            'auteur' => $requete->join('users', 'articles.auteur_id', '=', 'users.id')->orderBy('users.name', $direction)->select('articles.*'),
+            default => $requete->orderBy('created_at', $direction),
+        };
+
+        $articles = $requete->paginate(15)->withQueryString();
+
+        return view('redaction.articles.index', compact('articles', 'statut', 'recherche', 'tri', 'direction'));
     }
 
     /**
@@ -101,22 +132,12 @@ class ArticleRedactionControleur extends Controller
             'meta_description' => $donnees['meta_description'] ?? null,
         ]);
 
-        // Synchroniser les relations
-        if (! empty($donnees['tags'])) {
-            $article->tags()->sync($donnees['tags']);
-        }
-        if (! empty($donnees['zones'])) {
-            $article->zonesLogistiques()->sync($donnees['zones']);
-        }
-        if (! empty($donnees['corridors'])) {
-            $article->corridors()->sync($donnees['corridors']);
-        }
+        $article->tags()->sync($donnees['tags'] ?? []);
+        $article->zonesLogistiques()->sync($donnees['zones'] ?? []);
+        $article->corridors()->sync($donnees['corridors'] ?? []);
 
-        if ($request->user()->estAdministrateur()) {
-            return redirect()->route('admin.articles.index')->with('succes', 'Article enregistré avec succès.');
-        }
-
-        return redirect()->route('redaction.articles.index')->with('succes', 'Article enregistré avec succès.');
+        $routeRedirection = $request->user()->estAdministrateur() ? 'admin.articles.index' : 'redaction.articles.index';
+        return redirect()->route($routeRedirection)->with('succes', 'Article enregistré avec succès.');
     }
 
     /**

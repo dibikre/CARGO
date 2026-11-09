@@ -25,6 +25,7 @@ use App\Http\Controllers\Administration\UtilisateurAdminControleur;
 use App\Http\Controllers\Redaction\ArticleRedactionControleur;
 use App\Http\Controllers\Redaction\ConnexionRedactionControleur;
 use App\Http\Controllers\Redaction\ModerationCommentaireControleur;
+use App\Http\Controllers\Redaction\StatistiqueRedactionControleur;
 use App\Http\Controllers\Redaction\VideoRedactionControleur;
 use App\Http\Middleware\VerifierAccesAdmin;
 use App\Http\Middleware\VerifierAccesRedaction;
@@ -102,6 +103,9 @@ Route::prefix('redaction')->name('redaction.')->group(function () {
         Route::resource('articles', ArticleRedactionControleur::class)->except(['show']);
         Route::post('/articles/{id}/publier', [ArticleRedactionControleur::class, 'publier'])->name('articles.publier');
         Route::post('/articles/{id}/archiver', [ArticleRedactionControleur::class, 'archiver'])->name('articles.archiver');
+
+        // Statistiques d'audience et de publications pour la rédaction
+        Route::get('/statistiques', [StatistiqueRedactionControleur::class, 'index'])->name('statistiques.index');
 
         // Modération des commentaires
         Route::prefix('commentaires')->name('commentaires.')->group(function () {
