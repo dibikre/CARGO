@@ -47,7 +47,7 @@ class VideoLogistique extends Model
     }
 
     /**
-     * Identifie la plateforme d'hébergement de la vidéo.
+     * Identifie la plateforme d'hébergement ou confirme l'intégration universelle.
      */
     public function getPlateformeAttribute(): string
     {
@@ -58,7 +58,17 @@ class VideoLogistique extends Model
         if (preg_match('/vimeo\.com/i', $chaine)) {
             return 'vimeo';
         }
-        return 'autre';
+        if (preg_match('/dailymotion\.com|dai\.ly/i', $chaine)) {
+            return 'dailymotion';
+        }
+        if (preg_match('/loom\.com/i', $chaine)) {
+            return 'loom';
+        }
+        if (str_contains($chaine, '<iframe')) {
+            return 'iframe';
+        }
+
+        return 'web';
     }
 
     /**
@@ -75,25 +85,39 @@ class VideoLogistique extends Model
     }
 
     /**
-     * Convertir intelligemment l'URL fournie en URL d'intégration iframe valide.
+     * Convertit intelligemment tout lien ou code d'intégration de n'importe quel site en URL iframe valide.
      */
     public function getUrlIframeFormatteeAttribute(): string
     {
         $chaine = trim($this->url_embed);
 
+        // 1. Si le rédacteur a collé une balise HTML <iframe> complète provenant de n'importe quel site
         if (preg_match('/src=["\']([^"\']+)["\']/', $chaine, $matches)) {
             return $matches[1];
         }
 
+        // 2. Conversion automatique YouTube classique ou partagée
         if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i', $chaine, $matches)) {
             return 'https://www.youtube-nocookie.com/embed/' . $matches[1];
         }
 
+        // 3. Conversion automatique Vimeo
         if (preg_match('/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)/i', $chaine, $matches)) {
             $idVimeo = end($matches);
             return 'https://player.vimeo.com/video/' . $idVimeo;
         }
 
+        // 4. Conversion automatique Dailymotion
+        if (preg_match('/(?:dailymotion\.com\/(?:video|hub)\/|dai\.ly\/)([a-zA-Z0-9]+)/i', $chaine, $matches)) {
+            return 'https://www.dailymotion.com/embed/video/' . $matches[1];
+        }
+
+        // 5. Conversion automatique Loom
+        if (preg_match('/loom\.com\/share\/([a-zA-Z0-9]+)/i', $chaine, $matches)) {
+            return 'https://www.loom.com/embed/' . $matches[1];
+        }
+
+        // 6. N'importe quelle URL web directe (CDN privé, lecteur interne, autre hébergeur web)
         return $chaine;
     }
 

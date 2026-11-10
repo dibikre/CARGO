@@ -130,4 +130,28 @@ class ConfigurationSysteme extends Model
 
         return $nouvelEtat;
     }
+
+    /**
+     * Vérifier si les rédacteurs sont autorisés par l'administrateur à supprimer leur propre compte.
+     */
+    public static function suppressionCompteRedacteurEstActive(): bool
+    {
+        $valeur = self::obtenirValeur('suppression_compte_redacteur_active', '0');
+        return $valeur === '1' || $valeur === true || $valeur === 1;
+    }
+
+    /**
+     * Basculer l'autorisation de suppression de compte par les rédacteurs.
+     */
+    public static function basculerSuppressionCompteRedacteur(): bool
+    {
+        $nouvelEtat = ! self::suppressionCompteRedacteurEstActive();
+        self::definirValeur(
+            'suppression_compte_redacteur_active',
+            $nouvelEtat ? '1' : '0',
+            'Autorisation accordée aux rédacteurs de supprimer leur propre compte éditorial'
+        );
+
+        return $nouvelEtat;
+    }
 }

@@ -20,11 +20,13 @@ use App\Http\Controllers\Administration\EvenementAdminControleur;
 use App\Http\Controllers\Administration\JournalSecuriteAdminControleur;
 use App\Http\Controllers\Administration\MatierePremiereAdminControleur;
 use App\Http\Controllers\Administration\NewsletterAdminControleur;
+use App\Http\Controllers\Administration\ParametreAdminControleur;
 use App\Http\Controllers\Administration\TableauBordAdminControleur;
 use App\Http\Controllers\Administration\UtilisateurAdminControleur;
 use App\Http\Controllers\Redaction\ArticleRedactionControleur;
 use App\Http\Controllers\Redaction\ConnexionRedactionControleur;
 use App\Http\Controllers\Redaction\ModerationCommentaireControleur;
+use App\Http\Controllers\Redaction\ParametreRedactionControleur;
 use App\Http\Controllers\Redaction\StatistiqueApiRedactionControleur;
 use App\Http\Controllers\Redaction\StatistiqueRedactionControleur;
 use App\Http\Controllers\Redaction\VideoApiRedactionControleur;
@@ -38,7 +40,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AccueilControleur::class, 'index'])->name('accueil');
 Route::redirect('/connexion', '/admin/connexion')->name('login');
 Route::get('/recherche', [RechercheControleur::class, 'rechercher'])->name('recherche');
-
 Route::prefix('articles')->name('articles.')->group(function () {
     Route::get('/', [ArticleControleur::class, 'index'])->name('index');
     Route::get('/{slug}', [ArticleControleur::class, 'show'])->name('show');
@@ -47,26 +48,19 @@ Route::get('/rubriques/{slug}', [ArticleControleur::class, 'parCategorie'])->nam
 Route::get('/tags/{slug}', [ArticleControleur::class, 'parTag'])->name('tags.articles');
 Route::get('/corridors/{slug}', [ArticleControleur::class, 'parCorridor'])->name('corridors.articles');
 Route::get('/zones/{slug}', [ArticleControleur::class, 'parZone'])->name('zones.articles');
-
 Route::prefix('dossiers')->name('dossiers.')->group(function () {
     Route::get('/', [DossierThematiqueControleur::class, 'index'])->name('index');
     Route::get('/{slug}', [DossierThematiqueControleur::class, 'show'])->name('show');
 });
-
-// Agenda salons et conférences logistiques
 Route::prefix('evenements')->name('evenements.')->group(function () {
     Route::get('/', [EvenementLogistiqueControleur::class, 'index'])->name('index');
     Route::get('/{slug}', [EvenementLogistiqueControleur::class, 'show'])->name('show');
 });
-
-// Commentaires lecteurs
 Route::prefix('commentaires')->name('commentaires.')->group(function () {
     Route::post('/', [CommentaireControleur::class, 'store'])->name('store');
     Route::post('/{id}/voter', [CommentaireControleur::class, 'voter'])->name('voter');
     Route::post('/{id}/signaler', [CommentaireControleur::class, 'signaler'])->name('signaler');
 });
-
-// Newsletter & Veille logistique
 Route::prefix('newsletter')->name('newsletter.')->group(function () {
     Route::post('/inscription', [NewsletterControleur::class, 'inscrire'])->name('inscrire');
     Route::get('/confirmation/{token}', [NewsletterControleur::class, 'confirmer'])->name('confirmer');
@@ -128,28 +122,34 @@ Route::prefix('redaction')->name('redaction.')->group(function () {
                 Route::delete('/{jeton}/{id}', [VideoApiRedactionControleur::class, 'destroy'])->name('destroy');
             });
         });
+
+        // Paramètres de profil, sécurité et gestion du compte rédacteur
+        Route::prefix('parametres')->name('parametres.')->group(function () {
+            Route::get('/', [ParametreRedactionControleur::class, 'index'])->name('index');
+            Route::put('/profil', [ParametreRedactionControleur::class, 'mettreAJourProfil'])->name('profil');
+            Route::put('/mot-de-passe', [ParametreRedactionControleur::class, 'mettreAJourMotDePasse'])->name('mot-de-passe');
+            Route::delete('/compte', [ParametreRedactionControleur::class, 'supprimerCompte'])->name('supprimer-compte');
+        });
     });
 });
 
 // --- Espace Administration Sécurisé (Console CARGO) ---
 Route::prefix('admin')->group(function () {
-    // Authentification Administrative renforcée (Accès public / formulaire sécurisé)
     Route::get('/connexion', [ConnexionAdminControleur::class, 'afficherFormulaire'])->name('admin.connexion');
     Route::post('/connexion', [ConnexionAdminControleur::class, 'connecter'])->name('admin.connexion.post');
     Route::post('/deconnexion', [ConnexionAdminControleur::class, 'deconnecter'])->name('admin.deconnexion');
 
-    // Console protégée par vérification d'authentification et de rôle administrateur strict
     Route::middleware(['auth', VerifierAccesAdmin::class])->name('admin.')->group(function () {
-        // Tableau de bord exécutif
         Route::get('/', [TableauBordAdminControleur::class, 'index'])->name('tableau-bord');
 
-        // Gestion des utilisateurs et permissions
+        // Gestion des utilisateurs, permissions et paramètres d'auto-suppression
         Route::prefix('utilisateurs')->name('utilisateurs.')->group(function () {
             Route::get('/', [UtilisateurAdminControleur::class, 'index'])->name('index');
             Route::post('/', [UtilisateurAdminControleur::class, 'store'])->name('store');
             Route::put('/{id}', [UtilisateurAdminControleur::class, 'update'])->name('update');
             Route::post('/{id}/basculer-statut', [UtilisateurAdminControleur::class, 'basculerStatut'])->name('statut');
             Route::post('/{id}/reinitialiser-mdp', [UtilisateurAdminControleur::class, 'reinitialiserMotDePasse'])->name('mdp');
+            Route::post('/basculer-auto-suppression', [ParametreAdminControleur::class, 'basculerSuppressionCompteRedacteur'])->name('basculer-suppression');
             Route::delete('/{id}', [UtilisateurAdminControleur::class, 'destroy'])->name('destroy');
         });
 

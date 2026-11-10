@@ -27,16 +27,17 @@
 
             <div>
                 <div class="flex items-center justify-between mb-1">
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">Embed URL or Video Link *</label>
-                    <span id="indicateur-detection-plateforme" class="text-[11px] font-mono text-gray-400">YouTube, Vimeo, iframe</span>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">Embed URL, Direct Link or &lt;iframe&gt; Code *</label>
+                    <span id="indicateur-detection-plateforme" class="text-[11px] font-mono text-gray-400">Any website supported</span>
                 </div>
                 <input 
                     type="text" 
                     id="input-ajout-url" 
                     required 
-                    placeholder="e.g. https://www.youtube.com/watch?v=... or https://vimeo.com/..."
+                    placeholder="Paste any link or iframe (YouTube, Vimeo, Dailymotion, Loom, CDN, or any website...)"
                     class="w-full text-sm px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 focus:outline-none focus:ring-1 focus:ring-cargo-red focus:border-cargo-red"
                 >
+                <span class="block text-[11px] text-gray-400 mt-1">Accepts any website: video streaming platforms, private corporate CDNs, media players, or full &lt;iframe&gt; HTML code.</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

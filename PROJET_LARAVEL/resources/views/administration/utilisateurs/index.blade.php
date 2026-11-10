@@ -36,6 +36,40 @@
             </div>
         </div>
 
+        {{-- Admin Toggle: Writer Account Self-Deletion Permission --}}
+        @php
+            $autoSuppressionActive = \App\Models\ConfigurationSysteme::suppressionCompteRedacteurEstActive();
+        @endphp
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg {{ $autoSuppressionActive ? 'bg-red-50 text-cargo-red border border-red-200' : 'bg-gray-100 text-gray-500 border border-gray-200' }} flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-heading font-black text-xs uppercase tracking-wider text-gray-900">Writer Self-Service Account Deletion</h3>
+                        <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded {{ $autoSuppressionActive ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-gray-100 text-gray-600 border border-gray-300' }}">
+                            {{ $autoSuppressionActive ? 'ENABLED BY ADMIN' : 'DISABLED BY ADMIN' }}
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 mt-0.5">
+                        When enabled, writers see a "Delete Account" button in their Settings menu to permanently remove their account. When disabled, the option remains hidden.
+                    </p>
+                </div>
+            </div>
+
+            <form action="{{ route('admin.utilisateurs.basculer-suppression') }}" method="POST" class="shrink-0">
+                @csrf
+                <button 
+                    type="submit" 
+                    onclick="return confirm('Do you want to {{ $autoSuppressionActive ? 'DISABLE' : 'ENABLE' }} account self-deletion for writers?');"
+                    class="px-4 py-2 text-xs font-heading font-bold uppercase tracking-wider rounded-lg transition shadow-sm border {{ $autoSuppressionActive ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300' : 'bg-cargo-red hover:bg-red-700 text-white border-transparent' }}"
+                >
+                    {{ $autoSuppressionActive ? 'Disable Self-Deletion' : 'Enable Self-Deletion' }}
+                </button>
+            </form>
+        </div>
+
         {{-- Add User Collapsible Form --}}
         @include('administration.utilisateurs.composants.formulaire-creation')
 

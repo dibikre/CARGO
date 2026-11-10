@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import VueStatistiquesRedaction from './composants/VueStatistiquesRedaction';
 import VueVideosRedaction from './composants/VueVideosRedaction';
+import VueParametresRedaction from './composants/VueParametresRedaction';
 
 interface CategorieLogistique {
   id: number;
@@ -253,7 +254,7 @@ const FORMULES_INITIALES: FormulePlan[] = [
 ];
 
 export default function App() {
-  const [vueActive, setVueActive] = useState<'accueil' | 'rubrique' | 'editeur' | 'admin' | 'architecture' | 'redaction' | 'videos'>('videos');
+  const [vueActive, setVueActive] = useState<'accueil' | 'rubrique' | 'editeur' | 'admin' | 'architecture' | 'redaction' | 'videos' | 'parametres'>('parametres');
   const [categories, setCategories] = useState<CategorieLogistique[]>(CATEGORIES_INITIALES);
   const [categorieSelectionneeId, setCategorieSelectionneeId] = useState<number>(1);
   const [abonnementsActifs, setAbonnementsActifs] = useState<boolean>(true);
@@ -696,6 +697,16 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
             >
               <Video className="w-3.5 h-3.5 text-[#FFC93C]" />
               Video Embeds (/redaction/videos)
+            </button>
+
+            <button
+              onClick={() => setVueActive('parametres')}
+              className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5 ${
+                vueActive === 'parametres' ? 'bg-[#D4201A] text-white shadow' : 'text-gray-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <Settings className="w-3.5 h-3.5 text-[#FFC93C]" />
+              Account Settings (/redaction/parametres)
             </button>
 
             <button
@@ -2922,6 +2933,10 @@ Dual-fuel bunkering guarantees are now mandatory in annual service contracts.`;
 
         {vueActive === 'videos' && (
           <VueVideosRedaction />
+        )}
+
+        {vueActive === 'parametres' && (
+          <VueParametresRedaction surNaviguer={setVueActive} />
         )}
       </main>
 

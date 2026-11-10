@@ -38,10 +38,29 @@ window.ModalesVideosCargo = (function () {
         const inputUrl = document.getElementById('input-ajout-url');
         const badgeDet = document.getElementById('indicateur-detection-plateforme');
         inputUrl?.addEventListener('input', e => {
-            const v = e.target.value.toLowerCase();
-            if (badgeDet) {
-                badgeDet.textContent = (v.includes('youtube') || v.includes('youtu.be')) ? 'YouTube stream detected'
-                    : (v.includes('vimeo') ? 'Vimeo video detected' : (v.includes('<iframe') ? 'HTML Iframe detected' : 'YouTube, Vimeo, iframe'));
+            const v = e.target.value.trim().toLowerCase();
+            if (!badgeDet) return;
+            if (!v) {
+                badgeDet.textContent = 'Any website supported';
+            } else if (v.includes('youtube') || v.includes('youtu.be')) {
+                badgeDet.textContent = 'YouTube stream detected';
+            } else if (v.includes('vimeo')) {
+                badgeDet.textContent = 'Vimeo video detected';
+            } else if (v.includes('dailymotion') || v.includes('dai.ly')) {
+                badgeDet.textContent = 'Dailymotion player detected';
+            } else if (v.includes('loom.com')) {
+                badgeDet.textContent = 'Loom video detected';
+            } else if (v.includes('<iframe')) {
+                badgeDet.textContent = 'HTML <iframe> code detected (Any site)';
+            } else if (v.startsWith('http://') || v.startsWith('https://')) {
+                try {
+                    const host = new URL(e.target.value.trim()).hostname;
+                    badgeDet.textContent = `Universal Web Embed (${host})`;
+                } catch (err) {
+                    badgeDet.textContent = 'Universal Web Embed accepted';
+                }
+            } else {
+                badgeDet.textContent = 'Custom embed link accepted';
             }
         });
 
