@@ -34,18 +34,20 @@
                 Accès Libre · Analyse Ouverte (Abonnements Désactivés)
             </div>
         @endif
-
         {{-- Headline --}}
         <h1 class="dsp" style="font-size: clamp(32px, 4.5vw, 48px); line-height: 1.08; margin: 0 0 20px; font-weight: 900; color: var(--dark); letter-spacing: -0.02em;">
             {{ $article->titre }}
         </h1>
-
         {{-- Author & Editorial Metadata Bar --}}
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--dashed-border); border-bottom: 2px solid var(--dark); padding: 14px 0; margin-bottom: 28px; font-size: 14px; color: var(--text-muted);">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 36px; height: 36px; background: var(--dark); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px;">
-                    {{ strtoupper(substr($article->auteur->name ?? 'C', 0, 1)) }}
-                </div>
+                @if(\App\Models\ConfigurationSysteme::photoAuteurArticlesEstActivee() && $article->auteur && $article->auteur->avatar)
+                    <img src="{{ $article->auteur->url_avatar_vignette }}" alt="{{ $article->auteur->name }}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #D5D8E0; flex-shrink: 0;" width="40" height="40">
+                @else
+                    <div style="width: 40px; height: 40px; background: var(--dark); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; border-radius: 50%; flex-shrink: 0;">
+                        {{ strtoupper(substr($article->auteur->name ?? 'C', 0, 1)) }}
+                    </div>
+                @endif
                 <div>
                     <span style="color: var(--dark); font-weight: 700;">Par {{ $article->auteur->name ?? 'La Rédaction CARGO' }}</span>
                     <span style="font-size: 12px; display: block; color: var(--text-muted);">Pôle Analyse & Fret International</span>

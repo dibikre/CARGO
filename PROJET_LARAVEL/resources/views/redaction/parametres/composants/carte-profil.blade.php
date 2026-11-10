@@ -15,9 +15,70 @@
         </span>
     </div>
 
-    <form action="{{ route('redaction.parametres.profil') }}" method="POST" class="p-6 space-y-5">
+    <form action="{{ route('redaction.parametres.profil') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-5">
         @csrf
         @method('PUT')
+
+        {{-- Section Photo de Profil et Miniature 40x40 pour articles publics --}}
+        <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
+                Journalist Profile Photo & Article Byline (40x40 px)
+            </label>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                {{-- Aperçu Photo principale --}}
+                <div class="relative shrink-0">
+                    @if($utilisateur->avatar)
+                        <img src="{{ $utilisateur->url_avatar }}" alt="{{ $utilisateur->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-cargo-dark shadow-sm">
+                    @else
+                        <div class="w-16 h-16 rounded-full bg-cargo-dark text-white font-heading font-black text-xl flex items-center justify-center uppercase shadow-sm">
+                            {{ substr($utilisateur->name, 0, 2) }}
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Aperçu miniature 40x40 exacte pour article public --}}
+                <div class="flex items-center gap-3 p-2.5 bg-white rounded-lg border border-gray-200 shrink-0">
+                    <div class="shrink-0">
+                        @if($utilisateur->avatar)
+                            <img src="{{ $utilisateur->url_avatar_vignette }}" alt="{{ $utilisateur->name }}" style="width: 40px; height: 40px;" class="rounded-full object-cover border border-gray-300">
+                        @else
+                            <div style="width: 40px; height: 40px;" class="rounded-full bg-cargo-dark text-white font-heading font-black text-xs flex items-center justify-center uppercase">
+                                {{ substr($utilisateur->name, 0, 1) }}
+                            </div>
+                        @endif
+                    </div>
+                    <div class="text-[11px] leading-tight">
+                        <span class="block font-bold text-gray-800">40x40 Article Byline</span>
+                        @if(isset($photoAuteurActive) && $photoAuteurActive)
+                            <span class="text-emerald-700 font-semibold flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                Display Enabled by Admin
+                            </span>
+                        @else
+                            <span class="text-amber-700 font-semibold flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                Display Disabled by Admin
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Champ de sélection de fichier image --}}
+                <div class="flex-1 min-w-0 w-full sm:w-auto">
+                    <input 
+                        type="file" 
+                        id="input-photo-profil" 
+                        name="photo_profil" 
+                        accept="image/jpeg,image/png,image/webp"
+                        class="block w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:uppercase file:bg-gray-900 file:text-white hover:file:bg-cargo-red file:cursor-pointer transition"
+                    >
+                    <p class="text-[10px] text-gray-400 mt-1 font-mono">JPG, PNG, WebP up to 4MB. Automatically resized and cropped into a sharp 40x40 px circular byline badge.</p>
+                    @error('photo_profil')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {{-- Pseudo / Nom d'affichage --}}

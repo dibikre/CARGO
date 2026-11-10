@@ -36,38 +36,59 @@
             </div>
         </div>
 
-        {{-- Admin Toggle: Writer Account Self-Deletion Permission --}}
+        {{-- Admin Editorial Policies & Permissions (2 Toggles) --}}
         @php
             $autoSuppressionActive = \App\Models\ConfigurationSysteme::suppressionCompteRedacteurEstActive();
+            $photoAuteurActive = \App\Models\ConfigurationSysteme::photoAuteurArticlesEstActivee();
         @endphp
-        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg {{ $autoSuppressionActive ? 'bg-red-50 text-cargo-red border border-red-200' : 'bg-gray-100 text-gray-500 border border-gray-200' }} flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h3 class="font-heading font-black text-xs uppercase tracking-wider text-gray-900">Writer Self-Service Account Deletion</h3>
-                        <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded {{ $autoSuppressionActive ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-gray-100 text-gray-600 border border-gray-300' }}">
-                            {{ $autoSuppressionActive ? 'ENABLED BY ADMIN' : 'DISABLED BY ADMIN' }}
-                        </span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {{-- Toggle 1: Auto-Suppression Rédacteurs --}}
+            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between gap-3">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-lg {{ $autoSuppressionActive ? 'bg-red-50 text-cargo-red border border-red-200' : 'bg-gray-100 text-gray-500 border border-gray-200' }} flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     </div>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
-                        When enabled, writers see a "Delete Account" button in their Settings menu to permanently remove their account. When disabled, the option remains hidden.
-                    </p>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-heading font-black text-xs uppercase tracking-wider text-gray-900">Writer Self-Deletion</h3>
+                            <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded {{ $autoSuppressionActive ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-gray-100 text-gray-600 border border-gray-300' }}">
+                                {{ $autoSuppressionActive ? 'ENABLED' : 'DISABLED' }}
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Allow editorial writers to permanently delete their own account from settings.</p>
+                    </div>
                 </div>
+                <form action="{{ route('admin.utilisateurs.basculer-suppression') }}" method="POST" class="pt-2 border-t border-gray-100 text-right">
+                    @csrf
+                    <button type="submit" class="px-3.5 py-1.5 text-[11px] font-heading font-bold uppercase tracking-wider rounded-lg transition shadow-sm border {{ $autoSuppressionActive ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300' : 'bg-cargo-red hover:bg-red-700 text-white border-transparent' }}">
+                        {{ $autoSuppressionActive ? 'Disable Self-Deletion' : 'Enable Self-Deletion' }}
+                    </button>
+                </form>
             </div>
 
-            <form action="{{ route('admin.utilisateurs.basculer-suppression') }}" method="POST" class="shrink-0">
-                @csrf
-                <button 
-                    type="submit" 
-                    onclick="return confirm('Do you want to {{ $autoSuppressionActive ? 'DISABLE' : 'ENABLE' }} account self-deletion for writers?');"
-                    class="px-4 py-2 text-xs font-heading font-bold uppercase tracking-wider rounded-lg transition shadow-sm border {{ $autoSuppressionActive ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300' : 'bg-cargo-red hover:bg-red-700 text-white border-transparent' }}"
-                >
-                    {{ $autoSuppressionActive ? 'Disable Self-Deletion' : 'Enable Self-Deletion' }}
-                </button>
-            </form>
+            {{-- Toggle 2: Affichage Photo Auteur 40x40 sur Articles Publics --}}
+            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between gap-3">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-lg {{ $photoAuteurActive ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-gray-100 text-gray-500 border border-gray-200' }} flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-heading font-black text-xs uppercase tracking-wider text-gray-900">Author Photo on Articles (40x40)</h3>
+                            <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded {{ $photoAuteurActive ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-gray-100 text-gray-600 border border-gray-300' }}">
+                                {{ $photoAuteurActive ? 'ENABLED' : 'DISABLED' }}
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Display the journalist's 40x40 circular avatar photo next to their byline on public articles.</p>
+                    </div>
+                </div>
+                <form action="{{ route('admin.utilisateurs.basculer-photo-auteur') }}" method="POST" class="pt-2 border-t border-gray-100 text-right">
+                    @csrf
+                    <button type="submit" class="px-3.5 py-1.5 text-[11px] font-heading font-bold uppercase tracking-wider rounded-lg transition shadow-sm border {{ $photoAuteurActive ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300' : 'bg-cargo-red hover:bg-red-700 text-white border-transparent' }}">
+                        {{ $photoAuteurActive ? 'Hide Author Photos' : 'Show Author Photos' }}
+                    </button>
+                </form>
+            </div>
         </div>
 
         {{-- Add User Collapsible Form --}}

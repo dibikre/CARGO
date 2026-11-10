@@ -124,4 +124,37 @@ class User extends Authenticatable
     {
         return in_array($this->role, ['super_admin', 'administrateur', 'admin', 'redacteur_en_chef', 'journaliste', 'redacteur'], true);
     }
+
+    /**
+     * URL publique de la photo de profil du journaliste.
+     */
+    public function getUrlAvatarAttribute(): ?string
+    {
+        if (empty($this->avatar)) {
+            return null;
+        }
+
+        return str_starts_with($this->avatar, 'http') ? $this->avatar : asset($this->avatar);
+    }
+
+    /**
+     * URL publique de la vignette 40x40 pixels pour affichage dans les articles publics.
+     */
+    public function getUrlAvatarVignetteAttribute(): ?string
+    {
+        if (empty($this->avatar)) {
+            return null;
+        }
+
+        if (str_starts_with($this->avatar, 'http')) {
+            return $this->avatar;
+        }
+
+        $cheminVignette = str_replace('images/avatars/', 'images/avatars/vignettes/', $this->avatar);
+        if (file_exists(public_path($cheminVignette))) {
+            return asset($cheminVignette);
+        }
+
+        return asset($this->avatar);
+    }
 }

@@ -117,8 +117,13 @@ class VideoApiRedactionControleur extends Controller
     /**
      * Bascule l'état actif/inactif d'une vidéo sur la page d'accueil sans recharger la page.
      */
-    public function toggleStatut(Request $request, int $id, ?string $jeton = null): JsonResponse
+    public function toggleStatut(Request $request, $param1 = null, $param2 = null): JsonResponse
     {
+        $id = is_numeric($param1) ? (int) $param1 : (int) ($param2 ?? $request->route('id'));
+        if ($id <= 0) {
+            return response()->json(['succes' => false, 'erreur' => 'Invalid video ID.'], 400);
+        }
+
         $video = $this->serviceVideo->basculerStatut($id);
         $indicateurs = $this->serviceVideo->recupererIndicateurs();
 
@@ -134,8 +139,13 @@ class VideoApiRedactionControleur extends Controller
     /**
      * Supprime une vidéo de manière asynchrone sécurisée.
      */
-    public function destroy(Request $request, int $id, ?string $jeton = null): JsonResponse
+    public function destroy(Request $request, $param1 = null, $param2 = null): JsonResponse
     {
+        $id = is_numeric($param1) ? (int) $param1 : (int) ($param2 ?? $request->route('id'));
+        if ($id <= 0) {
+            return response()->json(['succes' => false, 'erreur' => 'Invalid video ID.'], 400);
+        }
+
         $this->serviceVideo->supprimerVideo($id);
         $indicateurs = $this->serviceVideo->recupererIndicateurs();
 

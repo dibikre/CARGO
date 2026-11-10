@@ -34,4 +34,28 @@ class ParametreAdminControleur extends Controller
 
         return back()->with('succes', $message);
     }
+
+    /**
+     * Bascule l'affichage public de la photo du journaliste sur les articles.
+     */
+    public function basculerPhotoAuteur(Request $requete): RedirectResponse
+    {
+        $nouvelEtat = ConfigurationSysteme::basculerPhotoAuteurArticles();
+
+        JournalActivite::enregistrer(
+            description: ($nouvelEtat ? 'Enabled' : 'Disabled') . ' public author photo (40x40) display on articles',
+            nomLog: 'administration',
+            evenement: 'bascule_photo_auteur_articles',
+            auteur: Auth::user(),
+            donnees: [
+                'nouvel_etat' => $nouvelEtat,
+            ]
+        );
+
+        $message = $nouvelEtat
+            ? 'Author photo display (40x40) on public articles has been ENABLED.'
+            : 'Author photo display on public articles has been DISABLED.';
+
+        return back()->with('succes', $message);
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ConfigurationSysteme;
 use App\Models\JournalActivite;
 use App\Models\User;
+use App\Services\ServiceAvatarUtilisateur;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,13 @@ use Illuminate\View\View;
 
 class ParametreRedactionControleur extends Controller
 {
+    protected ServiceAvatarUtilisateur $serviceAvatar;
+
+    public function __construct(ServiceAvatarUtilisateur $serviceAvatar)
+    {
+        $this->serviceAvatar = $serviceAvatar;
+    }
+
     /**
      * Affiche l'écran des paramètres de compte et de sécurité du rédacteur.
      */
@@ -23,12 +31,13 @@ class ParametreRedactionControleur extends Controller
     {
         $utilisateur = Auth::user();
         $suppressionCompteActive = ConfigurationSysteme::suppressionCompteRedacteurEstActive();
+        $photoAuteurActive = ConfigurationSysteme::photoAuteurArticlesEstActivee();
 
-        return view('redaction.parametres.index', compact('utilisateur', 'suppressionCompteActive'));
+        return view('redaction.parametres.index', compact('utilisateur', 'suppressionCompteActive', 'photoAuteurActive'));
     }
 
     /**
-     * Met à jour les informations du profil (pseudo/nom et adresse e-mail).
+     * Met à jour les informations du profil (pseudo/nom, photo d'avatar et adresse e-mail).
      */
     public function mettreAJourProfil(Request $requete): RedirectResponse
     {
@@ -40,7 +49,13 @@ class ParametreRedactionControleur extends Controller
             'email' => ['required', 'string', 'email', 'max:191', Rule::unique('users')->ignore($utilisateur->id)],
             'telephone' => ['nullable', 'string', 'max:25'],
             'bio' => ['nullable', 'string', 'max:500'],
+            'photo_profil' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
         ]);
+
+        // Traitement et génération de la vignette 40x40 si une nouvelle photo est fournie
+        if ($requete->hasFile('photo_profil')) {
+            $this->serviceAvatar->enregistrerAvatar($requete->file('photo_profil'), $utilisateur);
+        }
 
         $ancienEmail = $utilisateur->email;
         $ancienNom = $utilisateur->name;

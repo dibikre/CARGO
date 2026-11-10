@@ -39,9 +39,13 @@
             {{-- Account Information Overview Card --}}
             <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm space-y-4">
                 <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
-                    <div class="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-heading font-black text-sm uppercase">
-                        {{ substr($utilisateur->name, 0, 2) }}
-                    </div>
+                    @if($utilisateur->avatar)
+                        <img src="{{ $utilisateur->url_avatar }}" alt="{{ $utilisateur->name }}" class="w-10 h-10 rounded-full object-cover border border-gray-300 shadow-sm shrink-0">
+                    @else
+                        <div class="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-heading font-black text-sm uppercase shrink-0">
+                            {{ substr($utilisateur->name, 0, 2) }}
+                        </div>
+                    @endif
                     <div class="min-w-0 flex-1">
                         <div class="font-heading font-bold text-sm text-gray-900 truncate">{{ $utilisateur->name }}</div>
                         <div class="text-xs text-gray-500 truncate font-mono">{{ $utilisateur->email }}</div>

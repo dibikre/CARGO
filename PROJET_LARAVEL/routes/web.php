@@ -150,6 +150,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/{id}/basculer-statut', [UtilisateurAdminControleur::class, 'basculerStatut'])->name('statut');
             Route::post('/{id}/reinitialiser-mdp', [UtilisateurAdminControleur::class, 'reinitialiserMotDePasse'])->name('mdp');
             Route::post('/basculer-auto-suppression', [ParametreAdminControleur::class, 'basculerSuppressionCompteRedacteur'])->name('basculer-suppression');
+            Route::post('/basculer-photo-auteur', [ParametreAdminControleur::class, 'basculerPhotoAuteur'])->name('basculer-photo-auteur');
             Route::delete('/{id}', [UtilisateurAdminControleur::class, 'destroy'])->name('destroy');
         });
 

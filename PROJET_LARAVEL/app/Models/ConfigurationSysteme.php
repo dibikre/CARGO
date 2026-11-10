@@ -154,4 +154,28 @@ class ConfigurationSysteme extends Model
 
         return $nouvelEtat;
     }
+
+    /**
+     * Vérifier si l'affichage de la photo du journaliste/auteur est activé sur les articles publics.
+     */
+    public static function photoAuteurArticlesEstActivee(): bool
+    {
+        $valeur = self::obtenirValeur('afficher_photo_auteur_articles', '1');
+        return $valeur === '1' || $valeur === true || $valeur === 1;
+    }
+
+    /**
+     * Basculer l'affichage public de la photo du journaliste sur les articles.
+     */
+    public static function basculerPhotoAuteurArticles(): bool
+    {
+        $nouvelEtat = ! self::photoAuteurArticlesEstActivee();
+        self::definirValeur(
+            'afficher_photo_auteur_articles',
+            $nouvelEtat ? '1' : '0',
+            'Affichage public de la photo de profil du journaliste (format 40x40) dans les articles'
+        );
+
+        return $nouvelEtat;
+    }
 }

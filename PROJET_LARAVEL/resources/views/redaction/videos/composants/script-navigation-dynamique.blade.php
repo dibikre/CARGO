@@ -158,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const btnStatut = e.target.closest('.bouton-basculer-statut');
         if (btnStatut) {
             const id = btnStatut.dataset.id;
+            btnStatut.style.opacity = '0.5';
             try {
                 const rep = await fetch(construireUrlApi(`${id}/basculer`), {
                     method: 'POST',
@@ -165,7 +166,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 const r = await rep.json();
                 if (r.succes) { rendu.toast(r.message); chargerDonnees(false); }
-            } catch (err) { rendu.toast('Status update failed', 'erreur'); }
+                else { rendu.toast(r.erreur || 'Status update failed', 'erreur'); btnStatut.style.opacity = '1'; }
+            } catch (err) { rendu.toast('Status update failed', 'erreur'); btnStatut.style.opacity = '1'; }
             return;
         }
 
@@ -236,14 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.addEventListener('popstate', e => {
-        if (e.state) {
-            etat.recherche = e.state.recherche || '';
-            etat.plateforme = e.state.plateforme || 'toutes';
-            etat.statut = e.state.statut || 'tous';
-            etat.tri = e.state.tri || 'recent';
-            etat.page = e.state.page || 1;
-            chargerDonnees(false);
-        }
+        if (e.state) { Object.assign(etat, e.state); chargerDonnees(false); }
     });
 });
 </script>
