@@ -40,7 +40,7 @@ window.RenduVideosCargo = (function () {
                         <div class="relative w-20 h-12 bg-gray-900 rounded overflow-hidden flex-shrink-0 group cursor-pointer bouton-declencher-apercu" data-id="${v.id}" data-titre="${v.titre}" data-url-iframe="${v.url_iframe}" data-source="${v.source}" data-duree="${v.duree || ''}" data-code-iframe="${encodeURIComponent(v.code_iframe)}">
                             ${minHtml}
                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-70 group-hover:opacity-100 transition">
-                                <div class="w-6 h-6 rounded-full bg-cargo-red text-white flex items-center justify-center shadow"><svg class="w-3 h-3 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg></div>
+                                <div style="background-color: #D4201A;" class="w-6 h-6 rounded-full text-white flex items-center justify-center shadow"><svg class="w-3 h-3 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg></div>
                             </div>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -58,7 +58,7 @@ window.RenduVideosCargo = (function () {
                 </td>
                 <td class="py-3 px-4 text-xs font-medium text-gray-700">${v.source}</td>
                 <td class="py-3 px-4 text-center">
-                    <button type="button" class="bouton-basculer-statut relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${v.est_actif ? 'bg-cargo-red' : 'bg-gray-300'}" data-id="${v.id}" data-actif="${v.est_actif ? '1' : '0'}">
+                    <button type="button" style="${v.est_actif ? 'background-color: #D4201A;' : 'background-color: #D1D5DB;'}" class="bouton-basculer-statut relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none" data-id="${v.id}" data-actif="${v.est_actif ? '1' : '0'}">
                         <span class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-200 ${v.est_actif ? 'translate-x-4' : 'translate-x-0'}"></span>
                     </button>
                 </td>
@@ -83,7 +83,7 @@ window.RenduVideosCargo = (function () {
                     <div class="relative aspect-video bg-gray-900 overflow-hidden cursor-pointer group bouton-declencher-apercu" data-id="${v.id}" data-titre="${v.titre}" data-url-iframe="${v.url_iframe}" data-source="${v.source}" data-duree="${v.duree || ''}" data-code-iframe="${encodeURIComponent(v.code_iframe)}">
                         ${minHtml}
                         <div class="absolute inset-0 bg-black/30 group-hover:bg-black/50 flex items-center justify-center transition">
-                            <div class="w-10 h-10 rounded-full bg-cargo-red text-white flex items-center justify-center shadow group-hover:scale-110 transition"><svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg></div>
+                            <div style="background-color: #D4201A;" class="w-10 h-10 rounded-full text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition"><svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg></div>
                         </div>
                         ${v.duree ? `<span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-mono font-bold px-1.5 py-0.5 rounded">${v.duree}</span>` : ''}
                         <span class="absolute top-2 left-2 bg-black/70 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">${v.plateforme}</span>
@@ -96,7 +96,7 @@ window.RenduVideosCargo = (function () {
                 </div>
                 <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <button type="button" class="bouton-basculer-statut relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${v.est_actif ? 'bg-cargo-red' : 'bg-gray-300'}" data-id="${v.id}" data-actif="${v.est_actif ? '1' : '0'}">
+                        <button type="button" style="${v.est_actif ? 'background-color: #D4201A;' : 'background-color: #D1D5DB;'}" class="bouton-basculer-statut relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none" data-id="${v.id}" data-actif="${v.est_actif ? '1' : '0'}">
                             <span class="pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow transition duration-200 ${v.est_actif ? 'translate-x-3' : 'translate-x-0'}"></span>
                         </button>
                         <span class="text-[11px] font-bold uppercase text-gray-500">${v.est_actif ? 'Active' : 'Hidden'}</span>

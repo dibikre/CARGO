@@ -41,7 +41,7 @@
                                         </div>
                                     @endif
                                     <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-70 group-hover:opacity-100 transition">
-                                        <div class="w-6 h-6 rounded-full bg-cargo-red text-white flex items-center justify-center shadow">
+                                        <div style="background-color: #D4201A;" class="w-6 h-6 rounded-full text-white flex items-center justify-center shadow">
                                             <svg class="w-3 h-3 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
                                         </div>
                                     </div>
@@ -87,7 +87,8 @@
                         <td class="py-3 px-4 text-center">
                             <button 
                                 type="button" 
-                                class="bouton-basculer-statut relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none {{ $video->est_actif ? 'bg-cargo-red' : 'bg-gray-300' }}"
+                                style="{{ $video->est_actif ? 'background-color: #D4201A;' : 'background-color: #D1D5DB;' }}"
+                                class="bouton-basculer-statut relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
                                 data-id="{{ $video->id }}"
                                 data-actif="{{ $video->est_actif ? '1' : '0' }}"
                                 title="Toggle display on homepage sidebar"

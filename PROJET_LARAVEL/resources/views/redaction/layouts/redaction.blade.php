@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('titre', 'Editorial Desk') — CARGO Newsroom</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +20,8 @@
                             surfaceLight: '#262835',
                             accent: '#D4201A',
                             accentDark: '#B3140F',
+                            red: '#D4201A',
+                            redDark: '#B3140F',
                             yellow: '#FFC93C',
                             muted: '#4B505C',
                             border: '#2B2E3A',

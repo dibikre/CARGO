@@ -12,7 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'redaction/*/api/*',
+            'redaction/*/api',
+            'redaction/videos/api/*',
+            'redaction/videos/api',
+            'redaction/statistiques/api/*',
+            'redaction/statistiques/api',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

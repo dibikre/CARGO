@@ -29,7 +29,8 @@
             <button 
                 type="button" 
                 id="bouton-suppression-groupee" 
-                class="hidden items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white bg-cargo-red hover:bg-cargo-red-dark rounded shadow-sm transition"
+                style="background-color: #D4201A; color: #ffffff;"
+                class="hidden items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider text-white bg-[#D4201A] hover:bg-[#B3140F] rounded shadow-sm transition"
             >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -67,7 +68,8 @@
             <button 
                 type="button" 
                 id="bouton-ouvrir-modale-ajout" 
-                class="bg-cargo-red hover:bg-cargo-red-dark text-white font-bold text-xs uppercase tracking-wider px-3.5 py-2 rounded shadow-sm transition flex items-center gap-1.5"
+                style="background-color: #D4201A; color: #ffffff;"
+                class="bg-[#D4201A] hover:bg-[#B3140F] text-white font-bold text-xs uppercase tracking-wider px-3.5 py-2 rounded shadow-sm transition flex items-center gap-1.5"
             >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
