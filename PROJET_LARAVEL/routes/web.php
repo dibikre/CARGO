@@ -113,6 +113,7 @@ Route::prefix('redaction')->name('redaction.')->group(function () {
         Route::prefix('videos')->name('videos.')->group(function () {
             Route::get('/', [VideoRedactionControleur::class, 'index'])->name('index');
             Route::post('/', [VideoRedactionControleur::class, 'store'])->name('store');
+            Route::post('/{id}/basculer', [VideoRedactionControleur::class, 'toggleStatut'])->name('basculer');
             Route::delete('/{id}', [VideoRedactionControleur::class, 'destroy'])->name('destroy');
             Route::prefix('api')->middleware(VerifierJetonApiRedaction::class)->name('api.')->group(function () {
                 Route::get('/{jeton?}', [VideoApiRedactionControleur::class, 'donnees'])->name('donnees');

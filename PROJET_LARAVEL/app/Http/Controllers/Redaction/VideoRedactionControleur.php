@@ -71,4 +71,15 @@ class VideoRedactionControleur extends Controller
 
         return back()->with('succes', 'Video embed removed.');
     }
+
+    /**
+     * Bascule classique de statut en fallback si besoin.
+     */
+    public function toggleStatut(int $id): RedirectResponse
+    {
+        $video = $this->serviceVideo->basculerStatut($id);
+        $message = $video->est_actif ? 'Video enabled on homepage.' : 'Video hidden from homepage.';
+
+        return back()->with('succes', $message);
+    }
 }

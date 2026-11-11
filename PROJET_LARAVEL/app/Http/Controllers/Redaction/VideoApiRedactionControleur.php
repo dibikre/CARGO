@@ -60,7 +60,7 @@ class VideoApiRedactionControleur extends Controller
         });
 
         $jetonActuel = $jeton ?? $request->query('jeton_securite') ?? $request->header('X-Jeton-Securite');
-        $nouveauJeton = $jetonActuel ? $this->serviceJeton->rafraichirJeton((string) $jetonActuel, $request->user(), $request) : null;
+        $nouveauJeton = $request->user() ? $this->serviceJeton->rafraichirJeton((string) $jetonActuel, $request->user(), $request) : null;
 
         return response()->json([
             'succes' => true,
@@ -95,6 +95,8 @@ class VideoApiRedactionControleur extends Controller
 
         $video = $this->serviceVideo->creerVideo($donnees, $request->user()->id);
         $indicateurs = $this->serviceVideo->recupererIndicateurs();
+        $jetonActuel = $jeton ?? $request->query('jeton_securite') ?? $request->header('X-Jeton-Securite');
+        $nouveauJeton = $request->user() ? $this->serviceJeton->rafraichirJeton((string) $jetonActuel, $request->user(), $request) : null;
 
         return response()->json([
             'succes' => true,
@@ -111,6 +113,7 @@ class VideoApiRedactionControleur extends Controller
                 'est_actif' => (bool) $video->est_actif,
             ],
             'indicateurs' => $indicateurs,
+            'jeton_securite' => $nouveauJeton ?? $jetonActuel,
         ], 201);
     }
 
@@ -119,13 +122,26 @@ class VideoApiRedactionControleur extends Controller
      */
     public function toggleStatut(Request $request, $param1 = null, $param2 = null): JsonResponse
     {
-        $id = is_numeric($param1) ? (int) $param1 : (int) ($param2 ?? $request->route('id'));
+        $routeId = $request->route('id');
+        $id = 0;
+        if (is_numeric($routeId)) {
+            $id = (int) $routeId;
+        } elseif (is_numeric($param2)) {
+            $id = (int) $param2;
+        } elseif (is_numeric($param1)) {
+            $id = (int) $param1;
+        } elseif ($request->has('id') && is_numeric($request->input('id'))) {
+            $id = (int) $request->input('id');
+        }
+
         if ($id <= 0) {
             return response()->json(['succes' => false, 'erreur' => 'Invalid video ID.'], 400);
         }
 
         $video = $this->serviceVideo->basculerStatut($id);
         $indicateurs = $this->serviceVideo->recupererIndicateurs();
+        $jetonActuel = (string) ($request->route('jeton') ?? $request->header('X-Jeton-Securite') ?? $param1);
+        $nouveauJeton = $request->user() ? $this->serviceJeton->rafraichirJeton($jetonActuel, $request->user(), $request) : null;
 
         return response()->json([
             'succes' => true,
@@ -133,6 +149,7 @@ class VideoApiRedactionControleur extends Controller
             'id' => $video->id,
             'est_actif' => (bool) $video->est_actif,
             'indicateurs' => $indicateurs,
+            'jeton_securite' => $nouveauJeton ?? $jetonActuel,
         ]);
     }
 
@@ -141,19 +158,33 @@ class VideoApiRedactionControleur extends Controller
      */
     public function destroy(Request $request, $param1 = null, $param2 = null): JsonResponse
     {
-        $id = is_numeric($param1) ? (int) $param1 : (int) ($param2 ?? $request->route('id'));
+        $routeId = $request->route('id');
+        $id = 0;
+        if (is_numeric($routeId)) {
+            $id = (int) $routeId;
+        } elseif (is_numeric($param2)) {
+            $id = (int) $param2;
+        } elseif (is_numeric($param1)) {
+            $id = (int) $param1;
+        } elseif ($request->has('id') && is_numeric($request->input('id'))) {
+            $id = (int) $request->input('id');
+        }
+
         if ($id <= 0) {
             return response()->json(['succes' => false, 'erreur' => 'Invalid video ID.'], 400);
         }
 
         $this->serviceVideo->supprimerVideo($id);
         $indicateurs = $this->serviceVideo->recupererIndicateurs();
+        $jetonActuel = (string) ($request->route('jeton') ?? $request->header('X-Jeton-Securite') ?? $param1);
+        $nouveauJeton = $request->user() ? $this->serviceJeton->rafraichirJeton($jetonActuel, $request->user(), $request) : null;
 
         return response()->json([
             'succes' => true,
             'message' => 'Video embed successfully removed from repository.',
             'id_supprime' => $id,
             'indicateurs' => $indicateurs,
+            'jeton_securite' => $nouveauJeton ?? $jetonActuel,
         ]);
     }
 
@@ -169,12 +200,16 @@ class VideoApiRedactionControleur extends Controller
 
         $nbSupprimes = $this->serviceVideo->supprimerLotVideos($request->input('ids'));
         $indicateurs = $this->serviceVideo->recupererIndicateurs();
+        $jetonActuel = (string) ($jeton ?? $request->header('X-Jeton-Securite'));
+        $nouveauJeton = $request->user() ? $this->serviceJeton->rafraichirJeton($jetonActuel, $request->user(), $request) : null;
 
         return response()->json([
             'succes' => true,
             'message' => "{$nbSupprimes} video(s) permanently removed.",
             'nb_supprimes' => $nbSupprimes,
             'indicateurs' => $indicateurs,
+            'jeton_securite' => $nouveauJeton ?? $jetonActuel,
         ]);
+    }
     }
 }

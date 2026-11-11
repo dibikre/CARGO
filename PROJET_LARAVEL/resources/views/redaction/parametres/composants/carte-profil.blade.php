@@ -50,13 +50,13 @@
                     <div class="text-[11px] leading-tight">
                         <span class="block font-bold text-gray-800">40x40 Article Byline</span>
                         @if(isset($photoAuteurActive) && $photoAuteurActive)
-                            <span class="text-emerald-700 font-semibold flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="text-gray-700 font-medium flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-900"></span>
                                 Display Enabled by Admin
                             </span>
                         @else
-                            <span class="text-amber-700 font-semibold flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                            <span class="text-gray-500 font-medium flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
                                 Display Disabled by Admin
                             </span>
                         @endif

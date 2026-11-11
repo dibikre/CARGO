@@ -165,9 +165,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: { 'X-CSRF-TOKEN': tokenCsrf, 'X-Jeton-Securite': etat.jeton, 'Accept': 'application/json' }
                 });
                 const r = await rep.json();
-                if (r.succes) { rendu.toast(r.message); chargerDonnees(false); }
-                else { rendu.toast(r.erreur || 'Status update failed', 'erreur'); btnStatut.style.opacity = '1'; }
-            } catch (err) { rendu.toast('Status update failed', 'erreur'); btnStatut.style.opacity = '1'; }
+                if (r.succes) {
+                    if (r.jeton_securite) {
+                        etat.jeton = r.jeton_securite;
+                    }
+                    rendu.toast(r.message);
+                    await chargerDonnees(false);
+                } else {
+                    rendu.toast(r.erreur || 'Status update failed', 'erreur');
+                    btnStatut.style.opacity = '1';
+                }
+            } catch (err) {
+                rendu.toast('Status update failed', 'erreur');
+                btnStatut.style.opacity = '1';
+            }
             return;
         }
 
@@ -200,8 +211,13 @@ document.addEventListener('DOMContentLoaded', function () {
             modales.demanderSuppression('Remove Video Embed', `Remove "${btnSuppr.dataset.titre}"?`, async () => {
                 const rep = await fetch(construireUrlApi(id), { method: 'DELETE', headers: { 'X-CSRF-TOKEN': tokenCsrf, 'X-Jeton-Securite': etat.jeton, 'Accept': 'application/json' } });
                 const res = await rep.json();
-                if (res.succes) { rendu.toast(res.message); chargerDonnees(false); }
-                else { rendu.toast(res.erreur || 'Deletion failed', 'erreur'); }
+                if (res.succes) {
+                    if (res.jeton_securite) etat.jeton = res.jeton_securite;
+                    rendu.toast(res.message);
+                    chargerDonnees(false);
+                } else {
+                    rendu.toast(res.erreur || 'Deletion failed', 'erreur');
+                }
             });
             return;
         }
@@ -232,8 +248,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify({ ids })
             });
             const res = await rep.json();
-            if (res.succes) { rendu.toast(res.message); chargerDonnees(false); }
-            else { rendu.toast(res.erreur || 'Bulk deletion failed', 'erreur'); }
+            if (res.succes) {
+                if (res.jeton_securite) etat.jeton = res.jeton_securite;
+                rendu.toast(res.message);
+                chargerDonnees(false);
+            } else {
+                rendu.toast(res.erreur || 'Bulk deletion failed', 'erreur');
+            }
         });
     });
 

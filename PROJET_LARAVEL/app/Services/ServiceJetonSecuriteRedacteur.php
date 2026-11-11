@@ -21,7 +21,8 @@ class ServiceJetonSecuriteRedacteur
     public function genererEmpreinteAppareil(Request $requete): string
     {
         $agentUtilisateur = $requete->userAgent() ?? 'agent_inconnu';
-        $adresseIp = $requete->ip() ?? '127.0.0.1';
+        $ipBrute = $requete->ip() ?? '127.0.0.1';
+        $adresseIp = $this->normaliserIpClient($ipBrute);
         $langueClient = $requete->header('Accept-Language', 'fr');
         $signatureNavigateur = $requete->header('Sec-Ch-Ua', '');
 
@@ -33,6 +34,33 @@ class ServiceJetonSecuriteRedacteur
         ]);
 
         return hash('sha256', $chaineBrute);
+    }
+
+    /**
+     * Normalise l'adresse IP pour éviter de bloquer un rédacteur en mobilité (4G/5G, IPv6 rotative).
+     */
+    public function normaliserIpClient(string $ip): string
+    {
+        $ip = trim($ip);
+        if ($ip === '::1' || $ip === 'localhost') {
+            return '127.0.0.1';
+        }
+
+        // Si IPv4 : normaliser sur le sous-réseau /24
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $parties = explode('.', $ip);
+            if (count($parties) === 4) {
+                return "{$parties[0]}.{$parties[1]}.{$parties[2]}.0";
+            }
+        }
+
+        // Si IPv6 : normaliser sur le préfixe /64
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $parties = explode(':', $ip);
+            return implode(':', array_slice($parties, 0, 4));
+        }
+
+        return $ip;
     }
 
     /**
@@ -66,6 +94,14 @@ class ServiceJetonSecuriteRedacteur
         $signatureEncodee = $this->encoderBase64Url($signature);
 
         return "{$enTeteEncode}.{$chargeUtileEncodee}.{$signatureEncodee}";
+    }
+
+    /**
+     * Rafraîchit un jeton de sécurité en produisant un nouveau jeton valide pour l'utilisateur et son appareil.
+     */
+    public function rafraichirJeton(?string $jeton, User $utilisateur, Request $requete, int $dureeSecondes = self::DUREE_VALIDITE_SECONDES): string
+    {
+        return $this->genererJeton($utilisateur, $requete, $dureeSecondes);
     }
 
     /**

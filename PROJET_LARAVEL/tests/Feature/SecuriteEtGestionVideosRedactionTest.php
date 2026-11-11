@@ -144,4 +144,56 @@ class SecuriteEtGestionVideosRedactionTest extends TestCase
                 'code' => 'JETON_INVALIDE_OU_APPAREIL_NON_CONFORME',
             ]);
     }
+
+    public function test_basculer_statut_video_et_activer_a_nouveau(): void
+    {
+        $this->actingAs($this->redacteur);
+
+        $video = VideoLogistique::factory()->create([
+            'titre' => 'Hamburg Port Automation',
+            'est_actif' => true,
+        ]);
+
+        $requete = Request::create('/redaction/videos', 'GET', [], [], [], [
+            'HTTP_USER_AGENT' => 'Mozilla/5.0 Test CARGO Desk Browser',
+            'REMOTE_ADDR' => '127.0.0.1',
+        ]);
+        $jeton = $this->serviceJeton->genererJeton($this->redacteur, $requete);
+
+        // 1. Première bascule : de actif à inactif
+        $reponse1 = $this->withHeaders([
+            'User-Agent' => 'Mozilla/5.0 Test CARGO Desk Browser',
+            'X-Jeton-Securite' => $jeton,
+        ])->postJson("/redaction/videos/api/{$jeton}/{$video->id}/basculer");
+
+        $reponse1->assertStatus(200)
+            ->assertJson([
+                'succes' => true,
+                'est_actif' => false,
+            ]);
+
+        $this->assertDatabaseHas('videos_logistiques', [
+            'id' => $video->id,
+            'est_actif' => false,
+        ]);
+
+        $nouveauJeton = $reponse1->json('jeton_securite') ?? $jeton;
+
+        // 2. Deuxième bascule : réactiver à nouveau (de inactif à actif)
+        $reponse2 = $this->withHeaders([
+            'User-Agent' => 'Mozilla/5.0 Test CARGO Desk Browser',
+            'X-Jeton-Securite' => $nouveauJeton,
+        ])->postJson("/redaction/videos/api/{$nouveauJeton}/{$video->id}/basculer");
+
+        $reponse2->assertStatus(200)
+            ->assertJson([
+                'succes' => true,
+                'est_actif' => true,
+            ]);
+
+        $this->assertDatabaseHas('videos_logistiques', [
+            'id' => $video->id,
+            'est_actif' => true,
+        ]);
+    }
 }

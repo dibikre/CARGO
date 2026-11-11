@@ -10,7 +10,7 @@
                 <p class="text-xs text-gray-500">Ensure your account is protected by an enterprise-grade password (min. 8 characters)</p>
             </div>
         </div>
-        <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 rounded border border-emerald-200">
+        <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 rounded border border-gray-200">
             BCrypt Encrypted
         </span>
     </div>
@@ -72,10 +72,10 @@
             </div>
         </div>
 
-        <div class="p-3 bg-amber-50/60 border border-amber-200/80 rounded-lg flex items-start gap-2.5 text-xs text-amber-900">
-            <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-start gap-2.5 text-xs text-gray-600">
+            <svg class="w-4 h-4 text-gray-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <div>
-                <strong>Recommendation:</strong> Use at least 8 characters combining uppercase letters, numbers, and special symbols. Changing your password will keep your current editorial session active.
+                <strong class="text-gray-900 font-bold">Recommendation:</strong> Use at least 8 characters combining uppercase letters, numbers, and special symbols. Changing your password will keep your current editorial session active.
             </div>
         </div>
 

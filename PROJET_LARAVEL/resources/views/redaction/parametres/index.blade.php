@@ -59,8 +59,8 @@
                     </div>
                     <div class="flex items-center justify-between text-gray-600">
                         <span>Account Status</span>
-                        <span class="font-bold text-emerald-600 uppercase flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span class="font-bold text-gray-900 uppercase flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-cargo-dark"></span>
                             Active
                         </span>
                     </div>
