@@ -13,6 +13,7 @@ class ServiceRechercheSecurisee
 {
     public const DUREE_VALIDITE_SECONDES = 10;
     public const LONGUEUR_CODE = 16;
+    public const NB_RESULTATS_MAX = 10;
     public const PREFIXE_CACHE = 'recherche_securisee_';
     public const PREFIXE_VERROU = 'verrou_recherche_';
 
@@ -109,9 +110,13 @@ class ServiceRechercheSecurisee
     }
 
     /**
-     * Exécute la recherche d'articles sur les archives du journal avec les critères spécifiés.
+     * Exécute la recherche d'articles sur les archives du journal avec priorisation :
+     * 1. Terme présent dans le titre (priorité 1)
+     * 2. Terme présent dans le sous-titre / chapeau (priorité 2)
+     * 3. Terme présent dans le corps de texte (priorité 3)
+     * Classement secondaire par date de publication décroissante.
      */
-    public function rechercherArticles(string $motsCles, array $filtres = [], int $parPage = 12): LengthAwarePaginator
+    public function rechercherArticles(string $motsCles, array $filtres = [], int $parPage = self::NB_RESULTATS_MAX): LengthAwarePaginator
     {
         $requete = trim($motsCles);
         $categorieId = $filtres['categorie_id'] ?? null;
@@ -121,11 +126,20 @@ class ServiceRechercheSecurisee
         return Article::with(['auteur', 'categorie'])
             ->publie()
             ->when($requete !== '', function (Builder $q) use ($requete) {
-                $q->where(function (Builder $subQuery) use ($requete) {
-                    $subQuery->where('titre', 'like', "%{$requete}%")
-                        ->orWhere('chapeau', 'like', "%{$requete}%")
-                        ->orWhere('contenu', 'like', "%{$requete}%");
-                });
+                $terme = "%{$requete}%";
+                $q->where(function (Builder $subQuery) use ($terme) {
+                    $subQuery->where('titre', 'like', $terme)
+                        ->orWhere('chapeau', 'like', $terme)
+                        ->orWhere('contenu', 'like', $terme);
+                })
+                ->orderByRaw(
+                    "CASE 
+                        WHEN titre LIKE ? THEN 1 
+                        WHEN chapeau LIKE ? THEN 2 
+                        ELSE 3 
+                    END ASC",
+                    [$terme, $terme]
+                );
             })
             ->when($categorieId, fn (Builder $q) => $q->where('categorie_id', $categorieId))
             ->when($modeTransport, fn (Builder $q) => $q->where('mode_transport_principal', $modeTransport))

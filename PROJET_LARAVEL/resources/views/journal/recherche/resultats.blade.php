@@ -1,6 +1,7 @@
 @extends('layouts.journal')
 
 @section('titre', 'Résultats de recherche — CARGO')
+@section('robots', 'noindex, nofollow, noarchive')
 
 @section('contenu')
 <div style="background:var(--dark); color:#fff; padding:44px 0 32px; border-bottom:1px solid var(--dark-border);">
@@ -13,7 +14,7 @@
             Résultats pour : &laquo; {{ $motsCles }} &raquo;
         </h1>
         <p style="font-size:15px; color:#C9CCD6; margin:0;">
-            {{ $articles->total() }} publication(s) trouvée(s) dans le fonds documentaire du journal.
+            {{ $articles->total() }} publication(s) répertoriée(s) &bull; Affichage des {{ min(10, $articles->total()) }} résultats les plus pertinents.
         </p>
     </div>
 </div>
@@ -32,15 +33,15 @@
                     </span>
                 </div>
                 <h2 class="dsp" style="margin:6px 0 10px; font-size:22px; line-height:1.25;">
-                    <a href="{{ route('articles.show', $article->slug) }}" style="color:var(--dark); text-decoration:none;">
+                    <a href="{{ route('articles.show', $article->slug) }}" target="_blank" rel="noopener noreferrer" style="color:var(--dark); text-decoration:none;" title="Ouvrir l'article dans un nouvel onglet">
                         {{ $article->titre }}
                     </a>
                 </h2>
                 <p style="margin:0 0 14px; font-size:15px; color:#4B505C; line-height:1.55;">
                     {{ Str::limit($article->chapeau ?? strip_tags($article->contenu), 190) }}
                 </p>
-                <a href="{{ route('articles.show', $article->slug) }}" style="font-weight:700; font-size:13px; color:var(--dark); text-transform:uppercase; letter-spacing:0.04em; display:inline-flex; align-items:center; gap:6px;">
-                    Consulter l'article &rarr;
+                <a href="{{ route('articles.show', $article->slug) }}" target="_blank" rel="noopener noreferrer" style="font-weight:700; font-size:13px; color:var(--dark); text-transform:uppercase; letter-spacing:0.04em; display:inline-flex; align-items:center; gap:6px;" title="Ouvrir l'article dans un nouvel onglet">
+                    Consulter l'article &nearr;
                 </a>
             </article>
         @empty

@@ -82,7 +82,10 @@ class RechercheSecuriseeEphemereTest extends TestCase
 
         $reponse->assertOk()
             ->assertSee('Expansion du terminal à conteneurs du Havre')
-            ->assertSee('Résultats pour');
+            ->assertSee('Résultats pour')
+            ->assertSee('target="_blank"', false)
+            ->assertSee('rel="noopener noreferrer"', false)
+            ->assertSee('noindex, nofollow, noarchive', false);
     }
 
     public function test_la_meme_url_ne_peut_pas_etre_utilisee_une_seconde_fois(): void
@@ -162,5 +165,80 @@ class RechercheSecuriseeEphemereTest extends TestCase
     {
         $reponse = $this->get('/recherche');
         $reponse->assertRedirect(route('accueil'));
+    }
+
+    public function test_les_articles_avec_terme_dans_le_titre_sont_classes_avant_ceux_dans_le_sous_titre(): void
+    {
+        $service = app(ServiceRechercheSecurisee::class);
+
+        // Article A : mot-clé dans le sous-titre (chapeau)
+        $articleChapeau = Article::create([
+            'titre' => 'Bilan annuel des transports intermodaux',
+            'slug' => 'bilan-annuel-transports-intermodaux',
+            'chapeau' => 'Focus sur l\'automatisation portuaire et fluviale.',
+            'contenu' => 'Analyse détaillée des corridors logistiques.',
+            'categorie_id' => $this->categorie->id,
+            'auteur_id' => $this->redacteur->id,
+            'statut' => 'publie',
+            'date_publication' => now()->subDay(),
+        ]);
+
+        // Article B : mot-clé dans le titre (doit être classé EN PREMIER)
+        $articleTitre = Article::create([
+            'titre' => 'Automatisation portuaire : nouvelles technologies à quai',
+            'slug' => 'automatisation-portuaire-nouvelles-technologies',
+            'chapeau' => 'Déploiement de grues autonomes au terminal.',
+            'contenu' => 'Présentation des innovations.',
+            'categorie_id' => $this->categorie->id,
+            'auteur_id' => $this->redacteur->id,
+            'statut' => 'publie',
+            'date_publication' => now()->subDays(2),
+        ]);
+
+        // Article C : mot-clé uniquement dans le contenu (doit être classé DERNIER)
+        $articleContenu = Article::create([
+            'titre' => 'Gestion de flotte de camions électriques',
+            'slug' => 'gestion-flotte-camions-electriques',
+            'chapeau' => 'Transition énergétique des transporteurs.',
+            'contenu' => 'Ces véhicules participent à l\'automatisation portuaire des liaisons courtes.',
+            'categorie_id' => $this->categorie->id,
+            'auteur_id' => $this->redacteur->id,
+            'statut' => 'publie',
+            'date_publication' => now(),
+        ]);
+
+        $resultats = $service->rechercherArticles('Automatisation portuaire');
+
+        $ids = collect($resultats->items())->pluck('id')->all();
+
+        // Vérification de l'ordre strict : Titre en premier, Chapeau en second, Contenu en dernier
+        $this->assertEquals($articleTitre->id, $ids[0]);
+        $this->assertEquals($articleChapeau->id, $ids[1]);
+        $this->assertEquals($articleContenu->id, $ids[2]);
+    }
+
+    public function test_la_recherche_est_strictement_limitee_a_10_resultats(): void
+    {
+        $service = app(ServiceRechercheSecurisee::class);
+
+        // Créer 14 articles contenant le mot-clé
+        for ($i = 1; $i <= 14; $i++) {
+            Article::create([
+                'titre' => "Analyse logistique volume {$i}",
+                'slug' => "analyse-logistique-volume-{$i}",
+                'chapeau' => 'Chapeau descriptif du marché.',
+                'contenu' => 'Contenu stratégique pour les professionnels du transport.',
+                'categorie_id' => $this->categorie->id,
+                'auteur_id' => $this->redacteur->id,
+                'statut' => 'publie',
+                'date_publication' => now()->subMinutes($i),
+            ]);
+        }
+
+        $resultats = $service->rechercherArticles('logistique');
+
+        // La liste retournée ne doit jamais dépasser 10 résultats
+        $this->assertCount(10, $resultats->items());
+        $this->assertEquals(10, $resultats->perPage());
     }
 }

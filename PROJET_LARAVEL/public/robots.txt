@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Disallow: /recherche-
+Disallow: /recherche/
+Disallow: /recherche
+Disallow: /admin/
+Disallow: /redaction/
+Allow: /

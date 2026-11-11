@@ -1,6 +1,7 @@
 @extends('layouts.journal')
 
 @section('titre', 'Lien de recherche expiré — CARGO')
+@section('robots', 'noindex, nofollow, noarchive')
 
 @section('contenu')
 <div style="background:var(--dark); color:#fff; padding:56px 0 44px; border-bottom:1px solid var(--dark-border);">
