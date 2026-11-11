@@ -22,6 +22,7 @@ return new class extends Migration
             // Pour utilisateurs non connectés si activé par la modération
             $table->string('auteur_nom', 100)->nullable();
             $table->string('auteur_email', 150)->nullable();
+            $table->string('auteur_site_web', 255)->nullable();
             
             $table->text('contenu');
             $table->string('statut', 30)->default('en_attente')->index(); // en_attente, approuve, rejete, spam

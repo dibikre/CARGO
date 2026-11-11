@@ -24,6 +24,33 @@
         </div>
     </div>
 
+    {{-- Réglage de modération et sécurité des liens hypertexte --}}
+    <div class="bg-white p-5 rounded-lg border border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="space-y-1">
+            <div class="flex items-center gap-2">
+                <span class="text-xs uppercase font-bold tracking-wider text-gray-500">Sécurité & Anti-Spam SEO</span>
+                @if($liensCliquables)
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">Liens Cliquables Actifs (rel="nofollow")</span>
+                @else
+                    <span class="bg-gray-100 text-gray-800 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">Liens Nettoyés (Texte brut sécurisé)</span>
+                @endif
+            </div>
+            <p class="text-xs text-gray-600 max-w-2xl">
+                @if($liensCliquables)
+                    Les URLs du texte et le site web du lecteur sont publiés sous forme de <strong>liens cliquables</strong> (avec attributs sécurisés <code>nofollow</code>, <code>noopener</code>, <code>noreferrer</code>).
+                @else
+                    Les URLs et le site web du lecteur sont <strong>nettoyés et affichés en texte brut non-cliquable</strong> pour protéger le journal contre le spam de liens.
+                @endif
+            </p>
+        </div>
+        <form action="{{ route('admin.commentaires.basculer-liens') }}" method="POST">
+            @csrf
+            <button type="submit" class="w-full sm:w-auto px-4 py-2.5 rounded font-bold text-xs uppercase tracking-wider transition text-white {{ $liensCliquables ? 'bg-amber-600 hover:bg-amber-700' : 'bg-cargo-red hover:bg-red-700' }}">
+                {{ $liensCliquables ? 'Nettoyer les liens (Désactiver)' : 'Rendre les liens cliquables' }}
+            </button>
+        </form>
+    </div>
+
     {{-- Filtres de statut --}}
     <div class="bg-white p-3 rounded-lg border border-gray-200 flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider">
         <a href="{{ route('admin.commentaires.index') }}" class="px-3 py-1.5 rounded transition {{ empty($statut) ? 'bg-cargo-dark text-white' : 'text-gray-600 hover:bg-gray-100' }}">Tous</a>
@@ -40,6 +67,19 @@
                     <div class="flex flex-wrap items-center gap-2 text-xs">
                         <strong class="text-cargo-dark font-bold text-sm">{{ $com->auteur_nom }}</strong>
                         <span class="text-gray-400 font-mono">{{ $com->auteur_email }}</span>
+                        @if($com->auteur_site_web)
+                            <span class="text-gray-300">&bull;</span>
+                            <span class="text-xs text-gray-600">
+                                <span class="text-gray-400">Site :</span>
+                                @if($com->site_web_est_cliquable)
+                                    <a href="{{ $com->url_site_web_securisee }}" target="_blank" rel="nofollow noopener noreferrer" class="text-cargo-red hover:underline font-mono">
+                                        {{ $com->nom_domaine_site_web }} &nearr;
+                                    </a>
+                                @else
+                                    <span class="bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded font-mono text-[11px]">{{ $com->nom_domaine_site_web }} (nettoyé)</span>
+                                @endif
+                            </span>
+                        @endif
                         <span class="text-gray-300">&bull;</span>
                         <span class="text-gray-500">{{ $com->created_at?->diffForHumans() }}</span>
                         @if($com->statut === 'en_attente')
@@ -51,9 +91,9 @@
                         @endif
                     </div>
 
-                    <p class="text-sm text-gray-800 leading-relaxed bg-gray-50 p-3 rounded border border-gray-100">
-                        {{ $com->contenu }}
-                    </p>
+                    <div class="text-sm text-gray-800 leading-relaxed bg-gray-50 p-3 rounded border border-gray-100 break-words">
+                        {!! $com->contenu_formate !!}
+                    </div>
 
                     @if($com->article)
                         <div class="text-xs text-gray-500 flex items-center gap-1.5">

@@ -226,9 +226,10 @@ Route::prefix('admin')->group(function () {
             Route::delete('/{id}', [DocumentAdminControleur::class, 'destroy'])->name('destroy');
         });
 
-        // Modération centralisée des commentaires
+        // Modération centralisée des commentaires et réglage des liens
         Route::prefix('commentaires')->name('commentaires.')->group(function () {
             Route::get('/', [CommentaireAdminControleur::class, 'index'])->name('index');
+            Route::post('/basculer-liens', [CommentaireAdminControleur::class, 'basculerLiens'])->name('basculer-liens');
             Route::post('/{id}/approuver', [CommentaireAdminControleur::class, 'approuver'])->name('approuver');
             Route::post('/{id}/spam', [CommentaireAdminControleur::class, 'marquerSpam'])->name('spam');
             Route::delete('/{id}', [CommentaireAdminControleur::class, 'destroy'])->name('destroy');

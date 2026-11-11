@@ -211,5 +211,4 @@ class VideoApiRedactionControleur extends Controller
             'jeton_securite' => $nouveauJeton ?? $jetonActuel,
         ]);
     }
-    }
 }

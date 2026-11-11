@@ -168,45 +168,63 @@
                 </div>
             @endif
 
-            {{-- Formulaire de commentaire --}}
-            <form action="{{ route('commentaires.store') }}" method="POST" style="background: #fff; padding: 28px; border: 1px solid #E2E5EB; margin-bottom: 36px; display: flex; flex-direction: column; gap: 16px;">
+            {{-- Formulaire de commentaire exigeant nom, email professionnel, site web et texte --}}
+            <form action="{{ route('commentaires.store') }}" method="POST" style="background: #fff; padding: 24px; border: 1px solid #E2E5EB; margin-bottom: 32px; display: flex; flex-direction: column; gap: 14px;">
                 @csrf
                 <input type="hidden" name="article_id" value="{{ $article->id }}">
 
-                @guest
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
-                        <div>
-                            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase;">Nom complet / Organisation *</label>
-                            <input type="text" name="auteur_nom" required placeholder="ex: Jean Dupont (CMA CGM)" class="form-input">
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase;">E-mail professionnel *</label>
-                            <input type="email" name="auteur_email" required placeholder="nom@entreprise.com" class="form-input">
-                        </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase;">Nom / Organisation *</label>
+                        <input type="text" name="auteur_nom" value="{{ old('auteur_nom', auth()->user()?->name) }}" required placeholder="ex: Marc V. (Port de Marseille)" class="form-input">
                     </div>
-                @endguest
-
-                <div>
-                    <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase;">Votre retour ou analyse opérationnelle *</label>
-                    <textarea name="contenu" required rows="4" placeholder="Partagez vos retours sur la situation portuaire, les coûts de passage ou vos contraintes logistiques..." class="form-input" style="height: auto; padding: 12px; font-family: inherit;"></textarea>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase;">E-mail professionnel *</label>
+                        <input type="email" name="auteur_email" value="{{ old('auteur_email', auth()->user()?->email) }}" required placeholder="nom@entreprise.com" class="form-input">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase;">Site web / Entreprise *</label>
+                        <input type="url" name="auteur_site_web" value="{{ old('auteur_site_web') }}" required placeholder="https://votre-organisation.com" class="form-input">
+                    </div>
                 </div>
 
                 <div>
-                    <button type="submit" style="background: var(--accent); color: #fff; font-weight: 700; padding: 12px 26px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--police-titre); font-size: calc(13px * var(--echelle-texte));">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase;">Votre retour ou analyse terrain *</label>
+                    <textarea name="contenu" required rows="4" placeholder="Partagez votre retour d'expérience opérationnel ou vos observations sur ce sujet logistique..." class="form-input" style="height: auto; padding: 12px; font-family: inherit;">{{ old('contenu') }}</textarea>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <button type="submit" style="background: var(--accent); color: #fff; font-weight: 700; padding: 12px 24px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--police-titre); font-size: calc(13px * var(--echelle-texte));">
                         Publier le commentaire
                     </button>
+                    <span style="font-size: 11px; color: var(--text-muted);">Soumis à modération &bull; Liens gérés selon la politique de sécurité</span>
                 </div>
             </form>
 
             {{-- Fil des commentaires --}}
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 @forelse($commentaires as $com)
-                    <div style="background: #fff; padding: 22px 24px; border: 1px solid #E2E5EB; border-left: 4px solid var(--dark);">
-                        <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; margin-bottom: 10px;">
-                            <strong style="color: var(--dark); font-size: 15px;">{{ $com->auteur_nom }}</strong>
+                    <div style="background: #fff; padding: 20px 22px; border: 1px solid #E2E5EB; border-left: 4px solid var(--dark);">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <strong style="color: var(--dark); font-size: 15px;">{{ $com->auteur_nom }}</strong>
+                                @if($com->auteur_site_web)
+                                    @if($com->site_web_est_cliquable)
+                                        <a href="{{ $com->url_site_web_securisee }}" target="_blank" rel="nofollow noopener noreferrer" style="color: var(--accent); font-size: 12px; font-weight: 600; text-decoration: underline;" title="Visiter le site de l'auteur">
+                                            {{ $com->nom_domaine_site_web }} &nearr;
+                                        </a>
+                                    @else
+                                        <span style="color: var(--text-muted); font-size: 11px; background: #F1F3F5; padding: 2px 7px; border: 1px solid #E2E5EB;" title="Lien sécurisé au format texte brut">
+                                            {{ $com->nom_domaine_site_web }}
+                                        </span>
+                                    @endif
+                                @endif
+                            </div>
                             <span style="color: var(--text-muted); font-size: 12px;">{{ $com->created_at->diffForHumans() }}</span>
                         </div>
-                        <p style="margin: 0 0 14px; font-size: 15px; line-height: 1.6; color: #2B2E3A;">{{ $com->contenu }}</p>
+                        <div style="margin: 0 0 14px; font-size: 15px; line-height: 1.6; color: #2B2E3A; word-break: break-word;">
+                            {!! $com->contenu_formate !!}
+                        </div>
                         <form action="{{ route('commentaires.voter', $com->id) }}" method="POST" style="display: inline-block;">
                             @csrf
                             <button type="submit" style="background: #F4F1EA; border: 1px solid #D5D8E0; padding: 5px 12px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--dark); display: inline-flex; align-items: center; gap: 6px;">

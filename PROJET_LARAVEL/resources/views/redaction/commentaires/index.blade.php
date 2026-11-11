@@ -41,12 +41,20 @@
                 <div style="display:flex; justify-content:space-between; font-size:14px; flex-wrap:wrap; gap:8px;">
                     <div>
                         <strong>{{ $com->auteur_nom }}</strong> ({{ $com->auteur_email ?? 'Membre connecté' }})
-                        · sur l'article : <em>{{ $com->article->titre }}</em>
+                        @if($com->auteur_site_web)
+                            &bull;
+                            @if($com->site_web_est_cliquable)
+                                <a href="{{ $com->url_site_web_securisee }}" target="_blank" rel="nofollow noopener noreferrer" style="color:var(--accent); text-decoration:underline; font-size:12px;">{{ $com->nom_domaine_site_web }} &nearr;</a>
+                            @else
+                                <span style="background:#F3F4F6; color:var(--text-muted); padding:2px 6px; font-size:11px; border-radius:3px;">{{ $com->nom_domaine_site_web }} (plain)</span>
+                            @endif
+                        @endif
+                        · sur l'article : <em>{{ $com->article?->titre }}</em>
                     </div>
                     <span style="color:var(--text-muted);">{{ $com->created_at->format('d/m/Y H:i') }}</span>
                 </div>
 
-                <p style="margin:0; font-size:15px; line-height:1.5;">{{ $com->contenu }}</p>
+                <div style="margin:0; font-size:15px; line-height:1.5; word-break:break-word;">{!! $com->contenu_formate !!}</div>
 
                 <div style="display:flex; gap:12px; padding-top:12px; border-top:1px dashed var(--dashed-border);">
                     @if($com->statut !== 'approuve')

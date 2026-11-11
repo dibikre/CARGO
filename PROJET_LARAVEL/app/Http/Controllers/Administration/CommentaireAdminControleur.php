@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
 use App\Models\Commentaire;
+use App\Models\ConfigurationSysteme;
 use App\Models\JournalActivite;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,7 +36,30 @@ class CommentaireAdminControleur extends Controller
             'spam' => Commentaire::where('statut', 'spam')->count(),
         ];
 
-        return view('administration.commentaires.index', compact('commentaires', 'metriques', 'statut'));
+        $liensCliquables = ConfigurationSysteme::liensCommentairesSontCliquables();
+
+        return view('administration.commentaires.index', compact('commentaires', 'metriques', 'statut', 'liensCliquables'));
+    }
+
+    /**
+     * Basculer le réglage global sur les liens cliquables ou nettoyés dans les commentaires.
+     */
+    public function basculerLiens(Request $requete): RedirectResponse
+    {
+        $nouvelEtat = ConfigurationSysteme::basculerLiensCommentairesCliquables();
+        $message = $nouvelEtat
+            ? 'Les liens des commentaires et sites web sont maintenant CLIQUABLES (avec attributs nofollow et noopener sécurisés).'
+            : 'Les liens des commentaires et sites web sont maintenant NETTOYÉS (affichés en texte brut sécurisé anti-spam).';
+
+        JournalActivite::enregistrer(
+            description: "Modification réglage liens commentaires : " . ($nouvelEtat ? 'cliquables' : 'nettoyés'),
+            nomLog: 'configuration',
+            evenement: 'modification_reglage_liens_commentaires',
+            auteur: Auth::user(),
+            donnees: ['liens_cliquables' => $nouvelEtat]
+        );
+
+        return back()->with('succes', $message);
     }
 
     /**

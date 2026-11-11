@@ -178,4 +178,28 @@ class ConfigurationSysteme extends Model
 
         return $nouvelEtat;
     }
+
+    /**
+     * Vérifier si les liens dans les commentaires et l'URL du site auteur sont cliquables publiquement.
+     */
+    public static function liensCommentairesSontCliquables(): bool
+    {
+        $valeur = self::obtenirValeur('commentaires_liens_cliquables', '0');
+        return $valeur === '1' || $valeur === true || $valeur === 1;
+    }
+
+    /**
+     * Basculer l'autorisation des liens cliquables dans les commentaires (Cliquables <-> Nettoyés).
+     */
+    public static function basculerLiensCommentairesCliquables(): bool
+    {
+        $nouvelEtat = ! self::liensCommentairesSontCliquables();
+        self::definirValeur(
+            'commentaires_liens_cliquables',
+            $nouvelEtat ? '1' : '0',
+            'Autorisation des liens cliquables dans le contenu et l\'adresse du site web des commentaires de lecteurs'
+        );
+
+        return $nouvelEtat;
+    }
 }
