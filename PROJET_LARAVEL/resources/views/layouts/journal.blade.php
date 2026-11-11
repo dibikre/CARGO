@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('titre', 'CARGO — Le Journal du Transport, de la Logistique & Supply Chain')</title>
     <meta name="description" content="@yield('meta_description', 'L\'actualité de référence du fret maritime, aérien, routier, ferroviaire et de la logistique.')">
     <link rel="preconnect" href="https://fonts.googleapis.com">

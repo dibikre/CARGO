@@ -1,8 +1,8 @@
 {{-- Barre de recherche extensible animée (CARGO) --}}
-<div id="conteneur-recherche-extensible" style="position: relative; display: flex; align-items: center;">
+<div id="conteneur-recherche-extensible" class="conteneur-recherche-extensible" style="position: relative; display: flex; align-items: center;">
     <form id="formulaire-recherche-securisee" action="{{ route('recherche.initier') }}" method="POST" style="margin: 0; display: flex; align-items: center; position: relative;">
         @csrf
-        <div id="champ-recherche-enveloppe" style="width: 0; opacity: 0; overflow: hidden; transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease; display: flex; align-items: center;">
+        <div id="champ-recherche-enveloppe" class="champ-recherche-enveloppe">
             <input
                 type="text"
                 id="champ-recherche-mots-cles"
@@ -17,6 +17,7 @@
         <button
             type="button"
             id="bouton-declencheur-recherche"
+            onclick="window.basculerBarreRechercheCARGO(event)"
             aria-label="Rechercher dans CARGO"
             title="Rechercher dans les archives"
             style="width: 42px; height: 42px; border: 1px solid #4A4E5C; background: #20222B; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s, border-color 0.2s; padding: 0; flex-shrink: 0;"
@@ -38,94 +39,122 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
-#conteneur-recherche-extensible.ouvert #champ-recherche-enveloppe {
-    width: 260px;
-    opacity: 1;
+.champ-recherche-enveloppe {
+    width: 0;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    display: flex;
+    align-items: center;
 }
-#conteneur-recherche-extensible.ouvert #bouton-declencheur-recherche {
-    background: var(--accent, #D4201A);
-    border-color: var(--accent, #D4201A);
+.conteneur-recherche-extensible.ouvert .champ-recherche-enveloppe {
+    width: 260px !important;
+    max-width: 260px !important;
+    opacity: 1 !important;
+}
+.conteneur-recherche-extensible.ouvert #bouton-declencheur-recherche {
+    background: var(--accent, #D4201A) !important;
+    border-color: var(--accent, #D4201A) !important;
 }
 </style>
 
 <script>
 (function() {
-    const conteneur = document.getElementById('conteneur-recherche-extensible');
-    const bouton = document.getElementById('bouton-declencheur-recherche');
-    const formulaire = document.getElementById('formulaire-recherche-securisee');
-    const input = document.getElementById('champ-recherche-mots-cles');
-    const iconeLoupe = document.getElementById('icone-loupe');
-    const iconeChargement = document.getElementById('icone-chargement-recherche');
-
-    let estOuvert = false;
-    let estEnCoursDeSoumission = false;
-
-    function ouvrirBarre() {
-        estOuvert = true;
-        conteneur.classList.add('ouvert');
-        bouton.setAttribute('aria-expanded', 'true');
-        bouton.title = 'Lancer la recherche (ou appuyer sur Entrée)';
-        setTimeout(() => input.focus(), 120);
+    function obtenirElements() {
+        return {
+            conteneur: document.getElementById('conteneur-recherche-extensible'),
+            bouton: document.getElementById('bouton-declencheur-recherche'),
+            formulaire: document.getElementById('formulaire-recherche-securisee'),
+            enveloppe: document.getElementById('champ-recherche-enveloppe'),
+            input: document.getElementById('champ-recherche-mots-cles'),
+            iconeLoupe: document.getElementById('icone-loupe'),
+            iconeChargement: document.getElementById('icone-chargement-recherche')
+        };
     }
 
-    function fermerBarre() {
-        if (estEnCoursDeSoumission) return;
-        estOuvert = false;
-        conteneur.classList.remove('ouvert');
-        bouton.setAttribute('aria-expanded', 'false');
-        bouton.title = 'Rechercher dans les archives';
-    }
+    let enCoursDeSoumission = false;
 
-    bouton.addEventListener('click', function(e) {
+    window.basculerBarreRechercheCARGO = function(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        const el = obtenirElements();
+        if (!el.conteneur || !el.input) return;
+
+        const estOuvert = el.conteneur.classList.contains('ouvert');
+
         if (!estOuvert) {
-            e.preventDefault();
-            ouvrirBarre();
+            // Déplier la barre de recherche
+            el.conteneur.classList.add('ouvert');
+            el.bouton.setAttribute('aria-expanded', 'true');
+            el.bouton.title = 'Lancer la recherche (ou Entrée)';
+            setTimeout(function() {
+                el.input.focus();
+            }, 80);
         } else {
-            // Si la barre est déjà ouverte et contient du texte, déclencher la recherche
-            const valeur = input.value.trim();
+            // La barre est déjà ouverte
+            const valeur = el.input.value.trim();
             if (valeur.length > 0) {
                 lancerRechercheSecurisee(valeur);
             } else {
+                // Fermer si aucun texte
+                fermerBarre();
+            }
+        }
+    };
+
+    function fermerBarre() {
+        if (enCoursDeSoumission) return;
+        const el = obtenirElements();
+        if (!el.conteneur) return;
+        el.conteneur.classList.remove('ouvert');
+        el.bouton.setAttribute('aria-expanded', 'false');
+        el.bouton.title = 'Rechercher dans les archives';
+    }
+
+    // Déclenchement sur Entrée : AUCUNE REQUÊTE pendant la saisie
+    document.addEventListener('keydown', function(e) {
+        const el = obtenirElements();
+        if (!el.conteneur || !el.conteneur.classList.contains('ouvert')) return;
+
+        if (e.target === el.input) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const valeur = el.input.value.trim();
+                if (valeur.length > 0) {
+                    lancerRechercheSecurisee(valeur);
+                }
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
                 fermerBarre();
             }
         }
     });
 
-    // Déclenchement STRICTEMENT sur Entrée : AUCUNE REQUÊTE ni suggestion pendant la saisie
-    input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const valeur = input.value.trim();
-            if (valeur.length > 0) {
-                lancerRechercheSecurisee(valeur);
-            }
-        } else if (e.key === 'Escape') {
-            e.preventDefault();
-            fermerBarre();
-        }
-    });
-
-    // Fermer si clic en dehors du composant
+    // Fermer si clic à l'extérieur quand le champ est vide
     document.addEventListener('click', function(e) {
-        if (estOuvert && !conteneur.contains(e.target)) {
-            if (input.value.trim() === '') {
+        const el = obtenirElements();
+        if (!el.conteneur || !el.conteneur.classList.contains('ouvert')) return;
+
+        if (!el.conteneur.contains(e.target)) {
+            if (el.input.value.trim() === '') {
                 fermerBarre();
             }
         }
     });
 
     async function lancerRechercheSecurisee(motsCles) {
-        if (estEnCoursDeSoumission) return;
-        estEnCoursDeSoumission = true;
+        if (enCoursDeSoumission) return;
+        enCoursDeSoumission = true;
 
-        iconeLoupe.style.display = 'none';
-        iconeChargement.style.display = 'block';
-        bouton.style.pointerEvents = 'none';
-        input.disabled = true;
+        const el = obtenirElements();
+        if (el.iconeLoupe) el.iconeLoupe.style.display = 'none';
+        if (el.iconeChargement) el.iconeChargement.style.display = 'block';
+        if (el.bouton) el.bouton.style.pointerEvents = 'none';
+        if (el.input) el.input.disabled = true;
 
         try {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
-                || formulaire.querySelector('input[name="_token"]')?.value;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                || el.formulaire?.querySelector('input[name="_token"]')?.value;
 
             const reponse = await fetch("{{ route('recherche.initier') }}", {
                 method: 'POST',
@@ -139,8 +168,8 @@
 
             if (!reponse.ok) {
                 const erreurJson = await reponse.json().catch(() => null);
-                const message = (erreurJson && erreurJson.message) 
-                    ? erreurJson.message 
+                const message = (erreurJson && erreurJson.message)
+                    ? erreurJson.message
                     : 'Erreur lors de la préparation de la recherche. Veuillez réessayer.';
                 alert(message);
                 reinitialiserEtat();
@@ -154,19 +183,27 @@
                 reinitialiserEtat();
             }
         } catch (err) {
-            console.error('Erreur recherche:', err);
-            // Fallback soumission formulaire classique
-            formulaire.submit();
+            console.error('Erreur appel recherche:', err);
+            // Fallback soumission HTML classique
+            if (el.formulaire) {
+                el.input.disabled = false;
+                el.formulaire.submit();
+            } else {
+                reinitialiserEtat();
+            }
         }
     }
 
     function reinitialiserEtat() {
-        estEnCoursDeSoumission = false;
-        iconeLoupe.style.display = 'block';
-        iconeChargement.style.display = 'none';
-        bouton.style.pointerEvents = 'auto';
-        input.disabled = false;
-        input.focus();
+        enCoursDeSoumission = false;
+        const el = obtenirElements();
+        if (el.iconeLoupe) el.iconeLoupe.style.display = 'block';
+        if (el.iconeChargement) el.iconeChargement.style.display = 'none';
+        if (el.bouton) el.bouton.style.pointerEvents = 'auto';
+        if (el.input) {
+            el.input.disabled = false;
+            el.input.focus();
+        }
     }
 })();
 </script>
