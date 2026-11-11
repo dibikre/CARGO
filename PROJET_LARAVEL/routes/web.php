@@ -39,7 +39,9 @@ use Illuminate\Support\Facades\Route;
 // --- Pages Publiques du Journal ---
 Route::get('/', [AccueilControleur::class, 'index'])->name('accueil');
 Route::redirect('/connexion', '/admin/connexion')->name('login');
-Route::get('/recherche', [RechercheControleur::class, 'rechercher'])->name('recherche');
+Route::get('/recherche', [RechercheControleur::class, 'anciennePage'])->name('recherche');
+Route::post('/recherche/initier', [RechercheControleur::class, 'initier'])->middleware('throttle:30,1')->name('recherche.initier');
+Route::get('/recherche-{code}', [RechercheControleur::class, 'afficherResultats'])->where('code', '[a-zA-Z0-9]{16}')->name('recherche.consulter');
 Route::prefix('articles')->name('articles.')->group(function () {
     Route::get('/', [ArticleControleur::class, 'index'])->name('index');
     Route::get('/{slug}', [ArticleControleur::class, 'show'])->name('show');
@@ -81,14 +83,12 @@ Route::prefix('ressources')->name('ressources.')->group(function () {
     Route::get('/{slug}/telecharger', [DocumentRessourceControleur::class, 'telecharger'])->name('telecharger');
 });
 
-// --- Espace Rédaction et Modération (Portail Journalistes & Desk Éditorial) ---
+// --- Espace Rédaction et Modération (Journalistes & Desk Éditorial) ---
 Route::prefix('redaction')->name('redaction.')->group(function () {
-    // Authentification dédiée à la rédaction (différente de l'admin et de l'abonné PRO)
     Route::get('/connexion', [ConnexionRedactionControleur::class, 'afficherFormulaire'])->name('connexion');
     Route::post('/connexion', [ConnexionRedactionControleur::class, 'connecter'])->name('connexion.post');
     Route::post('/deconnexion', [ConnexionRedactionControleur::class, 'deconnecter'])->name('deconnexion');
 
-    // Desk éditorial protégé par authentification et rôle de rédaction strict
     Route::middleware(['auth', VerifierAccesRedaction::class])->group(function () {
         // Gestion des articles
         Route::resource('articles', ArticleRedactionControleur::class)->except(['show']);

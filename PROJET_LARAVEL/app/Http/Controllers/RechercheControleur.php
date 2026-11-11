@@ -2,40 +2,88 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Article;
-use App\Models\Categorie;
+use App\Http\Requests\RechercheInitierRequest;
+use App\Services\ServiceRechercheSecurisee;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class RechercheControleur extends Controller
 {
-    /**
-     * Moteur de recherche multicritères dans les archives du journal.
-     */
-    public function rechercher(Request $request): View
+    protected ServiceRechercheSecurisee $serviceRecherche;
+
+    public function __construct(ServiceRechercheSecurisee $serviceRecherche)
     {
-        $requete = trim((string) $request->query('q', ''));
-        $categorieId = $request->query('categorie_id');
-        $modeTransport = $request->query('mode');
-        $format = $request->query('format');
+        $this->serviceRecherche = $serviceRecherche;
+    }
 
-        $articles = Article::with(['auteur', 'categorie'])
-            ->publie()
-            ->when($requete !== '', function ($q) use ($requete) {
-                $q->where(function ($subQuery) use ($requete) {
-                    $subQuery->where('titre', 'like', "%{$requete}%")
-                        ->orWhere('chapeau', 'like', "%{$requete}%")
-                        ->orWhere('contenu', 'like', "%{$requete}%");
-                });
-            })
-            ->when($categorieId, fn ($q) => $q->where('categorie_id', $categorieId))
-            ->when($modeTransport, fn ($q) => $q->where('mode_transport_principal', $modeTransport))
-            ->when($format, fn ($q) => $q->where('format_article', $format))
-            ->paginate(10)
-            ->withQueryString();
+    /**
+     * Redirection de l'ancienne URL de recherche statique vers l'accueil.
+     */
+    public function anciennePage(): RedirectResponse
+    {
+        return redirect()->route('accueil')->with('info', 'La recherche s\'effectue désormais directement depuis la barre de navigation du journal.');
+    }
 
-        $categories = Categorie::actif()->get();
+    /**
+     * Génère une URL temporaire cryptographique et éphémère (10 secondes, usage unique).
+     */
+    public function initier(RechercheInitierRequest $request): JsonResponse|RedirectResponse
+    {
+        $motsCles = (string) $request->validated('q');
+        $sessionId = $request->session()->getId();
+        $ip = (string) $request->ip();
 
-        return view('journal.recherche.resultats', compact('articles', 'categories', 'requete', 'categorieId', 'modeTransport', 'format'));
+        $jeton = $this->serviceRecherche->initialiserRecherche($motsCles, $sessionId, $ip);
+
+        if ($request->expectsJson() || $request->isJson()) {
+            return response()->json([
+                'succes' => true,
+                'url' => $jeton['url'],
+                'code' => $jeton['code'],
+                'expire_dans' => $jeton['expire_dans'],
+            ]);
+        }
+
+        return redirect()->to($jeton['url']);
+    }
+
+    /**
+     * Affiche les résultats de recherche après consommation atomique et unique du code temporaire.
+     */
+    public function afficherResultats(Request $request, string $code): View|Response
+    {
+        $sessionId = $request->session()->getId();
+        $consommation = $this->serviceRecherche->consommerJeton($code, $sessionId);
+
+        if (! $consommation['valide']) {
+            $motif = $consommation['motif'] ?? 'invalide';
+            $message = match ($motif) {
+                'expire' => 'Ce lien de recherche a expiré (sa durée de validité est strictement limitée à 10 secondes).',
+                'session_invalide' => 'Ce lien de recherche temporaire n\'est pas associé à votre session de navigation.',
+                default => 'Ce lien de recherche n\'est plus valide ou a déjà été utilisé (accès unique et sécurisé).',
+            };
+
+            return response()->view('journal.recherche.invalide', [
+                'code' => $code,
+                'motif' => $motif,
+                'message' => $message,
+            ], 410);
+        }
+
+        $donnees = $consommation['donnees'] ?? [];
+        $motsCles = (string) ($donnees['q'] ?? '');
+
+        $articles = $this->serviceRecherche->rechercherArticles($motsCles);
+        $categories = $this->serviceRecherche->recupererCategoriesActives();
+
+        return view('journal.recherche.resultats', [
+            'articles' => $articles,
+            'categories' => $categories,
+            'motsCles' => $motsCles,
+            'code' => $code,
+        ]);
     }
 }

@@ -101,9 +101,7 @@
                 <a href="{{ route('evenements.index') }}" style="padding:12px 0">Agenda</a>
             </nav>
             <span style="display:flex; gap:12px; align-items:center;">
-                <a href="{{ route('recherche') }}" aria-label="Rechercher" style="width:42px; height:42px; border:1px solid #4A4E5C; display:flex; align-items:center; justify-content:center;">
-                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
-                </a>
+                @include('journal.composants.barre-recherche-extensible')
                 @if(isset($abonnementsActifs) && !$abonnementsActifs)
                     <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:11px 16px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(11.8px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">Accès Libre 100%</a>
                 @else
