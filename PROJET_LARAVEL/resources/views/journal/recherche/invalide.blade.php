@@ -1,31 +1,26 @@
 @extends('layouts.journal')
 
-@section('titre', 'Lien de recherche expiré — CARGO')
+@section('titre', 'Session de recherche expirée — CARGO')
 @section('robots', 'noindex, nofollow, noarchive')
 
 @section('contenu')
 <div style="background:var(--dark); color:#fff; padding:56px 0 44px; border-bottom:1px solid var(--dark-border);">
     <div class="wrap" style="max-width:760px; text-align:center;">
-        <span class="kick" style="color:var(--accent);">Sécurité du journal &bull; Session temporaire</span>
+        <span class="kick" style="color:var(--yellow);">Recherche documentaire</span>
         <h1 class="dsp" style="margin:14px 0 16px; font-size:38px; font-weight:900; line-height:1.15;">
-            Ce lien de recherche n'est plus accessible
+            Session de recherche expirée
         </h1>
         <p style="font-size:16px; color:#C9CCD6; max-width:620px; margin:0 auto; line-height:1.6;">
-            {{ $message ?? 'Le lien temporaire généré a expiré (validité stricte de 10 secondes) ou a déjà été consommé pour protéger vos données de navigation.' }}
+            {{ $message ?? 'Votre session de recherche a expiré. Veuillez relancer une nouvelle recherche.' }}
         </p>
     </div>
 </div>
 
 <div class="wrap" style="max-width:760px; padding-top:48px; padding-bottom:64px;">
     <div style="background:#fff; border:1px solid #E2E5EB; border-left:4px solid var(--accent); padding:32px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-        <h2 class="dsp" style="font-size:20px; margin:0 0 12px; color:var(--dark);">
-            Règles d'accès et protection cryptographique
-        </h2>
-        <ul style="margin:0 0 24px; padding-left:20px; font-size:14px; line-height:1.7; color:#4B505C;">
-            <li>Chaque URL de recherche est à <strong>usage strictement unique</strong> (consommation atomique).</li>
-            <li>Le lien expire automatiquement <strong>10 secondes</strong> après sa génération côté serveur.</li>
-            <li>L'accès est restreint à la session du navigateur ayant initié la requête initiale.</li>
-        </ul>
+        <p style="font-size:15px; line-height:1.7; color:#4B505C; margin:0 0 24px;">
+            Pour accéder aux articles et analyses du journal, veuillez relancer une nouvelle recherche depuis la barre de recherche située en haut de page ou retourner à l'accueil du site.
+        </p>
 
         <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
             <button

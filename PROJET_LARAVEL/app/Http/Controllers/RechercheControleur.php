@@ -59,16 +59,10 @@ class RechercheControleur extends Controller
         $consommation = $this->serviceRecherche->consommerJeton($code, $sessionId);
 
         if (! $consommation['valide']) {
-            $motif = $consommation['motif'] ?? 'invalide';
-            $message = match ($motif) {
-                'expire' => 'Ce lien de recherche a expiré (sa durée de validité est strictement limitée à 10 secondes).',
-                'session_invalide' => 'Ce lien de recherche temporaire n\'est pas associé à votre session de navigation.',
-                default => 'Ce lien de recherche n\'est plus valide ou a déjà été utilisé (accès unique et sécurisé).',
-            };
+            $message = 'Votre session de recherche a expiré. Veuillez relancer une nouvelle recherche.';
 
             return response()->view('journal.recherche.invalide', [
                 'code' => $code,
-                'motif' => $motif,
                 'message' => $message,
             ], 410);
         }

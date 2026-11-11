@@ -102,7 +102,7 @@ class RechercheSecuriseeEphemereTest extends TestCase
         // Seconde consultation avec le même code : refus 410 Gone
         $secondeRequete = $this->get(route('recherche.consulter', ['code' => $code]));
         $secondeRequete->assertStatus(410)
-            ->assertSee('Ce lien de recherche');
+            ->assertSee('Votre session de recherche a expiré');
     }
 
     public function test_une_url_expiree_apres_10_secondes_est_refusee(): void

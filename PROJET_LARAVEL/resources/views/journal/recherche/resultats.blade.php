@@ -8,7 +8,6 @@
     <div class="wrap" style="max-width:880px;">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
             <span class="kick" style="color:var(--yellow);">Archives &bull; Moteur de recherche</span>
-            <span style="font-size:11px; background:#20222B; color:#9CA3AF; padding:2px 8px; border:1px solid #374151; font-family:monospace;">Jeton sécurisé à usage unique</span>
         </div>
         <h1 class="dsp" style="margin:8px 0 14px; font-size:38px; font-weight:900;">
             Résultats pour : &laquo; {{ $motsCles }} &raquo;

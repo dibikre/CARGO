@@ -53,13 +53,8 @@ export default function App() {
 
   const handleAccessUrl = () => {
     if (!activeCode) return;
-    if (ttl <= 0) {
-      setSearchError('HTTP 410 Gone: Ce lien de recherche temporaire a expiré (validité de 10 secondes dépassée).');
-      setShowResults(false);
-      return;
-    }
-    if (isConsumed) {
-      setSearchError('HTTP 410 Gone: Ce lien temporaire a déjà été consommé (utilisation unique et atomique).');
+    if (ttl <= 0 || isConsumed) {
+      setSearchError('HTTP 410 : Votre session de recherche a expiré. Veuillez relancer une nouvelle recherche.');
       setShowResults(false);
       return;
     }
