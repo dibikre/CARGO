@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 const val = ctx.parsed;
                                 const tot = ctx.dataset.data.reduce((a, b) => a + b, 0);
                                 const pct = tot > 0 ? Math.round((val / tot) * 100) : 0;
-                                return ` ${val.toLocaleString()} views (${pct}%)`;
+                                return ` ${val.toLocaleString('fr-FR')} vues (${pct}%)`;
                             }
                         }
                     }
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: labelsEvolution,
                 datasets: [{
-                    label: 'Unique Views',
+                    label: 'Vues uniques',
                     data: donneesVuesEvolution,
                     borderColor: '#14151C',
                     backgroundColor: 'rgba(20, 21, 28, 0.05)',
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: labelsEvolution,
                 datasets: [{
-                    label: 'Articles Published',
+                    label: 'Articles publiés',
                     data: donneesPubsEvolution,
                     backgroundColor: '#D4201A',
                     borderRadius: 2
@@ -182,11 +182,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!reponse.ok) {
                 const donneesErreur = await reponse.json().catch(() => ({}));
-                throw new Error(donneesErreur.erreur || `HTTP error ${reponse.status}`);
+                throw new Error(donneesErreur.erreur || `Erreur HTTP ${reponse.status}`);
             }
 
             const donnees = await reponse.json();
-            if (!donnees.succes) throw new Error(donnees.erreur || 'Failed to retrieve stats.');
+            if (!donnees.succes) throw new Error(donnees.erreur || 'Impossible de récupérer les statistiques.');
 
             if (donnees.jeton_securite) {
                 jetonSecurite = donnees.jeton_securite;
@@ -194,13 +194,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const elVues = document.getElementById('kpiTotalVues');
-            if (elVues && donnees.kpis) elVues.textContent = Number(donnees.kpis.total_vues).toLocaleString();
+            if (elVues && donnees.kpis) elVues.textContent = Number(donnees.kpis.total_vues).toLocaleString('fr-FR');
 
             const elPubs = document.getElementById('kpiPubsPeriode');
             if (elPubs && donnees.kpis) elPubs.textContent = donnees.kpis.publications_periode;
 
             const elJoursLib = document.getElementById('kpiJoursLibelle');
-            if (elJoursLib) elJoursLib.textContent = `Articles published in past ${periode} days`;
+            if (elJoursLib) elJoursLib.textContent = `Articles publiés sur les ${periode} derniers jours`;
 
             if (chartEvolutionVues && donnees.evolution) {
                 chartEvolutionVues.data.labels = donnees.evolution.labels;
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (erreur) {
             console.error('Erreur API dynamique sécurisée :', erreur);
             if (banniereAlerte && messageAlerte) {
-                messageAlerte.textContent = erreur.message || 'Security validation failure. Device or session mismatch.';
+                messageAlerte.textContent = erreur.message || 'Échec de la validation de sécurité. Appareil ou session incompatible.';
                 banniereAlerte.classList.remove('hidden');
             }
         } finally {

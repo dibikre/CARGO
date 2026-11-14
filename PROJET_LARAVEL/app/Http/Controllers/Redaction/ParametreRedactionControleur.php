@@ -80,7 +80,7 @@ class ParametreRedactionControleur extends Controller
             ]
         );
 
-        return back()->with('succes', 'Your profile information has been successfully updated.');
+        return back()->with('succes', 'Vos informations de profil ont été mises à jour avec succès.');
     }
 
     /**
@@ -98,8 +98,8 @@ class ParametreRedactionControleur extends Controller
 
         if (! Hash::check($requete->input('mot_de_passe_actuel'), $utilisateur->password)) {
             return back()->withErrors([
-                'mot_de_passe_actuel' => 'The provided current password does not match our records.',
-            ])->with('erreur', 'The current password you entered is incorrect.');
+                'mot_de_passe_actuel' => 'Le mot de passe actuel fourni ne correspond pas à nos enregistrements.',
+            ])->with('erreur', 'Le mot de passe actuel saisi est incorrect.');
         }
 
         $utilisateur->update([
@@ -113,7 +113,7 @@ class ParametreRedactionControleur extends Controller
             auteur: $utilisateur
         );
 
-        return back()->with('succes', 'Your password has been successfully updated.');
+        return back()->with('succes', 'Votre mot de passe a été mis à jour avec succès.');
     }
 
     /**
@@ -123,7 +123,7 @@ class ParametreRedactionControleur extends Controller
     {
         // 1. Vérification de l'autorisation globale configurée par l'administrateur
         if (! ConfigurationSysteme::suppressionCompteRedacteurEstActive()) {
-            return back()->with('erreur', 'Self-service account deletion is currently disabled by system administrators.');
+            return back()->with('erreur', 'La suppression autonome de compte est actuellement désactivée par les administrateurs système.');
         }
 
         /** @var User $utilisateur */
@@ -131,7 +131,7 @@ class ParametreRedactionControleur extends Controller
 
         // 2. Empêcher la suppression du dernier Super Administrateur si le rédacteur a ce rôle
         if ($utilisateur->role === 'super_admin' && User::where('role', 'super_admin')->count() <= 1) {
-            return back()->with('erreur', 'Cannot delete the only remaining Super Administrator account.');
+            return back()->with('erreur', 'Impossible de supprimer le seul compte Super Administrateur restant.');
         }
 
         // 3. Validation du mot de passe de confirmation
@@ -141,8 +141,8 @@ class ParametreRedactionControleur extends Controller
 
         if (! Hash::check($requete->input('mot_de_passe_confirmation'), $utilisateur->password)) {
             return back()->withErrors([
-                'mot_de_passe_confirmation' => 'Password confirmation is incorrect. Account deletion cancelled.',
-            ])->with('erreur', 'Password verification failed. Account was not deleted.');
+                'mot_de_passe_confirmation' => 'La confirmation du mot de passe est incorrecte. Suppression du compte annulée.',
+            ])->with('erreur', 'Échec de la vérification du mot de passe. Le compte n\'a pas été supprimé.');
         }
 
         $idUtilisateur = $utilisateur->id;
@@ -166,6 +166,6 @@ class ParametreRedactionControleur extends Controller
         $requete->session()->invalidate();
         $requete->session()->regenerateToken();
 
-        return redirect()->route('redaction.connexion')->with('succes', 'Your editorial account has been permanently removed.');
+        return redirect()->route('redaction.connexion')->with('succes', 'Votre compte éditorial a été supprimé définitivement.');
     }
 }

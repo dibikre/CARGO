@@ -61,12 +61,23 @@ class ServiceStatistiquesHebdomadaires
             ->pluck('total_vues', 'date_statistique')
             ->toArray();
 
+        $joursFrancais = [
+            'Monday' => 'Lundi',
+            'Tuesday' => 'Mardi',
+            'Wednesday' => 'Mercredi',
+            'Thursday' => 'Jeudi',
+            'Friday' => 'Vendredi',
+            'Saturday' => 'Samedi',
+            'Sunday' => 'Dimanche',
+        ];
+
         // Parcourir les 7 jours consécutifs du lundi au dimanche
         for ($i = 0; $i < 7; $i++) {
             $dateJour = $debutSemaine->copy()->addDays($i);
             $cleDate = $dateJour->format('Y-m-d');
             $nomJourAnglais = $dateJour->format('l');
-            $labelCourt = $dateJour->format('D (d/m)');
+            $nomJourFrancais = $joursFrancais[$nomJourAnglais] ?? $nomJourAnglais;
+            $labelCourt = $dateJour->locale('fr')->translatedFormat('D (d/m)');
 
             $totalPubsJour = (int) ($publicationsGroupes[$cleDate] ?? 0);
             $totalVuesJour = (int) ($vuesGroupes[$cleDate] ?? 0);
@@ -79,7 +90,7 @@ class ServiceStatistiquesHebdomadaires
                 $totalVuesJour = (int) $articleTopJour['vues_jour'];
             }
 
-            $labelsJours[] = $nomJourAnglais;
+            $labelsJours[] = $nomJourFrancais;
             $donneesPublications[] = $totalPubsJour;
             $donneesVues[] = $totalVuesJour;
 
@@ -90,6 +101,7 @@ class ServiceStatistiquesHebdomadaires
             $joursSemaine[] = [
                 'index' => $i,
                 'nom_anglais' => $nomJourAnglais,
+                'nom_francais' => $nomJourFrancais,
                 'label_court' => $labelCourt,
                 'date' => $cleDate,
                 'couleur' => self::COULEURS_JOURS[$i],
@@ -102,7 +114,7 @@ class ServiceStatistiquesHebdomadaires
             ];
 
             $articlesPlusVusParJour[] = [
-                'jour' => $nomJourAnglais,
+                'jour' => $nomJourFrancais,
                 'label_court' => $labelCourt,
                 'date' => $cleDate,
                 'couleur' => self::COULEURS_JOURS[$i],
@@ -152,8 +164,8 @@ class ServiceStatistiquesHebdomadaires
                 'id' => $art->id,
                 'titre' => $art->titre,
                 'slug' => $art->slug,
-                'categorie' => $art->categorie?->nom ?? 'General',
-                'auteur' => $art->auteur?->name ?? 'Staff Editorial',
+                'categorie' => $art->categorie?->nom ?? 'Général',
+                'auteur' => $art->auteur?->name ?? 'Rédaction',
                 'vues_jour' => (int) $statTop->nombre_vues,
                 'vues_totales' => (int) $art->vues_compteur,
             ];
@@ -173,8 +185,8 @@ class ServiceStatistiquesHebdomadaires
                     'id' => $art->id,
                     'titre' => $art->titre,
                     'slug' => $art->slug,
-                    'categorie' => $art->categorie?->nom ?? 'General',
-                    'auteur' => $art->auteur?->name ?? 'Staff Editorial',
+                    'categorie' => $art->categorie?->nom ?? 'Général',
+                    'auteur' => $art->auteur?->name ?? 'Rédaction',
                     'vues_jour' => (int) $topIp->total_ip,
                     'vues_totales' => (int) $art->vues_compteur,
                 ];
@@ -193,8 +205,8 @@ class ServiceStatistiquesHebdomadaires
                 'id' => $artPublie->id,
                 'titre' => $artPublie->titre,
                 'slug' => $artPublie->slug,
-                'categorie' => $artPublie->categorie?->nom ?? 'General',
-                'auteur' => $artPublie->auteur?->name ?? 'Staff Editorial',
+                'categorie' => $artPublie->categorie?->nom ?? 'Général',
+                'auteur' => $artPublie->auteur?->name ?? 'Rédaction',
                 'vues_jour' => (int) round($artPublie->vues_compteur / 7),
                 'vues_totales' => (int) $artPublie->vues_compteur,
             ];

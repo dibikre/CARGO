@@ -7,13 +7,13 @@
         <div>
             <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
-                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Day-by-Day Editorial Leaderboard</span>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Palmarès éditorial jour par jour</span>
             </div>
-            <h2 class="text-base font-heading font-black text-gray-900 mt-0.5">Most-Viewed Articles by Day (This Week)</h2>
-            <p class="text-xs text-gray-500">Highest-performing article identified for each individual day from Monday ({{ $statistiquesSemaine['date_debut']->format('d M') }}) to Sunday ({{ $statistiquesSemaine['date_fin']->format('d M') }})</p>
+            <h2 class="text-base font-heading font-black text-gray-900 mt-0.5">Articles les plus vus par jour (cette semaine)</h2>
+            <p class="text-xs text-gray-500">Article le plus performant identifié pour chaque jour, du lundi ({{ $statistiquesSemaine['date_debut']->locale('fr')->translatedFormat('d M') }}) au dimanche ({{ $statistiquesSemaine['date_fin']->locale('fr')->translatedFormat('d M') }})</p>
         </div>
         <span class="px-2.5 py-1 text-xs font-bold text-gray-800 bg-gray-100 border border-gray-300 rounded uppercase tracking-wider self-start sm:self-auto">
-            Weekly Leaderboard
+            Classement hebdomadaire
         </span>
     </div>
 
@@ -29,19 +29,19 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full" style="background-color: {{ $jour['couleur'] }};"></span>
-                            <span class="font-heading font-black text-xs text-gray-900">{{ $jour['nom_anglais'] }}</span>
+                            <span class="font-heading font-black text-xs text-gray-900">{{ $jour['nom_francais'] ?? $jour['nom_anglais'] }}</span>
                         </div>
                         @if($jour['est_aujourdhui'])
-                            <span class="text-[9px] font-bold uppercase tracking-wider bg-cargo-dark text-white px-1.5 py-0.5 rounded">Today</span>
+                            <span class="text-[9px] font-bold uppercase tracking-wider bg-cargo-dark text-white px-1.5 py-0.5 rounded">Aujourd'hui</span>
                         @elseif($jour['est_futur'])
-                            <span class="text-[9px] font-semibold text-gray-400 uppercase">Upcoming</span>
+                            <span class="text-[9px] font-semibold text-gray-400 uppercase">À venir</span>
                         @else
-                            <span class="text-[10px] font-mono text-gray-500 font-bold">{{ \Carbon\Carbon::parse($jour['date'])->format('d M') }}</span>
+                            <span class="text-[10px] font-mono text-gray-500 font-bold">{{ \Carbon\Carbon::parse($jour['date'])->locale('fr')->translatedFormat('d M') }}</span>
                         @endif
                     </div>
                     <div class="text-xs text-gray-500 mt-1 flex items-center justify-between">
-                        <span>Day Traffic:</span>
-                        <span class="font-mono font-bold text-gray-900">{{ number_format($jour['vues']) }} views</span>
+                        <span>Trafic du jour :</span>
+                        <span class="font-mono font-bold text-gray-900">{{ number_format($jour['vues']) }} vues</span>
                     </div>
                 </div>
 
@@ -62,20 +62,20 @@
                             </h3>
 
                             <div class="text-[11px] text-gray-500 mt-1 truncate">
-                                By {{ $artTop['auteur'] }}
+                                Par {{ $artTop['auteur'] }}
                             </div>
                         </div>
 
                         {{-- Statistiques et Liens d'action --}}
                         <div class="pt-2 border-t border-gray-100 mt-2 space-y-1.5">
                             <div class="flex items-center justify-between text-xs">
-                                <span class="text-gray-500">Day Views:</span>
+                                <span class="text-gray-500">Vues du jour :</span>
                                 <span class="font-mono font-bold text-gray-900">
                                     {{ number_format($artTop['vues_jour']) }}
                                 </span>
                             </div>
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="text-gray-500">Total Views:</span>
+                                <span class="text-gray-500">Vues totales :</span>
                                 <span class="font-mono text-gray-700 font-semibold">
                                     {{ number_format($artTop['vues_totales']) }}
                                 </span>
@@ -83,11 +83,11 @@
 
                             <div class="flex items-center justify-between pt-1">
                                 <a href="{{ route('redaction.articles.edit', $artTop['id']) }}" class="text-xs font-bold text-gray-900 hover:underline">
-                                    Edit HTML
+                                    Modifier HTML
                                 </a>
                                 @if(!empty($artTop['slug']))
                                     <a href="{{ route('articles.show', $artTop['slug']) }}" target="_blank" class="text-xs font-semibold text-gray-600 hover:text-gray-900 hover:underline">
-                                        View &rarr;
+                                        Voir &rarr;
                                     </a>
                                 @endif
                             </div>
@@ -99,7 +99,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             <span class="text-[11px] text-gray-400 italic">
-                                {{ $jour['est_futur'] ? 'Day in progress' : 'No reads logged' }}
+                                {{ $jour['est_futur'] ? 'Journée à venir' : 'Aucune lecture enregistrée' }}
                             </span>
                         </div>
                     @endif

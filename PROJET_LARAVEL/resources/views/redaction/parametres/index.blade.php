@@ -1,24 +1,24 @@
 @extends('redaction.layouts.redaction')
 
-@section('titre', 'Account Settings & Security')
+@section('titre', 'Paramètres du compte & Sécurité — CARGO Rédaction')
 
 @section('contenu')
 <div class="space-y-6 pb-12">
-    {{-- Header Banner --}}
+    {{-- En-tête --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
-                <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Newsroom Desk &bull; Editorial Profile</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Espace Rédaction &bull; Profil Éditorial</span>
             </div>
-            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">Account & Security Settings</h1>
-            <p class="text-xs text-gray-500">Manage your journalist handle, email credentials, password, and security preferences.</p>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight">Paramètres du compte &amp; Sécurité</h1>
+            <p class="text-xs text-gray-500">Gérez votre pseudonyme de journaliste, votre adresse e-mail, votre mot de passe et vos préférences de sécurité.</p>
         </div>
 
         <div class="flex items-center gap-2">
             <span class="px-3 py-1.5 bg-white rounded-lg border border-gray-200 text-xs font-mono text-gray-700 flex items-center gap-2 shadow-sm">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>Active Writer: <strong>{{ $utilisateur->name }}</strong></span>
+                <span>Rédacteur actif : <strong>{{ $utilisateur->name }}</strong></span>
             </span>
         </div>
     </div>
@@ -54,23 +54,23 @@
 
                 <div class="space-y-2.5 text-xs">
                     <div class="flex items-center justify-between text-gray-600">
-                        <span>Editorial Role</span>
+                        <span>Rôle éditorial</span>
                         <span class="font-bold text-gray-900 uppercase font-mono">{{ $utilisateur->role }}</span>
                     </div>
                     <div class="flex items-center justify-between text-gray-600">
-                        <span>Account Status</span>
+                        <span>Statut du compte</span>
                         <span class="font-bold text-gray-900 uppercase flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-cargo-dark"></span>
-                            Active
+                            Actif
                         </span>
                     </div>
                     <div class="flex items-center justify-between text-gray-600">
-                        <span>Joined Cargo</span>
-                        <span class="font-mono text-gray-800">{{ $utilisateur->created_at ? $utilisateur->created_at->format('M d, Y') : 'N/A' }}</span>
+                        <span>Membre depuis</span>
+                        <span class="font-mono text-gray-800">{{ $utilisateur->created_at ? $utilisateur->created_at->locale('fr')->translatedFormat('d M Y') : 'N/D' }}</span>
                     </div>
                     <div class="flex items-center justify-between text-gray-600">
-                        <span>Last Session</span>
-                        <span class="font-mono text-gray-800">{{ $utilisateur->derniere_connexion_a ? $utilisateur->derniere_connexion_a->diffForHumans() : 'Just now' }}</span>
+                        <span>Dernière session</span>
+                        <span class="font-mono text-gray-800">{{ $utilisateur->derniere_connexion_a ? $utilisateur->derniere_connexion_a->locale('fr')->diffForHumans() : 'À l\'instant' }}</span>
                     </div>
                 </div>
             </div>

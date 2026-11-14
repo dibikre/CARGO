@@ -3,9 +3,9 @@
         {{-- Compteur d'articles / éléments --}}
         <div style="font-size:13px; color:#4B505C; font-family:var(--police-texte, sans-serif);">
             @if ($paginator->total() > 0)
-                Showing <strong style="color:var(--dark);">{{ $paginator->firstItem() }}</strong> to <strong style="color:var(--dark);">{{ $paginator->lastItem() }}</strong> of <strong style="color:var(--dark);">{{ $paginator->total() }}</strong> results
+                Affichage de <strong style="color:var(--dark);">{{ $paginator->firstItem() }}</strong> à <strong style="color:var(--dark);">{{ $paginator->lastItem() }}</strong> sur <strong style="color:var(--dark);">{{ $paginator->total() }}</strong> résultats
             @else
-                No results to display
+                Aucun résultat à afficher
             @endif
         </div>
 
@@ -16,12 +16,12 @@
                 @if ($paginator->onFirstPage())
                     <span aria-disabled="true" style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:12px; font-weight:700; text-transform:uppercase; color:#9CA3AF; background:#F3F4F6; cursor:not-allowed; border:1px solid #E5E7EB;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;"><path d="M15 18l-6-6 6-6"/></svg>
-                        Previous
+                        Précédent
                     </span>
                 @else
                     <a href="{{ $paginator->previousPageUrl() }}" rel="prev" style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--dark); background:#fff; text-decoration:none; border:1px solid #D5D8E0; transition:all 0.15s ease;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;"><path d="M15 18l-6-6 6-6"/></svg>
-                        Previous
+                        Précédent
                     </a>
                 @endif
 
@@ -49,12 +49,12 @@
                 {{-- Bouton Suivant --}}
                 @if ($paginator->hasMorePages())
                     <a href="{{ $paginator->nextPageUrl() }}" rel="next" style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:12px; font-weight:700; text-transform:uppercase; color:var(--dark); background:#fff; text-decoration:none; border:1px solid #D5D8E0; transition:all 0.15s ease;">
-                        Next
+                        Suivant
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
                 @else
                     <span aria-disabled="true" style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-size:12px; font-weight:700; text-transform:uppercase; color:#9CA3AF; background:#F3F4F6; cursor:not-allowed; border:1px solid #E5E7EB;">
-                        Next
+                        Suivant
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;"><path d="M9 18l6-6-6-6"/></svg>
                     </span>
                 @endif

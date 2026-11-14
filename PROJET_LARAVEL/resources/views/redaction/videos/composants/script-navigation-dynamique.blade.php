@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: { 'Accept': 'application/json', 'X-Jeton-Securite': etat.jeton, 'X-Requested-With': 'XMLHttpRequest' }
             });
 
-            if (!reponse.ok) throw new Error('API security check failed');
+            if (!reponse.ok) throw new Error('Échec de la vérification de sécurité API');
             const res = await reponse.json();
 
             if (res.jeton_securite) etat.jeton = res.jeton_securite;
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.history.pushState({ ...etat }, '', `/redaction/videos?${params.toString()}`);
             }
         } catch (e) {
-            rendu.toast('Security token error. Dynamic navigation locked.', 'erreur');
+            rendu.toast('Erreur de jeton de sécurité. Navigation dynamique verrouillée.', 'erreur');
         }
     }
 
@@ -140,9 +140,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 chargerDonnees();
                 return { succes: true };
             }
-            return { succes: false, erreur: res.message || 'Validation error' };
+            return { succes: false, erreur: res.message || 'Erreur de validation' };
         } catch (e) {
-            return { succes: false, erreur: 'Unable to reach secured API.' };
+            return { succes: false, erreur: 'Impossible de joindre l\'API sécurisée.' };
         }
     });
 
@@ -172,11 +172,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     rendu.toast(r.message);
                     await chargerDonnees(false);
                 } else {
-                    rendu.toast(r.erreur || 'Status update failed', 'erreur');
+                    rendu.toast(r.erreur || 'Échec de la mise à jour du statut', 'erreur');
                     btnStatut.style.opacity = '1';
                 }
             } catch (err) {
-                rendu.toast('Status update failed', 'erreur');
+                rendu.toast('Échec de la mise à jour du statut', 'erreur');
                 btnStatut.style.opacity = '1';
             }
             return;
@@ -199,8 +199,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (btnCopier) {
             const code = decodeURIComponent(btnCopier.dataset.code || '');
             if (code) {
-                navigator.clipboard.writeText(code).then(() => rendu.toast('Embed HTML code copied to clipboard'))
-                    .catch(() => rendu.toast('Unable to copy code', 'erreur'));
+                navigator.clipboard.writeText(code).then(() => rendu.toast('Code HTML copié dans le presse-papiers'))
+                    .catch(() => rendu.toast('Impossible de copier le code', 'erreur'));
             }
             return;
         }
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const btnSuppr = e.target.closest('.bouton-demander-suppression');
         if (btnSuppr) {
             const id = parseInt(btnSuppr.dataset.id);
-            modales.demanderSuppression('Remove Video Embed', `Remove "${btnSuppr.dataset.titre}"?`, async () => {
+            modales.demanderSuppression('Supprimer la vidéo embarquée', `Supprimer « ${btnSuppr.dataset.titre} » ?`, async () => {
                 const rep = await fetch(construireUrlApi(id), { method: 'DELETE', headers: { 'X-CSRF-TOKEN': tokenCsrf, 'X-Jeton-Securite': etat.jeton, 'Accept': 'application/json' } });
                 const res = await rep.json();
                 if (res.succes) {
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     rendu.toast(res.message);
                     chargerDonnees(false);
                 } else {
-                    rendu.toast(res.erreur || 'Deletion failed', 'erreur');
+                    rendu.toast(res.erreur || 'Échec de la suppression', 'erreur');
                 }
             });
             return;
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('bouton-suppression-groupee')?.addEventListener('click', function () {
         if (etat.selectionIds.size === 0) return;
         const ids = Array.from(etat.selectionIds);
-        modales.demanderSuppression('Bulk Delete Video Embeds', `Permanently delete ${ids.length} selected video embeds?`, async () => {
+        modales.demanderSuppression('Suppression groupée', `Supprimer définitivement les ${ids.length} vidéos sélectionnées ?`, async () => {
             const rep = await fetch(construireUrlApi('supprimer-lot'), {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': tokenCsrf, 'X-Jeton-Securite': etat.jeton, 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 rendu.toast(res.message);
                 chargerDonnees(false);
             } else {
-                rendu.toast(res.erreur || 'Bulk deletion failed', 'erreur');
+                rendu.toast(res.erreur || 'Échec de la suppression groupée', 'erreur');
             }
         });
     });

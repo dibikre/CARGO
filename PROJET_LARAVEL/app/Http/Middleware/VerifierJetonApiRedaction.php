@@ -27,7 +27,7 @@ class VerifierJetonApiRedaction
         if (! Auth::check()) {
             return new JsonResponse([
                 'succes' => false,
-                'erreur' => 'Authentication required to access the editorial analytics API.',
+                'erreur' => 'Authentification requise pour accéder à l\'API de la rédaction.',
                 'code' => 'NON_AUTHENTIFIE',
             ], Response::HTTP_UNAUTHORIZED);
         }
@@ -38,7 +38,7 @@ class VerifierJetonApiRedaction
         if (! $utilisateur->est_actif || ! $utilisateur->estMembreRedaction()) {
             return new JsonResponse([
                 'succes' => false,
-                'erreur' => 'Access restricted to active editorial journalists.',
+                'erreur' => 'Accès réservé aux journalistes et rédacteurs actifs.',
                 'code' => 'ACCES_INTERDIT',
             ], Response::HTTP_FORBIDDEN);
         }
@@ -53,7 +53,7 @@ class VerifierJetonApiRedaction
         if (empty($jeton)) {
             return new JsonResponse([
                 'succes' => false,
-                'erreur' => 'Missing device security token in request URL. Dynamic navigation blocked.',
+                'erreur' => 'Jeton de sécurité d\'appareil manquant dans la requête. Navigation dynamique bloquée.',
                 'code' => 'JETON_MANQUANT',
             ], Response::HTTP_FORBIDDEN);
         }
@@ -64,7 +64,7 @@ class VerifierJetonApiRedaction
         if ($chargeUtile === null) {
             return new JsonResponse([
                 'succes' => false,
-                'erreur' => 'Security token is invalid, expired, or bound to a different device.',
+                'erreur' => 'Le jeton de sécurité est invalide, expiré ou associé à un autre appareil.',
                 'code' => 'JETON_INVALIDE_OU_APPAREIL_NON_CONFORME',
             ], Response::HTTP_FORBIDDEN);
         }

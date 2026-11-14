@@ -42,11 +42,11 @@ class ConnexionRedactionTest extends TestCase
         $reponse = $this->get(route('redaction.connexion'));
 
         $reponse->assertStatus(200);
-        $reponse->assertSee('Newsroom Authentication');
-        $reponse->assertSee('Editorial Desk');
-        $reponse->assertSee('Editorial Email Address');
-        $reponse->assertSee('PRO Reader Portal');
-        $reponse->assertSee('Security Gateway');
+        $reponse->assertSee('Authentification Rédaction');
+        $reponse->assertSee('Espace Rédaction');
+        $reponse->assertSee('Adresse e-mail éditoriale');
+        $reponse->assertSee('Portail Lecteur PRO');
+        $reponse->assertSee('Passerelle de sécurité');
     }
 
     /**

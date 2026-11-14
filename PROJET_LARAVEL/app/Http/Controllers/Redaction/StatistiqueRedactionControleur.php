@@ -60,7 +60,7 @@ class StatistiqueRedactionControleur extends Controller
             $jour = Carbon::now()->subDays($i)->format('Y-m-d');
             $donneesJours[$jour] = [
                 'date' => $jour,
-                'label' => Carbon::parse($jour)->format('d M'),
+                'label' => Carbon::parse($jour)->locale('fr')->translatedFormat('d M'),
                 'vues' => 0,
                 'publications' => 0,
             ];

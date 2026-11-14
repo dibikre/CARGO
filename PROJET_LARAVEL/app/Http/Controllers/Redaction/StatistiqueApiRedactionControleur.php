@@ -52,7 +52,7 @@ class StatistiqueApiRedactionControleur extends Controller
             $jour = Carbon::now()->subDays($i)->format('Y-m-d');
             $donneesJours[$jour] = [
                 'date' => $jour,
-                'label' => Carbon::parse($jour)->format('d M'),
+                'label' => Carbon::parse($jour)->locale('fr')->translatedFormat('d M'),
                 'vues' => 0,
                 'publications' => 0,
             ];
@@ -132,8 +132,8 @@ class StatistiqueApiRedactionControleur extends Controller
                     'id' => $art->id,
                     'titre' => $art->titre,
                     'slug' => $art->slug,
-                    'categorie' => $art->categorie?->nom ?? 'General',
-                    'auteur' => $art->auteur?->name ?? 'Staff Editorial',
+                    'categorie' => $art->categorie?->nom ?? 'Général',
+                    'auteur' => $art->auteur?->name ?? 'Rédaction',
                     'vues' => (int) $art->vues_compteur,
                 ];
             });

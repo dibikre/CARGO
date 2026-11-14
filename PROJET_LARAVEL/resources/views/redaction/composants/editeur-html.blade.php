@@ -1,77 +1,77 @@
-{{-- WYSIWYG & Smart Clipboard HTML Editor for CARGO Journalism --}}
+{{-- Éditeur HTML WYSIWYG & Presse-papiers intelligent pour la rédaction CARGO --}}
 <div class="editeur-article-modulaire" style="border:1px solid #D1D5DB; background:#fff; border-radius:4px; overflow:hidden;">
-    {{-- Top Switcher & Modes --}}
+    {{-- Sélecteur de mode en haut --}}
     <div style="background:#14151C; color:#fff; padding:8px 12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; border-bottom:2px solid #D4201A;">
         <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:#FFC93C; letter-spacing:0.06em;">Article Editor</span>
-            <span style="font-size:11px; color:#9CA3AF; background:#2B2E3A; padding:2px 8px; border-radius:3px;">Beginner Friendly · Auto Heading Detection</span>
+            <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:#FFC93C; letter-spacing:0.06em;">Éditeur d'article</span>
+            <span style="font-size:11px; color:#9CA3AF; background:#2B2E3A; padding:2px 8px; border-radius:3px;">Intuitif · Détection auto des titres</span>
         </div>
         <div style="display:flex; gap:4px;">
-            <button type="button" id="btn-mode-visuel" onclick="basculerModeEditeur('visuel')" style="background:#D4201A; color:#fff; font-size:12px; font-weight:700; padding:5px 12px; border-radius:3px; border:none; cursor:pointer;">Visual Mode (Easy)</button>
-            <button type="button" id="btn-mode-code" onclick="basculerModeEditeur('code')" style="background:#2B2E3A; color:#C9CCD6; font-size:12px; font-weight:700; padding:5px 12px; border-radius:3px; border:none; cursor:pointer;">HTML Code (Expert)</button>
+            <button type="button" id="btn-mode-visuel" onclick="basculerModeEditeur('visuel')" style="background:#D4201A; color:#fff; font-size:12px; font-weight:700; padding:5px 12px; border-radius:3px; border:none; cursor:pointer;">Mode Visuel (Simple)</button>
+            <button type="button" id="btn-mode-code" onclick="basculerModeEditeur('code')" style="background:#2B2E3A; color:#C9CCD6; font-size:12px; font-weight:700; padding:5px 12px; border-radius:3px; border:none; cursor:pointer;">Code HTML (Expert)</button>
         </div>
     </div>
 
-    {{-- Beginner WYSIWYG Visual Toolbar --}}
+    {{-- Barre d'outils visuelle --}}
     <div id="barre-outils-visuelle" style="background:#F9FAFB; border-bottom:1px solid #E5E7EB; padding:8px 12px; display:flex; flex-wrap:wrap; align-items:center; gap:6px;">
-        {{-- Format Selector (Headings H1, H2, H3, Paragraph) --}}
+        {{-- Sélecteur de format (Titres H1, H2, H3, Paragraphe) --}}
         <select id="selecteur-format" onchange="appliquerFormat(this.value)" style="height:32px; font-size:12px; font-weight:600; border:1px solid #D1D5DB; border-radius:3px; padding:0 8px; background:#fff; color:#14151C; cursor:pointer;">
-            <option value="p">Paragraph (Normal)</option>
-            <option value="h1">Heading 1 (Main Title)</option>
-            <option value="h2">Heading 2 (Section Subtitle)</option>
-            <option value="h3">Heading 3 (Subsection)</option>
-            <option value="blockquote">Blockquote (Quote)</option>
+            <option value="p">Paragraphe (Normal)</option>
+            <option value="h1">Titre 1 (Titre principal)</option>
+            <option value="h2">Titre 2 (Sous-titre de section)</option>
+            <option value="h3">Titre 3 (Sous-section)</option>
+            <option value="blockquote">Citation (Bloc)</option>
         </select>
 
         <span style="width:1px; height:20px; background:#D1D5DB; margin:0 4px;"></span>
 
-        {{-- Basic Styles --}}
-        <button type="button" onclick="executerCommande('bold')" title="Bold" style="width:30px; height:30px; border:1px solid #D1D5DB; background:#fff; font-weight:bold; border-radius:3px; cursor:pointer;">B</button>
-        <button type="button" onclick="executerCommande('italic')" title="Italic" style="width:30px; height:30px; border:1px solid #D1D5DB; background:#fff; font-style:italic; border-radius:3px; cursor:pointer;">I</button>
-        <button type="button" onclick="executerCommande('underline')" title="Underline" style="width:30px; height:30px; border:1px solid #D1D5DB; background:#fff; text-decoration:underline; border-radius:3px; cursor:pointer;">U</button>
+        {{-- Styles de base --}}
+        <button type="button" onclick="executerCommande('bold')" title="Gras" style="width:30px; height:30px; border:1px solid #D1D5DB; background:#fff; font-weight:bold; border-radius:3px; cursor:pointer;">G</button>
+        <button type="button" onclick="executerCommande('italic')" title="Italique" style="width:30px; height:30px; border:1px solid #D1D5DB; background:#fff; font-style:italic; border-radius:3px; cursor:pointer;">I</button>
+        <button type="button" onclick="executerCommande('underline')" title="Souligné" style="width:30px; height:30px; border:1px solid #D1D5DB; background:#fff; text-decoration:underline; border-radius:3px; cursor:pointer;">S</button>
 
         <span style="width:1px; height:20px; background:#D1D5DB; margin:0 4px;"></span>
 
-        {{-- Lists --}}
-        <button type="button" onclick="executerCommande('insertUnorderedList')" title="Bullet List" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">• List</button>
-        <button type="button" onclick="executerCommande('insertOrderedList')" title="Numbered List" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">1. List</button>
+        {{-- Listes --}}
+        <button type="button" onclick="executerCommande('insertUnorderedList')" title="Liste à puces" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">• Liste</button>
+        <button type="button" onclick="executerCommande('insertOrderedList')" title="Liste numérotée" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">1. Liste</button>
 
         <span style="width:1px; height:20px; background:#D1D5DB; margin:0 4px;"></span>
 
-        {{-- Insert Links, Tables, Images --}}
-        <button type="button" onclick="insererLienVisuel()" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">Link</button>
-        <button type="button" onclick="insererTableauVisuel()" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">Table</button>
-        <button type="button" onclick="insererKpiVisuel()" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; color:#047857; cursor:pointer;">KPI Box</button>
+        {{-- Liens, Tableaux, Encadrés KPI --}}
+        <button type="button" onclick="insererLienVisuel()" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">Lien</button>
+        <button type="button" onclick="insererTableauVisuel()" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; cursor:pointer;">Tableau</button>
+        <button type="button" onclick="insererKpiVisuel()" style="padding:4px 8px; height:30px; border:1px solid #D1D5DB; background:#fff; font-size:12px; font-weight:600; border-radius:3px; color:#047857; cursor:pointer;">Encadré KPI</button>
 
         <span style="width:1px; height:20px; background:#D1D5DB; margin:0 4px;"></span>
 
-        {{-- Smart Clipboard Paste Sanitizer Button --}}
-        <button type="button" onclick="nettoyerCollerPressePapier()" title="Paste & Clean Headings (Auto H1/H2 preserved without white text)" style="padding:4px 10px; height:30px; border:1px solid #D4201A; background:#FFF1F1; font-size:12px; font-weight:700; border-radius:3px; color:#D4201A; cursor:pointer; display:flex; align-items:center; gap:4px;">
+        {{-- Bouton de collage nettoyé --}}
+        <button type="button" onclick="nettoyerCollerPressePapier()" title="Coller &amp; Nettoyer les titres (H1/H2 préservés sans texte blanc)" style="padding:4px 10px; height:30px; border:1px solid #D4201A; background:#FFF1F1; font-size:12px; font-weight:700; border-radius:3px; color:#D4201A; cursor:pointer; display:flex; align-items:center; gap:4px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-            Clean Paste (H1/H2)
+            Collage propre (H1/H2)
         </button>
     </div>
 
-    {{-- Notification Toast Bar for Paste Action --}}
+    {{-- Barre de notification après collage --}}
     <div id="toast-coller" style="display:none; background:#ECFDF5; border-bottom:1px solid #A7F3D0; color:#065F46; padding:6px 14px; font-size:12px; font-weight:600;">
-        Clipboard content sanitized: Headings (H1, H2, H3) and structures preserved without corrupt inline styles!
+        Contenu du presse-papiers nettoyé : les titres (H1, H2, H3) et la structure sont conservés sans styles parasites !
     </div>
 
-    {{-- Visual WYSIWYG Editable Zone (Beginner Mode) --}}
-    <div id="zone-editeur-visuel" contenteditable="true" style="min-height:360px; padding:20px 24px; font-family:'IBM Plex Sans',Arial,sans-serif; font-size:17px; line-height:1.75; color:#1F2128; background:#fff; outline:none; box-sizing:border-box;">{!! $contenu ?? '<p>Write your article here or paste clipboard content directly (H1, H2, text, lists)...</p>' !!}</div>
+    {{-- Zone éditable visuelle --}}
+    <div id="zone-editeur-visuel" contenteditable="true" style="min-height:360px; padding:20px 24px; font-family:'IBM Plex Sans',Arial,sans-serif; font-size:17px; line-height:1.75; color:#1F2128; background:#fff; outline:none; box-sizing:border-box;">{!! $contenu ?? '<p>Rédigez votre article ici ou collez directement votre texte (H1, H2, paragraphes, listes)...</p>' !!}</div>
 
-    {{-- Raw Code Zone (Hidden by Default, Synced on Switch) --}}
+    {{-- Zone de code brut (masquée par défaut, synchronisée au basculement) --}}
     <div id="zone-editeur-code" style="display:none;">
         <textarea id="champ-contenu-html" name="contenu" required rows="16" style="width:100%; box-sizing:border-box; padding:16px; font-family:'Courier New', monospace; font-size:14px; line-height:1.6; border:none; outline:none; background:#FAF9F6; color:#14151C; min-height:360px; resize:vertical;">{{ $contenu ?? '' }}</textarea>
     </div>
 
-    {{-- Bottom Status Bar --}}
+    {{-- Barre d'état inférieure --}}
     <div style="background:#F3F4F6; padding:8px 14px; font-size:12px; color:#4B505C; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E5E7EB;">
         <span style="display:flex; align-items:center; gap:6px;">
             <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10B981;"></span>
-            Automatic HTML sanitization active · Safe typography
+            Assainissement HTML automatique actif · Typographie sécurisée
         </span>
-        <span id="compteur-mots-html">0 words</span>
+        <span id="compteur-mots-html">0 mots</span>
     </div>
 </div>
 
@@ -138,7 +138,7 @@
     }
 
     function insererLienVisuel() {
-        const url = prompt('Enter URL (https://...):', 'https://');
+        const url = prompt('Saisir l\'URL (https://...) :', 'https://');
         if (url && url !== 'https://') {
             executerCommande('createLink', url);
         }
@@ -146,8 +146,8 @@
 
     function insererTableauVisuel() {
         const html = `\n<table style="width:100%; border-collapse:collapse; margin:16px 0; border:1px solid #E2E5EB;">
-            <thead><tr style="background:#14151C; color:#fff;"><th style="padding:8px 12px; text-align:left;">Key Metric</th><th style="padding:8px 12px; text-align:left;">Current Value</th><th style="padding:8px 12px; text-align:left;">Status</th></tr></thead>
-            <tbody><tr><td style="padding:8px 12px; border-bottom:1px solid #E2E5EB;">Port Transit Wait</td><td style="padding:8px 12px; border-bottom:1px solid #E2E5EB; font-weight:bold;">1.8 Days</td><td style="padding:8px 12px; border-bottom:1px solid #E2E5EB; color:#16A34A; font-weight:bold;">Optimal</td></tr></tbody>
+            <thead><tr style="background:#14151C; color:#fff;"><th style="padding:8px 12px; text-align:left;">Indicateur clé</th><th style="padding:8px 12px; text-align:left;">Valeur actuelle</th><th style="padding:8px 12px; text-align:left;">Statut</th></tr></thead>
+            <tbody><tr><td style="padding:8px 12px; border-bottom:1px solid #E2E5EB;">Attente en transit portuaire</td><td style="padding:8px 12px; border-bottom:1px solid #E2E5EB; font-weight:bold;">1,8 jour</td><td style="padding:8px 12px; border-bottom:1px solid #E2E5EB; color:#16A34A; font-weight:bold;">Optimal</td></tr></tbody>
         </table><p></p>`;
         document.execCommand('insertHTML', false, html);
         synchroniserVersCode();
@@ -155,8 +155,8 @@
 
     function insererKpiVisuel() {
         const html = `\n<div style="background:#F9FAFB; border-left:4px solid #D4201A; padding:16px 20px; margin:18px 0;">
-            <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:#D4201A; letter-spacing:0.05em;">Key Operational Takeaway</div>
-            <p style="margin:6px 0 0; font-size:16px; color:#14151C; font-weight:600;">Diversifying intermodal feeder links reduces critical supply chain disruptions by over 30%.</p>
+            <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:#D4201A; letter-spacing:0.05em;">Point clé opérationnel</div>
+            <p style="margin:6px 0 0; font-size:16px; color:#14151C; font-weight:600;">La diversification des lignes feeder intermodales réduit les ruptures de chaîne logistique de plus de 30 %.</p>
         </div><p></p>`;
         document.execCommand('insertHTML', false, html);
         synchroniserVersCode();
@@ -229,7 +229,7 @@
                 }
             }
         } catch (err) {}
-        alert('Paste shortcut: Press Ctrl+V or Cmd+V directly in the editor. Headings and structure will be automatically formatted and cleaned!');
+        alert('Raccourci de collage : appuyez sur Ctrl+V ou Cmd+V directement dans l\'éditeur. Les titres et la structure seront automatiquement formatés et nettoyés !');
     }
 
     function afficherToastColler() {
@@ -246,7 +246,7 @@
         if (c && comp) {
             const txt = c.value.replace(/<[^>]*>/g, ' ').trim();
             const mots = txt ? txt.split(/\s+/).filter(Boolean).length : 0;
-            comp.textContent = mots + ' words (' + c.value.length + ' chars)';
+            comp.textContent = mots + ' mots (' + c.value.length + ' car.)';
         }
     }
 

@@ -6,8 +6,8 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             </div>
             <div>
-                <h3 class="font-heading font-black text-sm uppercase tracking-wider text-gray-900">Editorial Identity & Profile</h3>
-                <p class="text-xs text-gray-500">Update your public journalist handle (pseudo) and official email address</p>
+                <h3 class="font-heading font-black text-sm uppercase tracking-wider text-gray-900">Identité éditoriale &amp; Profil</h3>
+                <p class="text-xs text-gray-500">Mettez à jour votre nom de journaliste public (pseudo) et votre adresse e-mail officielle</p>
             </div>
         </div>
         <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 rounded border border-gray-200">
@@ -22,7 +22,7 @@
         {{-- Section Photo de Profil et Miniature 40x40 pour articles publics --}}
         <div class="p-4 bg-gray-50 border border-gray-200 rounded-xl">
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
-                Journalist Profile Photo & Article Byline (40x40 px)
+                Photo de profil &amp; Signature d'article (40x40 px)
             </label>
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 {{-- Aperçu Photo principale --}}
@@ -48,16 +48,16 @@
                         @endif
                     </div>
                     <div class="text-[11px] leading-tight">
-                        <span class="block font-bold text-gray-800">40x40 Article Byline</span>
+                        <span class="block font-bold text-gray-800">Vignette d'article 40x40</span>
                         @if(isset($photoAuteurActive) && $photoAuteurActive)
                             <span class="text-gray-700 font-medium flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-gray-900"></span>
-                                Display Enabled by Admin
+                                Affichage activé par l'admin
                             </span>
                         @else
                             <span class="text-gray-500 font-medium flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
-                                Display Disabled by Admin
+                                Affichage désactivé par l'admin
                             </span>
                         @endif
                     </div>
@@ -72,7 +72,7 @@
                         accept="image/jpeg,image/png,image/webp"
                         class="block w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:uppercase file:bg-gray-900 file:text-white hover:file:bg-cargo-red file:cursor-pointer transition"
                     >
-                    <p class="text-[10px] text-gray-400 mt-1 font-mono">JPG, PNG, WebP up to 4MB. Automatically resized and cropped into a sharp 40x40 px circular byline badge.</p>
+                    <p class="text-[10px] text-gray-400 mt-1 font-mono">JPG, PNG, WebP jusqu'à 4 Mo. Redimensionnée et recadrée automatiquement en vignette circulaire nette 40x40 px.</p>
                     @error('photo_profil')
                         <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                     @enderror
@@ -84,7 +84,7 @@
             {{-- Pseudo / Nom d'affichage --}}
             <div>
                 <label for="input-nom" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                    Journalist Handle / Pseudo *
+                    Nom de journaliste / Pseudo *
                 </label>
                 <input 
                     type="text" 
@@ -92,10 +92,10 @@
                     name="name" 
                     value="{{ old('name', $utilisateur->name) }}" 
                     required 
-                    placeholder="e.g. Claire Delamare"
+                    placeholder="ex. Claire Delamare"
                     class="w-full text-sm px-3.5 py-2.5 bg-gray-50 border @error('name') border-red-400 @else border-gray-200 @enderror rounded-lg text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-cargo-red focus:border-cargo-red transition"
                 >
-                <p class="text-[11px] text-gray-400 mt-1">This name appears as the author byline on your published logistics articles.</p>
+                <p class="text-[11px] text-gray-400 mt-1">Ce nom apparaît comme signature d'auteur sur vos articles logistiques publiés.</p>
                 @error('name')
                     <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                 @enderror
@@ -104,7 +104,7 @@
             {{-- Adresse e-mail --}}
             <div>
                 <label for="input-email" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                    Official Email Address *
+                    Adresse e-mail officielle *
                 </label>
                 <input 
                     type="email" 
@@ -112,10 +112,10 @@
                     name="email" 
                     value="{{ old('email', $utilisateur->email) }}" 
                     required 
-                    placeholder="e.g. claire.delamare@cargo-press.com"
+                    placeholder="ex. claire.delamare@cargo-press.com"
                     class="w-full text-sm px-3.5 py-2.5 bg-gray-50 border @error('email') border-red-400 @else border-gray-200 @enderror rounded-lg text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-cargo-red focus:border-cargo-red transition"
                 >
-                <p class="text-[11px] text-gray-400 mt-1">Used for newsroom authentication, notifications, and editorial alerts.</p>
+                <p class="text-[11px] text-gray-400 mt-1">Utilisée pour l'authentification à la rédaction, les notifications et les alertes éditoriales.</p>
                 @error('email')
                     <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
                 @enderror
@@ -126,14 +126,14 @@
             {{-- Téléphone professionnel --}}
             <div>
                 <label for="input-telephone" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                    Editorial Desk Direct Phone
+                    Ligne directe rédaction
                 </label>
                 <input 
                     type="text" 
                     id="input-telephone" 
                     name="telephone" 
                     value="{{ old('telephone', $utilisateur->telephone) }}" 
-                    placeholder="e.g. +33 1 42 68 00 00"
+                    placeholder="ex. +33 1 42 68 00 00"
                     class="w-full text-sm px-3.5 py-2.5 bg-gray-50 border @error('telephone') border-red-400 @else border-gray-200 @enderror rounded-lg text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-cargo-red focus:border-cargo-red transition"
                 >
                 @error('telephone')
@@ -144,11 +144,11 @@
             {{-- Rôle affiché --}}
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                    Assigned Editorial Role
+                    Rôle éditorial attribué
                 </label>
                 <div class="px-3.5 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-700 font-mono flex items-center justify-between">
                     <span class="font-bold uppercase text-xs">{{ $utilisateur->role }}</span>
-                    <span class="text-[10px] text-gray-500 uppercase">Managed by Admin</span>
+                    <span class="text-[10px] text-gray-500 uppercase">Géré par l'admin</span>
                 </div>
             </div>
         </div>
@@ -156,13 +156,13 @@
         {{-- Biographie éditoriale --}}
         <div>
             <label for="input-bio" class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-                Editorial Bio / Specialization
+                Biographie éditoriale / Spécialité
             </label>
             <textarea 
                 id="input-bio" 
                 name="bio" 
                 rows="3" 
-                placeholder="Senior investigative correspondent covering maritime corridors and port digitisation..."
+                placeholder="Grand reporter spécialisé dans les corridors maritimes et la numérisation portuaire..."
                 class="w-full text-sm px-3.5 py-2.5 bg-gray-50 border @error('bio') border-red-400 @else border-gray-200 @enderror rounded-lg text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-cargo-red focus:border-cargo-red transition"
             >{{ old('bio', $utilisateur->bio) }}</textarea>
             @error('bio')
@@ -177,7 +177,7 @@
                 class="px-5 py-2.5 text-xs font-heading font-bold uppercase tracking-wider bg-[#D4201A] hover:bg-[#B3140F] rounded-lg shadow-sm transition flex items-center gap-2 cursor-pointer"
             >
                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Save Profile Changes</span>
+                <span>Enregistrer le profil</span>
             </button>
         </div>
     </form>

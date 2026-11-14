@@ -9,13 +9,13 @@
             <div>
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-cargo-accent"></span>
-                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Weekly Output</span>
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Production hebdomadaire</span>
                 </div>
-                <h2 class="text-base font-heading font-black text-gray-900 mt-0.5">Publication Volume by Day</h2>
-                <p class="text-xs text-gray-500">Articles published since Monday ({{ $statistiquesSemaine['date_debut']->format('d M') }} – {{ $statistiquesSemaine['date_fin']->format('d M') }})</p>
+                <h2 class="text-base font-heading font-black text-gray-900 mt-0.5">Volume de publications par jour</h2>
+                <p class="text-xs text-gray-500">Articles publiés depuis lundi ({{ $statistiquesSemaine['date_debut']->locale('fr')->translatedFormat('d M') }} – {{ $statistiquesSemaine['date_fin']->locale('fr')->translatedFormat('d M') }})</p>
             </div>
             <div class="text-right shrink-0">
-                <span class="text-xs text-gray-500 font-semibold block uppercase">Total Published</span>
+                <span class="text-xs text-gray-500 font-semibold block uppercase">Total publiés</span>
                 <span class="text-2xl font-heading font-black text-gray-900">{{ $statistiquesSemaine['total_publications'] }}</span>
             </div>
         </div>
@@ -43,14 +43,14 @@
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $jour['couleur'] }};"></span>
                             <span class="text-gray-900 truncate">
-                                {{ $jour['nom_anglais'] }}
+                                {{ $jour['nom_francais'] ?? $jour['nom_anglais'] }}
                                 @if($jour['est_aujourdhui'])
-                                    <span class="ml-1 text-[9px] font-bold text-white bg-cargo-dark px-1.5 py-0.5 rounded uppercase">Today</span>
+                                    <span class="ml-1 text-[9px] font-bold text-white bg-cargo-dark px-1.5 py-0.5 rounded uppercase">Aujourd'hui</span>
                                 @endif
                             </span>
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
-                            <span class="font-mono font-bold text-gray-900">{{ $jour['publications'] }} <span class="text-gray-400 font-normal">arts</span></span>
+                            <span class="font-mono font-bold text-gray-900">{{ $jour['publications'] }} <span class="text-gray-400 font-normal">art.</span></span>
                             <span class="font-mono text-xs text-gray-500 w-10 text-right">{{ $pourcentage }}%</span>
                         </div>
                     </div>
@@ -65,13 +65,13 @@
             <div>
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-gray-900"></span>
-                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Weekly Readership</span>
+                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Audience hebdomadaire</span>
                 </div>
-                <h2 class="text-base font-heading font-black text-gray-900 mt-0.5">Views Distribution by Day</h2>
-                <p class="text-xs text-gray-500">Readership shares captured since Monday across all active articles</p>
+                <h2 class="text-base font-heading font-black text-gray-900 mt-0.5">Répartition des vues par jour</h2>
+                <p class="text-xs text-gray-500">Part d'audience enregistrée depuis lundi sur tous les articles actifs</p>
             </div>
             <div class="text-right shrink-0">
-                <span class="text-xs text-gray-500 font-semibold block uppercase">Total Views</span>
+                <span class="text-xs text-gray-500 font-semibold block uppercase">Total des vues</span>
                 <span class="text-2xl font-heading font-black text-gray-900">{{ number_format($statistiquesSemaine['total_vues']) }}</span>
             </div>
         </div>
@@ -82,7 +82,7 @@
                 <canvas id="graphiqueCirculaireVues" class="w-full h-full"></canvas>
                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
                     <span class="text-xl font-heading font-black text-gray-900 leading-none">{{ number_format($statistiquesSemaine['total_vues']) }}</span>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">Views</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">Vues</span>
                 </div>
             </div>
 
@@ -99,14 +99,14 @@
                         <div class="flex items-center gap-2 min-w-0">
                             <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $jour['couleur'] }};"></span>
                             <span class="text-gray-900 truncate">
-                                {{ $jour['nom_anglais'] }}
+                                {{ $jour['nom_francais'] ?? $jour['nom_anglais'] }}
                                 @if($jour['est_aujourdhui'])
-                                    <span class="ml-1 text-[9px] font-bold text-white bg-cargo-dark px-1.5 py-0.5 rounded uppercase">Today</span>
+                                    <span class="ml-1 text-[9px] font-bold text-white bg-cargo-dark px-1.5 py-0.5 rounded uppercase">Aujourd'hui</span>
                                 @endif
                             </span>
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
-                            <span class="font-mono font-bold text-gray-900">{{ number_format($jour['vues']) }} <span class="text-gray-400 font-normal">views</span></span>
+                            <span class="font-mono font-bold text-gray-900">{{ number_format($jour['vues']) }} <span class="text-gray-400 font-normal">vues</span></span>
                             <span class="font-mono text-xs text-gray-500 w-10 text-right">{{ $pourcentageVues }}%</span>
                         </div>
                     </div>

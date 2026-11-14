@@ -64,9 +64,9 @@ window.RenduVideosCargo = (function () {
                 </td>
                 <td class="py-3 px-4 text-right">
                     <div class="flex items-center justify-end gap-1.5">
-                        <button type="button" class="bouton-copier-code p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition" data-code="${encodeURIComponent(v.code_iframe)}" title="Copy HTML snippet"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
-                        <button type="button" class="bouton-declencher-apercu p-1.5 text-gray-500 hover:text-cargo-dark hover:bg-gray-100 rounded transition" data-id="${v.id}" data-titre="${v.titre}" data-url-iframe="${v.url_iframe}" data-source="${v.source}" data-duree="${v.duree || ''}" data-code-iframe="${encodeURIComponent(v.code_iframe)}" title="Preview player"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-                        <button type="button" class="bouton-demander-suppression p-1.5 text-gray-400 hover:text-cargo-red hover:bg-red-50 rounded transition" data-id="${v.id}" data-titre="${v.titre}" title="Delete"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+                        <button type="button" class="bouton-copier-code p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition" data-code="${encodeURIComponent(v.code_iframe)}" title="Copier le code HTML"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
+                        <button type="button" class="bouton-declencher-apercu p-1.5 text-gray-500 hover:text-cargo-dark hover:bg-gray-100 rounded transition" data-id="${v.id}" data-titre="${v.titre}" data-url-iframe="${v.url_iframe}" data-source="${v.source}" data-duree="${v.duree || ''}" data-code-iframe="${encodeURIComponent(v.code_iframe)}" title="Aperçu lecteur"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+                        <button type="button" class="bouton-demander-suppression p-1.5 text-gray-400 hover:text-cargo-red hover:bg-red-50 rounded transition" data-id="${v.id}" data-titre="${v.titre}" title="Supprimer"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                     </div>
                 </td>
             </tr>`;
@@ -99,11 +99,11 @@ window.RenduVideosCargo = (function () {
                         <button type="button" style="${v.est_actif ? 'background-color: #D4201A;' : 'background-color: #D1D5DB;'}" class="bouton-basculer-statut relative inline-flex h-4 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none" data-id="${v.id}" data-actif="${v.est_actif ? '1' : '0'}">
                             <span class="pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow transition duration-200 ${v.est_actif ? 'translate-x-3' : 'translate-x-0'}"></span>
                         </button>
-                        <span class="text-[11px] font-bold uppercase text-gray-500">${v.est_actif ? 'Active' : 'Hidden'}</span>
+                        <span class="text-[11px] font-bold uppercase text-gray-500">${v.est_actif ? 'Active' : 'Masquée'}</span>
                     </div>
                     <div class="flex items-center gap-1">
-                        <button type="button" class="bouton-copier-code p-1 text-gray-500 hover:text-gray-900 rounded transition" data-code="${encodeURIComponent(v.code_iframe)}" title="Copy HTML"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
-                        <button type="button" class="bouton-demander-suppression p-1 text-gray-400 hover:text-cargo-red rounded transition" data-id="${v.id}" data-titre="${v.titre}" title="Delete"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+                        <button type="button" class="bouton-copier-code p-1 text-gray-500 hover:text-gray-900 rounded transition" data-code="${encodeURIComponent(v.code_iframe)}" title="Copier le code HTML"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
+                        <button type="button" class="bouton-demander-suppression p-1 text-gray-400 hover:text-cargo-red rounded transition" data-id="${v.id}" data-titre="${v.titre}" title="Supprimer"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
                     </div>
                 </div>
             </div>`;
@@ -116,7 +116,7 @@ window.RenduVideosCargo = (function () {
 
         let html = `
             <button type="button" class="bouton-page-nav px-3 py-1.5 rounded border text-xs font-bold uppercase transition flex items-center gap-1 ${pag.page_courante <= 1 ? 'border-gray-200 text-gray-300 cursor-not-allowed' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}" data-page="${pag.page_courante - 1}" ${pag.page_courante <= 1 ? 'disabled' : ''}>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg><span>Prev</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg><span>Précédent</span>
             </button>`;
 
         for (let i = 1; i <= pag.derniere_page; i++) {
@@ -131,7 +131,7 @@ window.RenduVideosCargo = (function () {
 
         html += `
             <button type="button" class="bouton-page-nav px-3 py-1.5 rounded border text-xs font-bold uppercase transition flex items-center gap-1 ${pag.page_courante >= pag.derniere_page ? 'border-gray-200 text-gray-300 cursor-not-allowed' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}" data-page="${pag.page_courante + 1}" ${pag.page_courante >= pag.derniere_page ? 'disabled' : ''}>
-                <span>Next</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span>Suivant</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>`;
 
         conteneur.innerHTML = html;
@@ -141,13 +141,13 @@ window.RenduVideosCargo = (function () {
         const corps = document.getElementById('corps-tableau-videos');
         if (corps) {
             corps.innerHTML = (!donnees || donnees.length === 0)
-                ? `<tr><td colspan="6" class="py-12 text-center text-gray-500 font-bold">No video embeds found matching criteria.</td></tr>`
+                ? `<tr><td colspan="6" class="py-12 text-center text-gray-500 font-bold">Aucune vidéo embarquée ne correspond à vos critères.</td></tr>`
                 : donnees.map(genererLigneTableau).join('');
         }
         const grille = document.getElementById('conteneur-vue-grille');
         if (grille) {
             grille.innerHTML = (!donnees || donnees.length === 0)
-                ? `<div class="col-span-full py-12 text-center text-gray-500 font-bold bg-white rounded-xl border border-gray-100">No video embeds found.</div>`
+                ? `<div class="col-span-full py-12 text-center text-gray-500 font-bold bg-white rounded-xl border border-gray-100">Aucune vidéo embarquée trouvée.</div>`
                 : donnees.map(genererCarteGrille).join('');
         }
         const de = document.getElementById('pagination-de');

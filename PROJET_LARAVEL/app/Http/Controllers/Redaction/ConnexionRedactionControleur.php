@@ -61,7 +61,7 @@ class ConnexionRedactionControleur extends Controller
             );
 
             throw ValidationException::withMessages([
-                'email' => 'Invalid credentials or unauthorized editorial account.',
+                'email' => 'Identifiants invalides ou compte éditorial non autorisé.',
             ]);
         }
 
@@ -83,7 +83,7 @@ class ConnexionRedactionControleur extends Controller
             );
 
             throw ValidationException::withMessages([
-                'email' => 'Your editorial account has been deactivated. Please contact the editor-in-chief.',
+                'email' => 'Votre compte éditorial a été désactivé. Veuillez contacter le rédacteur en chef.',
             ]);
         }
 
@@ -103,7 +103,7 @@ class ConnexionRedactionControleur extends Controller
             );
 
             throw ValidationException::withMessages([
-                'email' => 'This portal is strictly reserved for editorial staff and journalists. For subscriber access, please use the PRO Reader login.',
+                'email' => 'Ce portail est strictement réservé aux membres de la rédaction et aux journalistes. Pour l\'accès abonné, veuillez utiliser l\'espace Lecteur PRO.',
             ]);
         }
 
@@ -151,6 +151,6 @@ class ConnexionRedactionControleur extends Controller
         $requete->session()->invalidate();
         $requete->session()->regenerateToken();
 
-        return redirect()->route('redaction.connexion')->with('statut', 'You have been safely disconnected from the Newsroom Desk.');
+        return redirect()->route('redaction.connexion')->with('statut', 'Vous avez été déconnecté en toute sécurité de l\'espace rédaction.');
     }
 }

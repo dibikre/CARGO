@@ -100,7 +100,7 @@ class ServiceVideoLogistique
             'titre' => $titre,
             'slug' => $slug,
             'url_embed' => trim($donnees['url_embed']),
-            'source' => ! empty($donnees['source']) ? trim($donnees['source']) : 'Editorial Desk',
+            'source' => ! empty($donnees['source']) ? trim($donnees['source']) : 'Rédaction CARGO',
             'duree' => ! empty($donnees['duree']) ? trim($donnees['duree']) : null,
             'description' => ! empty($donnees['description']) ? trim($donnees['description']) : null,
             'est_actif' => isset($donnees['est_actif']) ? (bool) $donnees['est_actif'] : true,

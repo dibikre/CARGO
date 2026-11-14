@@ -48,14 +48,14 @@ class VideoApiRedactionControleur extends Controller
                 'url_miniature' => $video->url_miniature,
                 'code_iframe' => $video->code_iframe,
                 'plateforme' => $video->plateforme,
-                'source' => $video->source ?: 'Editorial Field Video',
+                'source' => $video->source ?: 'Vidéo de terrain',
                 'duree' => $video->duree,
                 'description' => $video->description,
                 'est_actif' => (bool) $video->est_actif,
                 'ordre_affichage' => (int) $video->ordre_affichage,
-                'date_creation' => $video->created_at ? $video->created_at->format('M d, Y') : null,
-                'date_relative' => $video->created_at ? $video->created_at->diffForHumans() : null,
-                'auteur' => $video->auteur ? $video->auteur->name : 'Staff Desk',
+                'date_creation' => $video->created_at ? $video->created_at->locale('fr')->translatedFormat('d M Y') : null,
+                'date_relative' => $video->created_at ? $video->created_at->locale('fr')->diffForHumans() : null,
+                'auteur' => $video->auteur ? $video->auteur->name : 'Rédaction',
             ];
         });
 
@@ -100,7 +100,7 @@ class VideoApiRedactionControleur extends Controller
 
         return response()->json([
             'succes' => true,
-            'message' => 'Video embed successfully published to the newsroom desk.',
+            'message' => 'Vidéo embarquée publiée avec succès dans l\'espace rédaction.',
             'video' => [
                 'id' => $video->id,
                 'titre' => $video->titre,
@@ -135,7 +135,7 @@ class VideoApiRedactionControleur extends Controller
         }
 
         if ($id <= 0) {
-            return response()->json(['succes' => false, 'erreur' => 'Invalid video ID.'], 400);
+            return response()->json(['succes' => false, 'erreur' => 'Identifiant vidéo invalide.'], 400);
         }
 
         $video = $this->serviceVideo->basculerStatut($id);
@@ -145,7 +145,7 @@ class VideoApiRedactionControleur extends Controller
 
         return response()->json([
             'succes' => true,
-            'message' => $video->est_actif ? 'Video enabled on homepage.' : 'Video hidden from homepage.',
+            'message' => $video->est_actif ? 'Vidéo activée sur la page d\'accueil.' : 'Vidéo masquée de la page d\'accueil.',
             'id' => $video->id,
             'est_actif' => (bool) $video->est_actif,
             'indicateurs' => $indicateurs,
@@ -171,7 +171,7 @@ class VideoApiRedactionControleur extends Controller
         }
 
         if ($id <= 0) {
-            return response()->json(['succes' => false, 'erreur' => 'Invalid video ID.'], 400);
+            return response()->json(['succes' => false, 'erreur' => 'Identifiant vidéo invalide.'], 400);
         }
 
         $this->serviceVideo->supprimerVideo($id);
@@ -181,7 +181,7 @@ class VideoApiRedactionControleur extends Controller
 
         return response()->json([
             'succes' => true,
-            'message' => 'Video embed successfully removed from repository.',
+            'message' => 'Vidéo embarquée supprimée du répertoire avec succès.',
             'id_supprime' => $id,
             'indicateurs' => $indicateurs,
             'jeton_securite' => $nouveauJeton ?? $jetonActuel,
@@ -205,7 +205,7 @@ class VideoApiRedactionControleur extends Controller
 
         return response()->json([
             'succes' => true,
-            'message' => "{$nbSupprimes} video(s) permanently removed.",
+            'message' => "{$nbSupprimes} vidéo(s) supprimée(s) définitivement.",
             'nb_supprimes' => $nbSupprimes,
             'indicateurs' => $indicateurs,
             'jeton_securite' => $nouveauJeton ?? $jetonActuel,

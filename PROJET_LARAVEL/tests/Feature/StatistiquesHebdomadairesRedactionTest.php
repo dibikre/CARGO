@@ -100,7 +100,7 @@ class StatistiquesHebdomadairesRedactionTest extends TestCase
         $this->assertEquals(2, $resultat['total_publications']);
         $this->assertEquals(870, $resultat['total_vues']);
         $this->assertCount(7, $resultat['labels_jours']);
-        $this->assertEquals('Monday', $resultat['labels_jours'][0]);
+        $this->assertEquals('Lundi', $resultat['labels_jours'][0]);
         $this->assertEquals(1, $resultat['donnees_publications'][0]); // Lundi : 1 pub
         $this->assertEquals(1, $resultat['donnees_publications'][1]); // Mardi : 1 pub
         $this->assertEquals(350, $resultat['donnees_vues'][0]); // Lundi : 350 vues
@@ -125,10 +125,10 @@ class StatistiquesHebdomadairesRedactionTest extends TestCase
         $reponse = $this->actingAs($journaliste)->get(route('redaction.statistiques.index'));
 
         $reponse->assertStatus(200);
-        $reponse->assertSee('Audience &amp; Publications Analytics', false);
-        $reponse->assertSee('Publication Volume by Day');
-        $reponse->assertSee('Views Distribution by Day');
-        $reponse->assertSee('Most-Viewed Articles by Day (This Week)');
+        $reponse->assertSee('Audience &amp; Publications — Analytique', false);
+        $reponse->assertSee('Volume de publications par jour');
+        $reponse->assertSee('Répartition des vues par jour');
+        $reponse->assertSee('Articles les plus vus par jour (cette semaine)');
         $reponse->assertSee('graphiqueCirculairePublications');
         $reponse->assertSee('graphiqueCirculaireVues');
     }

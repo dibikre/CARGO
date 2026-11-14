@@ -1,9 +1,9 @@
 {{-- Barre de pagination dynamique pour navigation sans rechargement --}}
 <div id="barre-pagination-videos" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200">
     <div class="text-xs text-gray-500">
-        Showing <span id="pagination-de" class="font-bold text-gray-900">{{ $videos->firstItem() ?? 0 }}</span>
-        to <span id="pagination-a" class="font-bold text-gray-900">{{ $videos->lastItem() ?? 0 }}</span>
-        of <span id="pagination-total" class="font-bold text-gray-900">{{ $videos->total() }}</span> embedded videos
+        Affichage de <span id="pagination-de" class="font-bold text-gray-900">{{ $videos->firstItem() ?? 0 }}</span>
+        à <span id="pagination-a" class="font-bold text-gray-900">{{ $videos->lastItem() ?? 0 }}</span>
+        sur <span id="pagination-total" class="font-bold text-gray-900">{{ $videos->total() }}</span> vidéos embarquées
     </div>
 
     <div class="flex items-center gap-1.5" id="conteneur-liens-pagination">
@@ -16,7 +16,7 @@
                 {{ $videos->onFirstPage() ? 'disabled' : '' }}
             >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                <span>Prev</span>
+                <span>Précédent</span>
             </button>
 
             {{-- Numéros de page --}}
@@ -41,7 +41,7 @@
                 data-page="{{ $videos->currentPage() + 1 }}"
                 {{ $videos->hasMorePages() ? '' : 'disabled' }}
             >
-                <span>Next</span>
+                <span>Suivant</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
         @endif

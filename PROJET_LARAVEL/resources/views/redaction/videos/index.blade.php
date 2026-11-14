@@ -1,6 +1,6 @@
 @extends('redaction.layouts.redaction')
 
-@section('titre', 'Video Embeds Management — CARGO Newsroom')
+@section('titre', 'Gestion des vidéos embarquées — Rédaction CARGO')
 
 @section('contenu')
 <div class="space-y-6">
@@ -9,19 +9,19 @@
         <div>
             <div class="flex items-center gap-2">
                 <span class="inline-block w-2.5 h-2.5 rounded-full bg-cargo-red"></span>
-                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Newsroom Desk &bull; Multimedia Intelligence</span>
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Salle de rédaction &bull; Pôle Multimédia</span>
             </div>
-            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1">Embedded Videos Repository</h1>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight mt-1">Catalogue des vidéos embarquées</h1>
         </div>
 
         <div class="flex items-center gap-2.5">
             <a href="{{ route('redaction.articles.index') }}" class="bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs uppercase tracking-wider px-3 py-2 rounded border border-gray-300 shadow-sm transition flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                <span>Articles Desk</span>
+                <span>Articles</span>
             </a>
             <a href="{{ route('redaction.statistiques.index') }}" class="bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs uppercase tracking-wider px-3 py-2 rounded border border-gray-300 shadow-sm transition flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                <span>Editorial Analytics</span>
+                <span>Statistiques éditoriales</span>
             </a>
         </div>
     </div>

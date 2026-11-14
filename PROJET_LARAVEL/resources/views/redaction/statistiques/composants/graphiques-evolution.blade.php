@@ -7,12 +7,12 @@
     <div class="lg:col-span-2 bg-white rounded border border-gray-200 p-5 shadow-xs space-y-4">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-base font-heading font-black text-gray-900">Daily Unique Views Trend</h2>
-                <p class="text-xs text-gray-500">Readership dynamics over the selected timeframe</p>
+                <h2 class="text-base font-heading font-black text-gray-900">Tendance quotidienne des vues uniques</h2>
+                <p class="text-xs text-gray-500">Dynamique d'audience sur la période sélectionnée</p>
             </div>
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold bg-gray-100 text-gray-800 border border-gray-200">
                 <span class="w-2 h-2 rounded-full bg-cargo-dark"></span>
-                <span>Views</span>
+                <span>Vues</span>
             </span>
         </div>
 
@@ -25,8 +25,8 @@
     <div class="bg-white rounded border border-gray-200 p-5 shadow-xs space-y-4">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-base font-heading font-black text-gray-900">Publication Rhythm</h2>
-                <p class="text-xs text-gray-500">Daily published articles count</p>
+                <h2 class="text-base font-heading font-black text-gray-900">Rythme de publication</h2>
+                <p class="text-xs text-gray-500">Nombre d'articles publiés chaque jour</p>
             </div>
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold bg-gray-100 text-gray-800 border border-gray-200">
                 <span class="w-2 h-2 rounded-full bg-cargo-accent"></span>

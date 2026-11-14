@@ -59,7 +59,7 @@ class VideoRedactionControleur extends Controller
 
         $this->serviceVideo->creerVideo($donnees, $request->user()->id);
 
-        return back()->with('succes', 'Video embed successfully saved.');
+        return back()->with('succes', 'Vidéo embarquée enregistrée avec succès.');
     }
 
     /**
@@ -69,7 +69,7 @@ class VideoRedactionControleur extends Controller
     {
         $this->serviceVideo->supprimerVideo($id);
 
-        return back()->with('succes', 'Video embed removed.');
+        return back()->with('succes', 'Vidéo embarquée supprimée.');
     }
 
     /**
@@ -78,7 +78,7 @@ class VideoRedactionControleur extends Controller
     public function toggleStatut(int $id): RedirectResponse
     {
         $video = $this->serviceVideo->basculerStatut($id);
-        $message = $video->est_actif ? 'Video enabled on homepage.' : 'Video hidden from homepage.';
+        $message = $video->est_actif ? 'Vidéo activée sur la page d\'accueil.' : 'Vidéo masquée de la page d\'accueil.';
 
         return back()->with('succes', $message);
     }

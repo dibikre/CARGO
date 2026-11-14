@@ -22,9 +22,9 @@ window.ModalesVideosCargo = (function () {
 
         ifr.src = donnees.urlIframe;
         document.getElementById('apercu-titre').textContent = donnees.titre;
-        document.getElementById('apercu-source').textContent = donnees.source || 'Editorial Field Video';
+        document.getElementById('apercu-source').textContent = donnees.source || 'Vidéo de terrain';
         document.getElementById('apercu-duree').textContent = donnees.duree || '';
-        document.getElementById('apercu-description').textContent = donnees.description || 'No contextual synopsis provided.';
+        document.getElementById('apercu-description').textContent = donnees.description || 'Aucun synopsis contextuel fourni.';
         document.getElementById('bouton-copier-code-modale').dataset.code = donnees.codeIframe;
         mod.classList.remove('hidden');
     }
@@ -41,26 +41,26 @@ window.ModalesVideosCargo = (function () {
             const v = e.target.value.trim().toLowerCase();
             if (!badgeDet) return;
             if (!v) {
-                badgeDet.textContent = 'Any website supported';
+                badgeDet.textContent = 'Tout site web pris en charge';
             } else if (v.includes('youtube') || v.includes('youtu.be')) {
-                badgeDet.textContent = 'YouTube stream detected';
+                badgeDet.textContent = 'Flux YouTube détecté';
             } else if (v.includes('vimeo')) {
-                badgeDet.textContent = 'Vimeo video detected';
+                badgeDet.textContent = 'Vidéo Vimeo détectée';
             } else if (v.includes('dailymotion') || v.includes('dai.ly')) {
-                badgeDet.textContent = 'Dailymotion player detected';
+                badgeDet.textContent = 'Lecteur Dailymotion détecté';
             } else if (v.includes('loom.com')) {
-                badgeDet.textContent = 'Loom video detected';
+                badgeDet.textContent = 'Vidéo Loom détectée';
             } else if (v.includes('<iframe')) {
-                badgeDet.textContent = 'HTML <iframe> code detected (Any site)';
+                badgeDet.textContent = 'Code HTML <iframe> détecté (tout site)';
             } else if (v.startsWith('http://') || v.startsWith('https://')) {
                 try {
                     const host = new URL(e.target.value.trim()).hostname;
-                    badgeDet.textContent = `Universal Web Embed (${host})`;
+                    badgeDet.textContent = `Intégration web universelle (${host})`;
                 } catch (err) {
-                    badgeDet.textContent = 'Universal Web Embed accepted';
+                    badgeDet.textContent = 'Intégration web universelle acceptée';
                 }
             } else {
-                badgeDet.textContent = 'Custom embed link accepted';
+                badgeDet.textContent = 'Lien d\'intégration personnalisé accepté';
             }
         });
 
@@ -86,7 +86,7 @@ window.ModalesVideosCargo = (function () {
                 mod?.classList.add('hidden');
                 document.getElementById('formulaire-ajout-video')?.reset();
             } else if (resultat) {
-                errZone.textContent = resultat.erreur || 'Validation error while saving video embed.';
+                errZone.textContent = resultat.erreur || 'Erreur de validation lors de l\'enregistrement de la vidéo.';
                 errZone.classList.remove('hidden');
             }
         });

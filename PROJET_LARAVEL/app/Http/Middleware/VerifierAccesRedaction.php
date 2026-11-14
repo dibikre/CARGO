@@ -17,7 +17,7 @@ class VerifierAccesRedaction
     {
         // 1. Vérification de l'authentification
         if (! Auth::check()) {
-            return redirect()->route('redaction.connexion')->with('erreur', 'Please authenticate to access the CARGO Newsroom Desk.');
+            return redirect()->route('redaction.connexion')->with('erreur', 'Veuillez vous authentifier pour accéder à l\'espace rédaction CARGO.');
         }
 
         $utilisateur = $request->user();
@@ -34,7 +34,7 @@ class VerifierAccesRedaction
                 'ip' => $request->ip(),
             ]);
 
-            return redirect()->route('redaction.connexion')->with('erreur', 'Your editorial account has been deactivated. Please contact the editor-in-chief.');
+            return redirect()->route('redaction.connexion')->with('erreur', 'Votre compte éditorial a été désactivé. Veuillez contacter le rédacteur en chef.');
         }
 
         // 3. Vérification des privilèges de rédaction
@@ -47,7 +47,7 @@ class VerifierAccesRedaction
                 'url' => $request->fullUrl(),
             ]);
 
-            return redirect()->route('redaction.connexion')->with('erreur', 'Access restricted to accredited editorial journalists and editors. For subscribers, please use the PRO Reader portal.');
+            return redirect()->route('redaction.connexion')->with('erreur', 'Accès réservé aux journalistes et rédacteurs accrédités. Pour les abonnés, veuillez utiliser l\'espace Lecteur PRO.');
         }
 
         // 4. En-têtes de sécurité HTTP pour la session rédaction

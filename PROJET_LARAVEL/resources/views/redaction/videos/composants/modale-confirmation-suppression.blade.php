@@ -7,9 +7,9 @@
             </div>
 
             <div>
-                <h3 class="font-heading font-black text-lg text-gray-900 tracking-tight" id="titre-confirmation-suppression">Confirm Removal</h3>
+                <h3 class="font-heading font-black text-lg text-gray-900 tracking-tight" id="titre-confirmation-suppression">Confirmer la suppression</h3>
                 <p class="text-xs text-gray-500 mt-2" id="message-confirmation-suppression">
-                    Are you sure you want to permanently delete this video embed from the newsroom repository?
+                    Voulez-vous vraiment supprimer définitivement cette vidéo embarquée du catalogue éditorial ?
                 </p>
             </div>
 
@@ -19,7 +19,7 @@
                     id="bouton-annuler-suppression" 
                     class="px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-700 bg-gray-100 hover:bg-gray-200 rounded transition"
                 >
-                    Cancel
+                    Annuler
                 </button>
                 <button 
                     type="button" 
@@ -28,7 +28,7 @@
                     class="px-5 py-2 text-xs font-bold uppercase tracking-wider text-white bg-[#D4201A] hover:bg-[#B3140F] rounded shadow-sm transition flex items-center gap-1.5"
                 >
                     <svg id="spinner-suppression" class="hidden animate-spin w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                    <span>Delete Permanently</span>
+                    <span>Supprimer définitivement</span>
                 </button>
             </div>
         </div>

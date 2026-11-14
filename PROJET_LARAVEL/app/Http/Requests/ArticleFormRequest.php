@@ -60,7 +60,7 @@ class ArticleFormRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tags.max' => 'An article can have at most 4 tags (maximum 4 tags allowed).',
+            'tags.max' => 'Un article peut comporter au maximum 4 étiquettes (tags).',
         ];
     }
 }

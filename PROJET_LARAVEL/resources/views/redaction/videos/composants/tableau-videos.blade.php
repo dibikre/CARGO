@@ -7,10 +7,10 @@
                     <th scope="col" class="py-3.5 px-4 w-10 text-center">
                         <input type="checkbox" id="case-tout-selectionner" class="rounded border-gray-400 text-cargo-red focus:ring-cargo-red cursor-pointer">
                     </th>
-                    <th scope="col" class="py-3.5 px-4">Video Asset & Synopsis</th>
-                    <th scope="col" class="py-3.5 px-4 w-32">Platform</th>
-                    <th scope="col" class="py-3.5 px-4 w-44">Source Channel</th>
-                    <th scope="col" class="py-3.5 px-4 w-28 text-center">Homepage</th>
+                    <th scope="col" class="py-3.5 px-4">Vidéo &amp; Synopsis</th>
+                    <th scope="col" class="py-3.5 px-4 w-32">Plateforme</th>
+                    <th scope="col" class="py-3.5 px-4 w-44">Chaîne source</th>
+                    <th scope="col" class="py-3.5 px-4 w-28 text-center">Accueil</th>
                     <th scope="col" class="py-3.5 px-4 w-40 text-right">Actions</th>
                 </tr>
             </thead>
@@ -31,7 +31,7 @@
                                     data-source="{{ $video->source }}"
                                     data-duree="{{ $video->duree }}"
                                     data-code-iframe="{{ $video->code_iframe }}"
-                                    title="Click to preview video"
+                                    title="Cliquer pour prévisualiser la vidéo"
                                 >
                                     @if($video->url_miniature)
                                         <img src="{{ $video->url_miniature }}" alt="{{ $video->titre }}" class="w-full h-full object-cover group-hover:scale-105 transition">
@@ -62,7 +62,7 @@
                                         {{ $video->titre }}
                                     </button>
                                     <div class="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                                        <span>{{ $video->created_at ? $video->created_at->format('M d, Y') : 'Unknown' }}</span>
+                                        <span>{{ $video->created_at ? $video->created_at->locale('fr')->translatedFormat('d M Y') : 'Inconnue' }}</span>
                                         @if($video->description)
                                             <span>&bull;</span>
                                             <span class="truncate max-w-xs text-gray-400">{{ $video->description }}</span>
@@ -82,7 +82,7 @@
                             </div>
                         </td>
                         <td class="py-3 px-4 text-xs font-medium text-gray-700">
-                            {{ $video->source ?: 'Editorial Field Video' }}
+                            {{ $video->source ?: 'Vidéo de terrain' }}
                         </td>
                         <td class="py-3 px-4 text-center">
                             <button 
@@ -91,7 +91,7 @@
                                 class="bouton-basculer-statut relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
                                 data-id="{{ $video->id }}"
                                 data-actif="{{ $video->est_actif ? '1' : '0' }}"
-                                title="Toggle display on homepage sidebar"
+                                title="Activer ou masquer dans la colonne d'accueil"
                             >
                                 <span class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out {{ $video->est_actif ? 'translate-x-4' : 'translate-x-0' }}"></span>
                             </button>
@@ -102,7 +102,7 @@
                                     type="button" 
                                     class="bouton-copier-code p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition"
                                     data-code="{{ $video->code_iframe }}"
-                                    title="Copy embed HTML snippet"
+                                    title="Copier le code HTML"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                 </button>
@@ -115,7 +115,7 @@
                                     data-source="{{ $video->source }}"
                                     data-duree="{{ $video->duree }}"
                                     data-code-iframe="{{ $video->code_iframe }}"
-                                    title="Preview player"
+                                    title="Aperçu lecteur"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </button>
@@ -124,7 +124,7 @@
                                     class="bouton-demander-suppression p-1.5 text-gray-400 hover:text-cargo-red hover:bg-red-50 rounded transition"
                                     data-id="{{ $video->id }}"
                                     data-titre="{{ $video->titre }}"
-                                    title="Delete video"
+                                    title="Supprimer la vidéo"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
@@ -134,8 +134,8 @@
                 @empty
                     <tr id="ligne-tableau-vide">
                         <td colspan="6" class="py-12 text-center text-gray-500">
-                            <p class="font-bold text-gray-700">No video embeds found matching criteria.</p>
-                            <p class="text-xs text-gray-400 mt-1">Try clearing your filters or add a new video report.</p>
+                            <p class="font-bold text-gray-700">Aucune vidéo embarquée ne correspond à vos critères.</p>
+                            <p class="text-xs text-gray-400 mt-1">Essayez d'effacer vos filtres ou ajoutez un nouveau reportage vidéo.</p>
                         </td>
                     </tr>
                 @endforelse

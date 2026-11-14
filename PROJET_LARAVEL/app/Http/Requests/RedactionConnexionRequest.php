@@ -41,10 +41,10 @@ class RedactionConnexionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'The editorial email address is required.',
-            'email.email' => 'Please provide a valid editorial email address.',
-            'password.required' => 'The password is required.',
-            'password.min' => 'The password must be at least 6 characters.',
+            'email.required' => 'L\'adresse e-mail éditoriale est requise.',
+            'email.email' => 'Veuillez saisir une adresse e-mail éditoriale valide.',
+            'password.required' => 'Le mot de passe est requis.',
+            'password.min' => 'Le mot de passe doit contenir au moins 6 caractères.',
         ];
     }
 
@@ -68,7 +68,7 @@ class RedactionConnexionRequest extends FormRequest
         $minutesRestantes = (int) ceil($secondesRestantes / 60);
 
         throw ValidationException::withMessages([
-            'email' => "Too many failed editorial login attempts. Please try again in {$minutesRestantes} minutes.",
+            'email' => "Trop de tentatives de connexion infructueuses. Veuillez réessayer dans {$minutesRestantes} minute(s).",
         ]);
     }
 
