@@ -120,6 +120,15 @@
                 @endauth
             </span>
         </div>
+        {{-- [TEMPORAIRE - CONCEPTION] Boutons d'accès rapide aux portails à retirer à la fin de la conception --}}
+        <div style="background:#1A1C26; border-top:1px solid var(--dark-border);">
+            <div class="wrap" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:8px; padding-top:8px; padding-bottom:8px;">
+                <span style="font-size:calc(11px * var(--echelle-texte)); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#8E93A4; margin-right:auto;">Accès conception :</span>
+                <a href="{{ route('admin.connexion') }}" style="background:var(--accent); color:#fff; font-family:var(--police-titre); font-weight:700; font-size:calc(11.5px * var(--echelle-texte)); text-transform:uppercase; letter-spacing:0.05em; padding:6px 12px; border:1px solid var(--accent); display:inline-block;">Connexion Admin</a>
+                <a href="{{ route('login') }}" style="background:var(--yellow); color:var(--dark); font-family:var(--police-titre); font-weight:700; font-size:calc(11.5px * var(--echelle-texte)); text-transform:uppercase; letter-spacing:0.05em; padding:6px 12px; border:1px solid var(--yellow); display:inline-block;">Connexion Lecteur PRO</a>
+                <a href="{{ route('redaction.connexion') }}" style="background:#262936; color:#fff; font-family:var(--police-titre); font-weight:700; font-size:calc(11.5px * var(--echelle-texte)); text-transform:uppercase; letter-spacing:0.05em; padding:6px 12px; border:1px solid #4A4E5C; display:inline-block;">Connexion Journaliste</a>
+            </div>
+        </div>
     </header>
 
     {{-- Bandeau defilant des matieres premieres brutes (non clicable, 20 produits max) --}}

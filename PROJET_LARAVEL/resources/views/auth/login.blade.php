@@ -55,16 +55,4 @@
         </div>
     </form>
 
-    {{-- Liens vers les autres portails (Rédaction & Administration) --}}
-    <div class="mt-6 pt-4 border-t border-gray-200 text-xs text-gray-600 space-y-2">
-        <div class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Staff &amp; Contributor Portals:</div>
-        <div class="flex items-center justify-between">
-            <span>Editorial Journalist or Editor?</span>
-            <a href="{{ route('redaction.connexion') }}" class="font-bold text-cargo-red hover:underline">Newsroom Desk &rarr;</a>
-        </div>
-        <div class="flex items-center justify-between border-t border-gray-100 pt-1.5">
-            <span>System Administrator?</span>
-            <a href="{{ route('admin.connexion') }}" class="font-bold text-gray-900 hover:underline">Security Gateway &rarr;</a>
-        </div>
-    </div>
 </x-guest-layout>

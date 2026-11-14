@@ -107,19 +107,6 @@
             </div>
         </div>
 
-        {{-- Liens de séparation claire entre les espaces --}}
-        <div class="mt-6 bg-white/70 border border-gray-200 rounded-lg p-4 text-xs text-gray-600 space-y-2">
-            <div class="font-bold uppercase tracking-wider text-[11px] text-gray-500 mb-1">Autres portails d'accès :</div>
-            <div class="flex items-center justify-between">
-                <span>Vous êtes abonné ou lecteur ?</span>
-                <a href="{{ route('login') }}" class="text-cargo-red font-bold hover:underline">Portail Lecteur PRO &rarr;</a>
-            </div>
-            <div class="flex items-center justify-between border-t border-gray-100 pt-2">
-                <span>Administrateur de la plateforme ?</span>
-                <a href="{{ route('admin.connexion') }}" class="text-gray-900 font-bold hover:underline">Passerelle de sécurité &rarr;</a>
-            </div>
-        </div>
-
         <div class="text-center mt-5">
             <a href="{{ route('accueil') }}" class="text-xs text-gray-500 hover:text-gray-900 transition font-medium">
                 &larr; Retour à l'édition publique CARGO

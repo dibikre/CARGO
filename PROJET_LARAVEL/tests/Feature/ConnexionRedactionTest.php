@@ -45,8 +45,9 @@ class ConnexionRedactionTest extends TestCase
         $reponse->assertSee('Authentification Rédaction');
         $reponse->assertSee('Espace Rédaction');
         $reponse->assertSee('Adresse e-mail éditoriale');
-        $reponse->assertSee('Portail Lecteur PRO');
-        $reponse->assertSee('Passerelle de sécurité');
+        $reponse->assertDontSee("Autres portails d'accès");
+        $reponse->assertDontSee('Portail Lecteur PRO');
+        $reponse->assertDontSee('Passerelle de sécurité');
     }
 
     /**
