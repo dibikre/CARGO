@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Route;
 
 // --- Pages Publiques du Journal ---
 Route::get('/', [AccueilControleur::class, 'index'])->name('accueil');
-Route::redirect('/connexion', '/admin/connexion')->name('login');
+Route::redirect('/connexion', '/login');
 Route::get('/recherche', [RechercheControleur::class, 'anciennePage'])->name('recherche');
 Route::post('/recherche/initier', [RechercheControleur::class, 'initier'])->middleware('throttle:30,1')->name('recherche.initier');
 Route::get('/recherche-{code}', [RechercheControleur::class, 'afficherResultats'])->where('code', '[a-zA-Z0-9]{16}')->name('recherche.consulter');
@@ -76,6 +76,17 @@ Route::prefix('abonnements')->name('abonnements.')->group(function () {
     Route::get('/confirmation/{reference}', [AbonnementControleur::class, 'confirmation'])->middleware('auth')->name('confirmation');
 });
 Route::get('/mon-abonnement', [AbonnementControleur::class, 'monAbonnement'])->middleware('auth')->name('abonnements.espace');
+Route::get('/dashboard', function () {
+    $utilisateur = auth()->user();
+    if ($utilisateur && $utilisateur->estAdministrateur()) {
+        return redirect()->route('admin.tableau-bord');
+    }
+    if ($utilisateur && $utilisateur->estMembreRedaction()) {
+        return redirect()->route('redaction.articles.index');
+    }
+
+    return redirect()->route('abonnements.espace');
+})->middleware('auth')->name('dashboard');
 
 // Livres blancs et ressources téléchargeables
 Route::prefix('ressources')->name('ressources.')->group(function () {
@@ -247,3 +258,5 @@ Route::prefix('admin')->group(function () {
         });
     });
 });
+
+require __DIR__.'/auth.php';
