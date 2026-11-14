@@ -42,6 +42,40 @@
         </div>
     @endif
 
+    @if($abonnementsActifs && auth()->check())
+        @if(isset($abonnementActif) && $abonnementActif && $abonnementActif->estValide())
+            <div style="background:#ECFDF5; border:2px solid #16A34A; padding:22px 28px; margin-bottom:28px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
+                <div>
+                    <span style="background:#16A34A; color:#fff; padding:4px 10px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em;">Abonnement PRO Actif</span>
+                    <h2 class="dsp" style="margin:8px 0 4px; font-size:22px; color:#064E3B;">
+                        Vous êtes abonné à la formule {{ $abonnementActif->formule->nom ?? 'CARGO PRO' }}
+                    </h2>
+                    <p style="margin:0; color:#065F46; font-size:14px;">
+                        Votre accès complet aux articles PRO est actif jusqu'au <strong>{{ $abonnementActif->date_fin->format('d/m/Y') }}</strong>. Vous pouvez prolonger votre abonnement à tout moment ci-dessous.
+                    </p>
+                </div>
+                <a href="{{ route('abonnements.espace') }}" style="background:#065F46; color:#fff; font-weight:700; padding:11px 20px; font-size:13px; text-transform:uppercase;">
+                    Voir mon compte
+                </a>
+            </div>
+        @else
+            <div style="background:#FEF2F2; border:2px solid var(--accent); padding:22px 28px; margin-bottom:28px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
+                <div>
+                    <span style="background:var(--accent); color:#fff; padding:4px 10px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em;">Aucun abonnement PRO actif</span>
+                    <h2 class="dsp" style="margin:8px 0 4px; font-size:22px; color:var(--dark);">
+                        Connecté en tant que {{ auth()->user()->name }} — Compte non abonné PRO
+                    </h2>
+                    <p style="margin:0; color:var(--text-muted); font-size:14px;">
+                        Souscrivez à l'une des formules ci-dessous pour activer immédiatement votre abonnement PRO et lire l'intégralité des articles réservés.
+                    </p>
+                </div>
+                <a href="{{ route('abonnements.espace') }}" style="background:var(--dark); color:#fff; font-weight:700; padding:11px 20px; font-size:13px; text-transform:uppercase;">
+                    Mon statut
+                </a>
+            </div>
+        @endif
+    @endif
+
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:32px;">
         @forelse($formules as $formule)
             <div style="background:#fff; padding:36px; box-sizing:border-box; display:flex; flex-direction:column; gap:20px; border-top:6px solid {{ $loop->iteration === 2 ? 'var(--yellow)' : 'var(--accent)' }}; position:relative; {{ isset($abonnementsActifs) && !$abonnementsActifs ? 'opacity:0.85;' : '' }}">
@@ -62,11 +96,23 @@
                 </div>
 
                 <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:15px;">
-                    <li>✓ Accès illimité aux articles et dossiers PRO</li>
-                    <li>✓ Baromètres et livres blancs téléchargeables</li>
-                    <li>✓ Alertes en temps réel sur les corridors de fret</li>
+                    <li style="display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Accès illimité aux articles et dossiers PRO
+                    </li>
+                    <li style="display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Baromètres et livres blancs téléchargeables
+                    </li>
+                    <li style="display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Alertes en temps réel sur les corridors de fret
+                    </li>
                     @if($formule->nombre_utilisateurs_max > 1)
-                        <li>✓ Jusqu'à <strong>{{ $formule->nombre_utilisateurs_max }} accès</strong> simultanés entreprise</li>
+                        <li style="display:flex; align-items:center; gap:8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Jusqu'à <strong>{{ $formule->nombre_utilisateurs_max }} accès</strong> simultanés entreprise</span>
+                        </li>
                     @endif
                 </ul>
 
@@ -84,12 +130,20 @@
                     </div>
                 @else
                     @auth
-                        <form action="{{ route('abonnements.souscrire') }}" method="POST" style="margin-top:auto; padding-top:16px;">
+                        <form action="{{ route('abonnements.souscrire') }}" method="POST" style="margin-top:auto; padding-top:16px; display:flex; flex-direction:column; gap:10px;">
                             @csrf
                             <input type="hidden" name="formule_id" value="{{ $formule->id }}">
-                            <input type="hidden" name="mode_paiement" value="carte_bancaire">
-                            <button type="submit" class="btn-yellow" style="width:100%; text-align:center;">
-                                Choisir cette formule
+                            <div>
+                                <label for="mode_paiement_{{ $formule->id }}" style="display:block; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px;">Mode de règlement</label>
+                                <select id="mode_paiement_{{ $formule->id }}" name="mode_paiement" class="form-input" style="height:40px; font-size:13.5px;">
+                                    <option value="carte_bancaire">Carte bancaire</option>
+                                    <option value="virement">Virement bancaire</option>
+                                    <option value="prelevement">Prélèvement SEPA</option>
+                                    <option value="facture_pro">Facture entreprise PRO</option>
+                                </select>
+                            </div>
+                            <button type="submit" style="width:100%; text-align:center; background:var(--accent); color:#fff; font-weight:700; font-family:var(--police-titre); font-size:calc(13.5px * var(--echelle-texte)); padding:13px 20px; border:0; cursor:pointer; text-transform:uppercase; letter-spacing:0.05em;">
+                                {{ isset($abonnementActif) && $abonnementActif && $abonnementActif->estValide() ? 'Prolonger avec cette formule' : 'Souscrire à cette formule' }}
                             </button>
                         </form>
                     @else

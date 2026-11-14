@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\AbonnementUtilisateur;
 use App\Models\Article;
 use App\Models\Categorie;
+use App\Models\ConfigurationSysteme;
 use App\Models\CorridorTransport;
 use App\Models\FormuleAbonnement;
 use App\Models\User;
@@ -45,11 +47,31 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::firstOrCreate(
+        // Configuration par défaut des abonnements PRO
+        ConfigurationSysteme::firstOrCreate(
+            ['cle' => 'abonnements_actifs'],
+            ['valeur' => '1', 'description' => 'Statut global des abonnements et paywall']
+        );
+        ConfigurationSysteme::firstOrCreate(
+            ['cle' => 'souscriptions_actives'],
+            ['valeur' => '1', 'description' => 'Autorisation de nouvelles souscriptions d\'abonnements']
+        );
+
+        $compteAbonnePro = User::firstOrCreate(
             ['email' => 'abonne@chargeur-global.com'],
             [
                 'name' => 'Directeur Logistique Danone',
                 'password' => Hash::make('CargoPro2026!'),
+                'role' => 'abonne',
+                'est_actif' => true,
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'lecteur@cargo-logistics.com'],
+            [
+                'name' => 'Marc Lefevre (Lecteur Standard)',
+                'password' => Hash::make('CargoLecteur2026!'),
                 'role' => 'abonne',
                 'est_actif' => true,
             ]
@@ -157,8 +179,8 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 4. Formules d'abonnement
-        FormuleAbonnement::firstOrCreate(
+        // 4. Formules d'abonnement et attribution de l'abonnement actif au compte PRO seedé
+        $formuleProMensuel = FormuleAbonnement::firstOrCreate(
             ['slug' => 'cargo-pro-mensuel'],
             [
                 'nom' => 'CARGO PRO Lecteur',
@@ -174,13 +196,43 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        FormuleAbonnement::firstOrCreate(
+            ['slug' => 'cargo-pro-annuel'],
+            [
+                'nom' => 'CARGO PRO Entreprise (Annuel)',
+                'description' => 'Couverture annuelle complète pour les directions supply chain et achats transport.',
+                'prix_ht' => 490.00,
+                'taux_tva' => 20.00,
+                'duree_en_jours' => 365,
+                'acces_archives_illimite' => true,
+                'acces_dossiers_exclusifs' => true,
+                'nombre_utilisateurs_max' => 5,
+                'est_actif' => true,
+                'ordre_affichage' => 2,
+            ]
+        );
+
+        AbonnementUtilisateur::updateOrCreate(
+            ['reference_commande' => 'CMD-SEED-PRO-2026'],
+            [
+                'user_id' => $compteAbonnePro->id,
+                'formule_id' => $formuleProMensuel->id,
+                'date_debut' => now()->subDay(),
+                'date_fin' => now()->addDays($formuleProMensuel->duree_en_jours),
+                'statut' => 'actif',
+                'renouvellement_automatique' => true,
+                'montant_paye_ttc' => $formuleProMensuel->prix_ttc,
+                'mode_paiement' => 'carte_bancaire',
+            ]
+        );
+
         // 5. Articles de démonstration
         Article::firstOrCreate(
             ['slug' => 'taux-de-fret-maritime-asie-europe-surcapacite-2026'],
             [
                 'titre' => 'Taux spot Asie-Europe : Les armateurs face au spectre d\'une surcapacité record',
                 'chapeau' => 'L\'arrivée massive de méga-porte-conteneurs de 24 000 EVP conjuguée à la réouverture progressive de Suez bouleverse les grilles tarifaires mondiales.',
-                'contenu' => 'Les armateurs mondiaux entament le premier trimestre 2026 dans une situation de tension logistique singulière...',
+                'contenu' => '<p>Les armateurs mondiaux entament le premier trimestre 2026 dans une situation de tension logistique singulière. Alors que les carnets de commandes des chantiers navals asiatiques livrent chaque semaine de nouvelles unités de 24 000 EVP, la capacité nominale offerte sur le corridor Asie-Europe dépasse désormais de 19 % la demande contractuelle estimée par les principaux commissionnaires de transport.</p><h3>Analyse tarifaire et stratégie des alliances</h3><p>Pour contenir l\'érosion des taux spot sous le seuil de rentabilité opérationnelle, les alliances maritimes multiplient les annulations de départs (blank sailings) et ajustent leurs vitesses de croisière sur le routage par le Cap de Bonne-Espérance.</p><p>Nos relevés exclusifs montrent toutefois que les chargeurs européens disposant de contrats annuels indexés réussissent à renégocier des baisses comprises entre 14 % et 22 % sur les boucles Nord-Europe, à condition de sécuriser des engagements de volume trimestriels fermes.</p>',
                 'statut' => 'publie',
                 'format_article' => 'standard',
                 'categorie_id' => $catMaritime->id,

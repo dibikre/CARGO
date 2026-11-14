@@ -33,6 +33,10 @@
             <div style="display: inline-flex; align-items: center; gap: 8px; background: #0F766E; color: #fff; padding: 5px 12px; font-weight: 700; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
                 Accès Libre · Analyse Ouverte (Abonnements Désactivés)
             </div>
+        @elseif($article->est_reserve_abonnes)
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: var(--yellow); color: var(--dark); padding: 5px 12px; font-weight: 800; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">
+                Article CARGO PRO {{ $aAccesComplet ? '· Accès complet débloqué' : '· Réservé aux abonnés PRO' }}
+            </div>
         @endif
         {{-- Headline --}}
         <h1 class="dsp" style="font-size: clamp(32px, 4.5vw, 48px); line-height: 1.08; margin: 0 0 20px; font-weight: 900; color: var(--dark); letter-spacing: -0.02em;">
@@ -102,11 +106,7 @@
         @else
             <div style="position: relative; background: #fff; padding: 36px 36px 80px; border: 1px solid #E2E5EB;">
                 <div class="article-html-body" style="font-size: 18px; line-height: 1.8; color: #1F2128; mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);">
-                    @if(Str::contains($article->contenu, ['<p>', '<div', '<table', '<figure', '<style', '<script', '<h1', '<h2', '<h3', '<ul', '<ol', '<blockquote']))
-                        {!! Str::limit(strip_tags($article->contenu, '<p><div><h1><h2><h3><h4><br><strong><em><b><i>'), 450) !!}
-                    @else
-                        {!! nl2br(e(Str::limit($article->contenu, 450))) !!}
-                    @endif
+                    <p>{!! nl2br(e(Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($article->contenu)))), 380))) !!}</p>
                 </div>
 
                 {{-- Paywall Éditorial --}}
@@ -114,20 +114,40 @@
                     <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.08); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     </div>
-                    <span class="kick" style="color: var(--yellow); font-size: 12px; display: block; margin-bottom: 8px;">Contenu Éditorial Réservé</span>
+                    <span class="kick" style="color: var(--yellow); font-size: 12px; display: block; margin-bottom: 8px;">Contenu Éditorial Réservé PRO</span>
                     <h3 class="dsp" style="font-size: 28px; line-height: 1.15; margin: 0 0 14px; color: #fff;">
-                        Cette enquête approfondie est réservée aux abonnés CARGO PRO
+                        Abonnez-vous à CARGO PRO pour voir le reste de cet article
                     </h3>
-                    <p style="color: #C9CCD6; max-width: 540px; margin: 0 auto 24px; font-size: 15px; line-height: 1.6;">
-                        Accédez à l'intégralité de l'article, aux grilles comparatives de taux de fret, aux prévisions de congestion et aux données logistiques exclusives.
+                    <p style="color: #C9CCD6; max-width: 540px; margin: 0 auto 20px; font-size: 15px; line-height: 1.6;">
+                        Cet article PRO est réservé aux abonnés disposant d'un abonnement CARGO PRO actif. Accédez à l'intégralité de l'analyse, aux grilles tarifaires de fret et aux données exclusives.
                     </p>
+
+                    @auth
+                        <div style="background: rgba(255,255,255,0.07); border: 1px solid #3A3E4D; max-width: 520px; margin: 0 auto 24px; padding: 12px 16px; font-size: 13px; color: #E5E7EB;">
+                            Connecté en tant que <strong>{{ auth()->user()->name }}</strong> — <span style="color: var(--yellow); font-weight: 700;">Aucun abonnement PRO actif</span> sur votre compte.
+                        </div>
+                    @endauth
+
                     <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px;">
-                        <a href="{{ route('abonnements.index') }}" style="background: var(--accent); color: #fff; font-weight: 700; padding: 14px 32px; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--police-titre); font-size: calc(13.5px * var(--echelle-texte));">
-                            S'abonner à CARGO PRO
-                        </a>
-                        <a href="{{ route('login') }}" style="color: #fff; font-weight: 600; font-size: 14px; text-decoration: underline; padding: 8px 12px;">
-                            Connexion Abonné
-                        </a>
+                        @if($souscriptionsActives ?? true)
+                            <a href="{{ route('abonnements.index') }}" style="background: var(--accent); color: #fff; font-weight: 700; padding: 14px 32px; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; font-family: var(--police-titre); font-size: calc(13.5px * var(--echelle-texte));">
+                                S'abonner pour lire la suite
+                            </a>
+                        @else
+                            <span style="background: #2B2E3A; color: #FBBF24; font-weight: 700; padding: 12px 24px; font-size: 13px; text-transform: uppercase;">
+                                Souscriptions temporairement suspendues
+                            </span>
+                        @endif
+
+                        @auth
+                            <a href="{{ route('abonnements.espace') }}" style="color: #fff; font-weight: 600; font-size: 14px; text-decoration: underline; padding: 8px 12px;">
+                                Voir mon statut d'abonnement
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" style="color: #fff; font-weight: 600; font-size: 14px; text-decoration: underline; padding: 8px 12px;">
+                                Déjà abonné ? Connexion Abonné
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>

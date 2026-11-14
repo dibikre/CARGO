@@ -53,8 +53,12 @@ class ServiceAbonnementLecteur
      */
     public function souscrireAbonnement(User $utilisateur, FormuleAbonnement $formule, string $modePaiement): AbonnementUtilisateur
     {
+        $abonnementExistant = $utilisateur->abonnementActif()->first();
         $dateDebut = now();
-        $dateFin = now()->addDays($formule->duree_en_jours);
+        $baseDateFin = ($abonnementExistant && $abonnementExistant->date_fin && $abonnementExistant->date_fin->isFuture())
+            ? $abonnementExistant->date_fin->copy()
+            : now();
+        $dateFin = $baseDateFin->addDays($formule->duree_en_jours);
 
         return AbonnementUtilisateur::create([
             'user_id' => $utilisateur->id,

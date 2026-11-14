@@ -14,13 +14,22 @@ class AbonnementControleur extends Controller
     /**
      * Présenter la grille des formules d'abonnements lecteurs et entreprises.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
         $abonnementsActifs = \App\Models\ConfigurationSysteme::abonnementsSontActifs();
         $souscriptionsActives = \App\Models\ConfigurationSysteme::souscriptionsSontActives();
         $formules = FormuleAbonnement::actif()->get();
+        $utilisateur = $request->user();
+        $abonnementActif = $utilisateur
+            ? $utilisateur->abonnementActif()->with('formule')->first()
+            : null;
 
-        return view('journal.abonnements.tarifs', compact('formules', 'abonnementsActifs', 'souscriptionsActives'));
+        return view('journal.abonnements.tarifs', compact(
+            'formules',
+            'abonnementsActifs',
+            'souscriptionsActives',
+            'abonnementActif'
+        ));
     }
 
     /**
@@ -71,9 +80,19 @@ class AbonnementControleur extends Controller
     public function monAbonnement(Request $request): View
     {
         $utilisateur = $request->user();
+        $abonnementsActifs = \App\Models\ConfigurationSysteme::abonnementsSontActifs();
+        $souscriptionsActives = \App\Models\ConfigurationSysteme::souscriptionsSontActives();
         $abonnementActif = $utilisateur->abonnementActif()->with('formule')->first();
         $historique = $utilisateur->abonnements()->with('formule')->latest()->get();
+        $formulesDisponibles = FormuleAbonnement::actif()->get();
 
-        return view('journal.abonnements.espace', compact('utilisateur', 'abonnementActif', 'historique'));
+        return view('journal.abonnements.espace', compact(
+            'utilisateur',
+            'abonnementActif',
+            'historique',
+            'abonnementsActifs',
+            'souscriptionsActives',
+            'formulesDisponibles'
+        ));
     }
 }

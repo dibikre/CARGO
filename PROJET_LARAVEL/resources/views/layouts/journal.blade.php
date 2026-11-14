@@ -102,18 +102,39 @@
                 <a href="{{ route('dossiers.index') }}" style="padding:12px 0">Dossiers</a>
                 <a href="{{ route('evenements.index') }}" style="padding:12px 0">Agenda</a>
             </nav>
-            <span style="display:flex; gap:12px; align-items:center;">
+            <span style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
                 @include('journal.composants.barre-recherche-extensible')
                 @if(isset($abonnementsActifs) && !$abonnementsActifs)
                     <a href="{{ route('accueil') }}" style="background:#0F766E; color:#fff; font-weight:700; padding:11px 16px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(11.8px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">Accès Libre 100%</a>
                 @else
-                    <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:11px 18px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">S'abonner</a>
+                    @auth
+                        @if(auth()->user()->estMembreRedaction())
+                            <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:11px 18px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">S'abonner</a>
+                        @elseif(auth()->user()->estAbonne())
+                            <a href="{{ route('abonnements.espace') }}" style="background:var(--yellow); color:var(--dark); font-weight:800; padding:10px 14px; display:inline-flex; align-items:center; gap:6px; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12px * var(--echelle-texte)); letter-spacing:0.05em;">
+                                Abonné PRO Actif
+                            </a>
+                        @else
+                            <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:11px 18px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">S'abonner PRO</a>
+                            <a href="{{ route('abonnements.espace') }}" style="background:#262936; color:#C9CCD6; border:1px solid #4A4E5C; font-weight:700; padding:9px 12px; display:inline-block; font-size:calc(12px * var(--echelle-texte));">
+                                Mon compte · Non abonné
+                            </a>
+                        @endif
+                    @else
+                        <a href="{{ route('abonnements.index') }}" style="background:var(--accent); color:#fff; font-weight:700; padding:11px 18px; display:inline-block; font-family:var(--police-titre); text-transform:uppercase; font-size:calc(12.5px * var(--echelle-texte)); letter-spacing:0.05em; border:none;">S'abonner</a>
+                    @endauth
                 @endif
                 @auth
                     @if(auth()->user()->estMembreRedaction())
                         <a href="{{ route('redaction.articles.index') }}" style="background:#fff; color:var(--dark); font-weight:700; padding:11px 15px; font-size:calc(12.5px * var(--echelle-texte));">Espace Rédaction</a>
                     @else
-                        <a href="{{ route('abonnements.espace') }}" style="color:#C9CCD6; font-size:calc(12.5px * var(--echelle-texte)); font-weight:600;">Mon Compte</a>
+                        @if(isset($abonnementsActifs) && !$abonnementsActifs)
+                            <a href="{{ route('abonnements.espace') }}" style="color:#C9CCD6; font-size:calc(12.5px * var(--echelle-texte)); font-weight:600;">Mon Compte</a>
+                        @endif
+                        <form action="{{ route('logout') }}" method="POST" style="display:inline; margin:0;">
+                            @csrf
+                            <button type="submit" style="background:transparent; color:#C9CCD6; border:1px solid #4A4E5C; padding:9px 12px; font-size:calc(12px * var(--echelle-texte)); font-weight:600; cursor:pointer;">Déconnexion</button>
+                        </form>
                     @endif
                 @else
                     <a href="{{ route('login') }}" style="color:#C9CCD6; font-size:calc(12.5px * var(--echelle-texte)); font-weight:600;">Se connecter</a>

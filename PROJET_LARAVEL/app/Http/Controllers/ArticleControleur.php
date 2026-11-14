@@ -55,6 +55,7 @@ class ArticleControleur extends Controller
 
         // Vérifier l'accès réservé aux abonnés (Paywall)
         $aAccesComplet = $this->serviceAbonnement->peutConsulterArticle($request->user(), $article);
+        $souscriptionsActives = ConfigurationSysteme::souscriptionsSontActives();
 
         // Commentaires approuvés
         $commentaires = $article->commentaires()
@@ -72,7 +73,7 @@ class ArticleControleur extends Controller
             ->limit(4)
             ->get();
 
-        return view('journal.articles.show', compact('article', 'aAccesComplet', 'commentaires', 'articlesSimilaires'));
+        return view('journal.articles.show', compact('article', 'aAccesComplet', 'souscriptionsActives', 'commentaires', 'articlesSimilaires'));
     }
 
     /**

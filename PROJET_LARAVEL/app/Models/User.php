@@ -90,7 +90,8 @@ class User extends Authenticatable
         return $this->hasOne(AbonnementUtilisateur::class, 'user_id')
             ->where('statut', 'actif')
             ->where('date_fin', '>=', now())
-            ->latestOfMany();
+            ->orderByDesc('date_fin')
+            ->orderByDesc('id');
     }
 
     /**

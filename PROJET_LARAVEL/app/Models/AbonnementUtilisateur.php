@@ -59,6 +59,14 @@ class AbonnementUtilisateur extends Model
     }
 
     /**
+     * Alias français de l'utilisateur détenteur de l'abonnement.
+     */
+    public function utilisateur(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
      * Formule souscrite.
      */
     public function formule(): BelongsTo
